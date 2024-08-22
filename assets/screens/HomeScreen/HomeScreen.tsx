@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, Dimensions, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, TextInput } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const exampleExpenditures = [
   { id: '1', amount: 50, category: 'Sports' },
   { id: '2', amount: 30, category: 'Food' },
-  // Add more data as needed
+
 ];
 
 const HomeScreen = () => {
@@ -31,7 +31,6 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Main Content */}
       <FlatList
         data={expenditures}
         keyExtractor={(item) => item.id}
@@ -43,12 +42,10 @@ const HomeScreen = () => {
         )}
       />
 
-      {/* Round '+' Button */}
       <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
         <Ionicons name="add" size={24} color="#fff" />
       </TouchableOpacity>
 
-      {/* Add Modal */}
       <Modal
         transparent={true}
         visible={modalVisible}
@@ -90,7 +87,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   itemContainer: {
-    backgroundColor: '#fff', // Background color for each item
+    backgroundColor: '#fff', 
     padding: 15,
     marginBottom: 10,
     borderRadius: 5,
@@ -115,7 +112,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5, // For shadow effect on Android
-    shadowColor: '#000', // For shadow effect on iOS
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
