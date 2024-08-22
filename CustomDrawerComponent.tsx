@@ -84,6 +84,6 @@ const styles = StyleSheet.create({
     
   },
 });
-/* add something*/
+
 
 export default CustomDrawerComponent;
