@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import CustomDropdown from './assets/screens/HomeScreen/CustomDropdown'; 
 import HomeScreen from './assets/screens/HomeScreen/HomeScreen';
-import CategoriesScreen from './assets/screens/CategoriesScreen';
+import CategoriesScreen from './assets/screens/CategoriesScreen/CategoriesScreen';
 import SettingsScreen from './assets/screens/SettingsScreen';
 import FeedbackScreen from './assets/screens/FeedbackScreen';
 import SearchScreen from './assets/screens/SearchScreen';
