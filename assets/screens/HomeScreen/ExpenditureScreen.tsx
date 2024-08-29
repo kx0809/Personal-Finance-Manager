@@ -13,11 +13,14 @@ const expensesData = [
 
 const incomeData = [
   { id: '1', name: 'Salary', icon: 'money' },
-  { id: '2', name: 'Business', icon: 'briefcase' },
-  { id: '3', name: 'Freelance', icon: 'pencil' },
-  { id: '4', name: 'Investments', icon: 'line-chart' },
-  { id: '5', name: 'Savings', icon: 'bank' },
-  { id: '6', name: 'Other', icon: 'ellipsis-h' },
+  { id: '2', name: 'Bonus', icon: 'gift' },
+  { id: '3', name: 'Rebate', icon: 'percent' },
+  { id: '4', name: 'Trade', icon: 'exchange' },
+  { id: '5', name: 'Dividend', icon: 'line-chart' },
+  { id: '6', name: 'Rent', icon: 'home' },
+  { id: '7', name: 'Investment', icon: 'line-chart' },
+  { id: '8', name: 'Other', icon: 'ellipsis-h' },
+  { id: '9', name: 'Income', icon: 'money' },
 ];
 
 const ExpenditureScreen = () => {
@@ -34,7 +37,7 @@ const ExpenditureScreen = () => {
   };
 
   const handleSave = () => {
-    console.log(`Selected ${selectedItem.name} with amount: ${amount}`);
+    console.log(`Selected ${selectedItem.name} with amount: RM${amount}`);
     setModalVisible(false);
     setAmount('');
   };
@@ -83,14 +86,18 @@ const ExpenditureScreen = () => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
+            <Icon name={selectedItem?.icon} size={50} color="#000" style={styles.modalIcon} />
             <Text style={styles.modalTitle}>Enter {selectedItem?.name} Amount</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              placeholder="Enter amount"
-              value={amount}
-              onChangeText={setAmount}
-            />
+            <View style={styles.amountContainer}>
+              <Text style={styles.currencyText}>RM</Text>
+              <TextInput
+                style={styles.input}
+                keyboardType="numeric"
+                placeholder="Enter amount"
+                value={amount}
+                onChangeText={setAmount}
+              />
+            </View>
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={handleSave}>
                 <Text style={styles.buttonText}>Save</Text>
@@ -169,17 +176,30 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
   },
+  modalIcon: {
+    marginBottom: 15,  // Space between icon and title
+  },
   modalTitle: {
     fontSize: 18,
     marginBottom: 15,
   },
-  input: {
+  amountContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
     width: '100%',
+  },
+  currencyText: {
+    fontSize: 18,
+    color: '#4e342e',
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,
     borderRadius: 5,
-    marginBottom: 15,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -194,9 +214,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   saveButton: {
-    backgroundColor: '#ffb300', // Primary Color (Background)
+    backgroundColor: '#ffb300', // Accent Color (Background)
     borderColor: '#4e342e', // Primary Text Color
-
   },
   cancelButton: {
     backgroundColor: '#d7ccc8', // Secondary Color
