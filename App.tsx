@@ -53,11 +53,11 @@ const App = () => {
             ),
           }}
         />
-        <Drawer.Screen name="Expenditure" component={ExpenditureScreen} />
         <Drawer.Screen name="Search" component={SearchScreen} />
         <Drawer.Screen name="Categories" component={CategoriesScreen} />
         <Drawer.Screen name="Feedback" component={FeedbackScreen} />
         <Drawer.Screen name="Settings" component={SettingsScreen} />
+        <Drawer.Screen name="Expenditure" component={ExpenditureScreen} />
       </Drawer.Navigator>
     </NavigationContainer>
   );
