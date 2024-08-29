@@ -7,6 +7,7 @@ import CategoriesScreen from './assets/screens/CategoriesScreen/CategoriesScreen
 import SettingsScreen from './assets/screens/SettingsScreen';
 import FeedbackScreen from './assets/screens/FeedbackScreen';
 import SearchScreen from './assets/screens/SearchScreen';
+import ExpenditureScreen from './assets/screens/HomeScreen/ExpenditureScreen'; 
 import CustomDrawerComponent from './CustomDrawerComponent';
 
 const Drawer = createDrawerNavigator();
@@ -27,7 +28,7 @@ const App = () => {
           drawerInactiveTintColor: '#4e342e',
           drawerStyle: { backgroundColor: '#fefbe9' },
           drawerLabelStyle: { fontSize: 15, textAlign: 'center' },
-          headerTitleAlign: 'center', 
+          headerTitleAlign: 'center',
           headerStyle: {
             backgroundColor: '#fefbe9',
             borderBottomWidth: 3,
@@ -52,6 +53,7 @@ const App = () => {
             ),
           }}
         />
+        <Drawer.Screen name="Expenditure" component={ExpenditureScreen} />
         <Drawer.Screen name="Search" component={SearchScreen} />
         <Drawer.Screen name="Categories" component={CategoriesScreen} />
         <Drawer.Screen name="Feedback" component={FeedbackScreen} />
@@ -60,6 +62,5 @@ const App = () => {
     </NavigationContainer>
   );
 };
-
 
 export default App;
