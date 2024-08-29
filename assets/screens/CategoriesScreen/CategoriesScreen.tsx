@@ -101,29 +101,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    padding: 10,
   },
   navBar: {
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingVertical: 12,
-    backgroundColor: '#f8f8f8',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    marginBottom: 20,
   },
   navItem: {
     paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderWidth: 1,
-    borderColor: '#007bff',
+    paddingHorizontal: 20,
     borderRadius: 20,
-    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: '#4e342e',
+    marginHorizontal: 10,
   },
   activeNavItem: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#ffb300',
   },
   navText: {
     fontSize: 16,
-    color: '#007bff',
+    color: '#4e342e'
   },
   activeNavText: {
     color: '#fff',
