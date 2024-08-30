@@ -7,6 +7,7 @@ import CategoriesScreen from './assets/screens/CategoriesScreen/CategoriesScreen
 import SettingsScreen from './assets/screens/SettingsScreen';
 import FeedbackScreen from './assets/screens/FeedbackScreen';
 import SearchScreen from './assets/screens/SearchScreen';
+import ReportScreen from './assets/screens/ReportScreen';
 import ExpenditureScreen from './assets/screens/HomeScreen/ExpenditureScreen'; 
 import CustomDrawerComponent from './CustomDrawerComponent';
 
@@ -53,6 +54,7 @@ const App = () => {
             ),
           }}
         />
+        <Drawer.Screen name="Report" component={ReportScreen} />
         <Drawer.Screen name="Search" component={SearchScreen} />
         <Drawer.Screen name="Categories" component={CategoriesScreen} />
         <Drawer.Screen name="Feedback" component={FeedbackScreen} />

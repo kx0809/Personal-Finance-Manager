@@ -36,9 +36,6 @@ const App = () => {
                 <TouchableOpacity onPress={() => handleSocialMediaPress('https://www.instagram.com/ABC')}>
                     <Ionicons name="logo-instagram" style={styles.socialIcon} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleSocialMediaPress('https://www.reddit.com/user/ABC')}>
-                    <Ionicons name="logo-reddit" style={styles.socialIcon} />
-                </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleSocialMediaPress('https://www.youtube.com/ABC')}>
                     <Ionicons name="logo-youtube" style={styles.socialIcon} />
                 </TouchableOpacity>

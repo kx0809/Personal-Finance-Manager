@@ -6,6 +6,7 @@ import CustomAvatar from "./CustomAvatar";
 
 const drawerItems = [
   { label: "Home", icon: "home", route: 'Home' },
+  { label: "Report", icon: "book", route: 'Report' },
   { label: "Search", icon: "search", route: 'Search' },
   { label: "Categories", icon: "category", route: 'Categories' },
   { label: "Feedback", icon: "feedback", route: 'Feedback' },
