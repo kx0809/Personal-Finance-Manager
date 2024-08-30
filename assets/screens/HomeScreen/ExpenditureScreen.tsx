@@ -161,13 +161,17 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginRight: 10,
+    width: '15%',
+    marginLeft: 10,
+
+    
   },
   toggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
     borderRadius: 20,
-    
+    backgroundColor: 'white',
   },
   toggleButton: {
     paddingVertical: 6,
