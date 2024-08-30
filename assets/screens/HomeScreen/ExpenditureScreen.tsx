@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, TextInput } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, TextInput, Animated, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
 
 const expensesData = [
   { id: '1', name: 'Food', icon: 'cutlery' },
@@ -23,13 +24,49 @@ const incomeData = [
   { id: '9', name: 'Income', icon: 'money' },
 ];
 
+const { width } = Dimensions.get('window');
+
 const ExpenditureScreen = () => {
-  const [selectedCategory, setSelectedCategory] = useState('Expense');
+  const [activeTab, setActiveTab] = useState('Expense');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [amount, setAmount] = useState('');
+  const translateX = useRef(new Animated.Value(0)).current;
+  const navigation = useNavigation();
 
-  const data = selectedCategory === 'Expense' ? expensesData : incomeData;
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Icon name="arrow-left" size={25} color="#4e342e" />
+          </TouchableOpacity>
+          <View style={styles.toggleContainer}>
+            <TouchableOpacity
+              style={[styles.toggleButton, activeTab === 'Expense' && styles.activeButtonExpense]}
+              onPress={() => handleTabPress('Expense')}
+            >
+              <Text style={[styles.toggleText, activeTab === 'Expense' && styles.activeTextExpense]}>Expense</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.toggleButton, activeTab === 'Income' && styles.activeButtonIncome]}
+              onPress={() => handleTabPress('Income')}
+            >
+              <Text style={[styles.toggleText, activeTab === 'Income' && styles.activeTextIncome]}>Income</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ),
+    });
+  }, [navigation, activeTab]);
+
+  const handleTabPress = (tabName) => {
+    setActiveTab(tabName);
+    Animated.spring(translateX, {
+      toValue: tabName === 'Expense' ? 0 : -width,
+      useNativeDriver: true,
+    }).start();
+  };
 
   const handleIconPress = (item) => {
     setSelectedItem(item);
@@ -53,29 +90,28 @@ const ExpenditureScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.toggleContainer}>
-        <TouchableOpacity
-          style={[styles.toggleButton, selectedCategory === 'Expense' && styles.activeButton]}
-          onPress={() => setSelectedCategory('Expense')}
-        >
-          <Text style={[styles.toggleText, selectedCategory === 'Expense' && styles.activeText]}>Expense</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.toggleButton, selectedCategory === 'Income' && styles.activeButton]}
-          onPress={() => setSelectedCategory('Income')}
-        >
-          <Text style={[styles.toggleText, selectedCategory === 'Income' && styles.activeText]}>Income</Text>
-        </TouchableOpacity>
-      </View>
-
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        numColumns={3}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={styles.gridContainer}
-      />
+      <Animated.View style={[styles.contentContainer, { transform: [{ translateX }] }]}>
+        <View style={styles.tabContent}>
+          <FlatList
+            data={expensesData}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            numColumns={3}
+            columnWrapperStyle={styles.row}
+            contentContainerStyle={styles.gridContainer}
+          />
+        </View>
+        <View style={styles.tabContent}>
+          <FlatList
+            data={incomeData}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            numColumns={3}
+            columnWrapperStyle={styles.row}
+            contentContainerStyle={styles.gridContainer}
+          />
+        </View>
+      </Animated.View>
 
       {/* Modal for entering the amount */}
       <Modal
@@ -87,7 +123,7 @@ const ExpenditureScreen = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Icon name={selectedItem?.icon} size={50} color="#000" style={styles.modalIcon} />
-            <Text style={styles.modalTitle}>Enter {selectedItem?.name} Amount</Text>
+            <Text style={styles.modalTitle}>{selectedItem?.name}</Text>
             <View style={styles.amountContainer}>
               <Text style={styles.currencyText}>RM</Text>
               <TextInput
@@ -119,28 +155,56 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 10,
   },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backButton: {
+    marginRight: 10,
+  },
   toggleContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 20,
+    
   },
   toggleButton: {
-    paddingVertical: 10,
+    paddingVertical: 6,
     paddingHorizontal: 20,
     borderRadius: 20,
-    borderWidth: 1,
     borderColor: '#4e342e',
-    marginHorizontal: 10,
   },
-  activeButton: {
+  activeButtonExpense: {
     backgroundColor: '#ffb300',
+  },
+  activeButtonIncome: {
+    backgroundColor: '#d7ccc8',
   },
   toggleText: {
     fontSize: 16,
     color: '#4e342e',
   },
-  activeText: {
+  activeTextExpense: {
     color: '#fff',
+  },
+  activeTextIncome: {
+    color: '#4e342e',
+  },
+  contentContainer: {
+    flexDirection: 'row',
+    width: width * 2, // Double the width for two tabs
+  },
+  tabContent: {
+    width: width, // Each tab takes up the full screen width
+    padding: 10,
+  },
+  gridContainer: {
+    padding: 10,
+  },
+  row: {
+    justifyContent: 'space-around',
+    marginBottom: 10,
   },
   itemContainer: {
     alignItems: 'center',
@@ -156,13 +220,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
   },
-  gridContainer: {
-    padding: 10,
-  },
-  row: {
-    justifyContent: 'space-around',
-    marginBottom: 10,
-  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -177,7 +234,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalIcon: {
-    marginBottom: 15,  // Space between icon and title
+    marginBottom: 15, // Space between icon and title
   },
   modalTitle: {
     fontSize: 18,
@@ -210,22 +267,21 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingVertical: 10,
-    marginHorizontal: 5,
     borderRadius: 5,
+    marginHorizontal: 5,
   },
   saveButton: {
-    backgroundColor: '#ffb300', // Accent Color (Background)
-    borderColor: '#4e342e', // Primary Text Color
+    backgroundColor: '#ffb300',
   },
   cancelButton: {
-    backgroundColor: '#d7ccc8', // Secondary Color
+    backgroundColor: '#d7ccc8',
   },
   buttonText: {
     fontSize: 16,
-    color: '#4e342e', // Primary Text Color
+    color: '#fff',
   },
   cancelText: {
-    color: '#fefbe9', // Accent Color
+    color: '#4e342e',
   },
 });
 

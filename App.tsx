@@ -59,7 +59,16 @@ const App = () => {
         <Drawer.Screen name="Categories" component={CategoriesScreen} />
         <Drawer.Screen name="Feedback" component={FeedbackScreen} />
         <Drawer.Screen name="Settings" component={SettingsScreen} />
-        <Drawer.Screen name="Expenditure" component={ExpenditureScreen} />
+        <Drawer.Screen
+          name="Expenditure"
+          component={ExpenditureScreen}
+          options={{
+            swipeEnabled: false, // Disables drawer swipe gesture
+            drawerLabel: () => null, // Hides the label from the drawer menu
+            title: null, // Hides the title in the header
+            drawerLockMode: 'locked-closed', // Prevents opening the drawer
+          }}
+        />
       </Drawer.Navigator>
     </NavigationContainer>
   );
