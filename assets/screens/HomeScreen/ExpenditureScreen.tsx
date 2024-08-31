@@ -31,6 +31,7 @@ const ExpenditureScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [amount, setAmount] = useState('');
+  const [description, setDescription] = useState(''); // State for description
   const translateX = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
 
@@ -60,7 +61,7 @@ const ExpenditureScreen = () => {
     });
   }, [navigation, activeTab]);
 
-  const handleTabPress = (tabName) => {
+  const handleTabPress = (tabName: React.SetStateAction<string>) => {
     setActiveTab(tabName);
     Animated.spring(translateX, {
       toValue: tabName === 'Expense' ? 0 : -width,
@@ -68,15 +69,16 @@ const ExpenditureScreen = () => {
     }).start();
   };
 
-  const handleIconPress = (item) => {
+  const handleIconPress = (item: React.SetStateAction<null>) => {
     setSelectedItem(item);
     setModalVisible(true);
   };
 
   const handleSave = () => {
-    console.log(`Selected ${selectedItem.name} with amount: RM${amount}`);
+    console.log(`Selected ${selectedItem.name} with amount: RM${amount} and description: ${description}`);
     setModalVisible(false);
     setAmount('');
+    setDescription(''); // Clear description after save
   };
 
   const renderItem = ({ item }) => (
@@ -134,6 +136,14 @@ const ExpenditureScreen = () => {
                 onChangeText={setAmount}
               />
             </View>
+            <View style={styles.descriptionContainer}>
+            <TextInput
+              style={[styles.input]}
+              placeholder="Tap here to write"
+              value={description}
+              onChangeText={setDescription}
+            />
+            </View>
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={handleSave}>
                 <Text style={styles.buttonText}>Save</Text>
@@ -163,8 +173,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     width: '15%',
     marginLeft: 10,
-
-    
   },
   toggleContainer: {
     flexDirection: 'row',
@@ -252,15 +260,20 @@ const styles = StyleSheet.create({
   },
   currencyText: {
     fontSize: 18,
-    color: '#4e342e',
     marginRight: 10,
   },
   input: {
     flex: 1,
     borderWidth: 1,
     borderColor: '#ccc',
-    padding: 10,
     borderRadius: 5,
+    padding: 10,
+  },
+  descriptionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 30,
+    width: '100%',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -268,11 +281,10 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   button: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 10,
+    padding: 10,
     borderRadius: 5,
-    marginHorizontal: 5,
+    width: '45%',
+    alignItems: 'center',
   },
   saveButton: {
     backgroundColor: '#ffb300',
@@ -281,8 +293,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#d7ccc8',
   },
   buttonText: {
-    fontSize: 16,
     color: '#fff',
+    fontSize: 16,
   },
   cancelText: {
     color: '#4e342e',
