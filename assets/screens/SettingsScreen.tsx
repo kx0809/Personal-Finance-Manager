@@ -22,15 +22,24 @@ const App = () => {
     };
 
     const handleEnablePasscode = async () => {
-        if (enteredPasscode) {
-            await savePasscodeData(enteredPasscode);
-            setPasscodeIsEnabled(true);
-            setPasscodeModalVisible(false);
-            setEnteredPasscode('');  // Clear the input field after saving
-            Alert.alert('Success', 'Passcode enabled.');
-        } else {
-            Alert.alert('Error', 'Please enter a passcode.');
+        // Check if the passcode is empty
+        if (!enteredPasscode) {
+            Alert.alert('Error', 'Passcode cannot be empty.');
+            return;
         }
+    
+        // Check if the passcode is exactly 4 digits
+        if (enteredPasscode.length !== 4) {
+            Alert.alert('Error', 'Passcode must be exactly 4 digits.');
+            return;
+        }
+    
+        // Save the passcode if all validations pass
+        await savePasscodeData(enteredPasscode);
+        setPasscodeIsEnabled(true);
+        setPasscodeModalVisible(false);
+        setEnteredPasscode('');  // Clear the input field after saving
+        Alert.alert('Success', 'Passcode enabled.');
     };
 
     const handleDisablePasscode = async () => {
