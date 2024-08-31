@@ -9,7 +9,7 @@ import FeedbackScreen from './assets/screens/FeedbackScreen';
 import SearchScreen from './assets/screens/SearchScreen';
 import ReportScreen from './assets/screens/ReportScreen';
 import ExpenditureScreen from './assets/screens/HomeScreen/ExpenditureScreen'; 
-import CustomDrawerComponent from './CustomDrawerComponent';
+import CustomDrawerComponent from './assets/components/CustomDrawerComponent';
 
 const Drawer = createDrawerNavigator();
 
