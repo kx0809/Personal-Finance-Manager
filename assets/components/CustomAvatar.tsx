@@ -5,43 +5,28 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import avatarOptions from './AvatarOptions';
 
 const CustomAvatar = () => {
-  // State to control the visibility of the modal for avatar selection
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-
-  // State to store the user's name
+  const [avatarModalVisible, setAvatarModalVisible] = useState<boolean>(false);
   const [name, setName] = useState<string>('Your Name');
-
-  // State to determine if the user's name is being edited
   const [editingName, setEditingName] = useState<boolean>(false);
-
-  // State to store the currently selected avatar image
   const [selectedAvatar, setSelectedAvatar] = useState<ImageSourcePropType>(avatarOptions[0]);
-
-  // Function to handle press on the avatar, which opens the modal for selecting a new avatar
-  const handleAvatarPress = () => {
-    setModalVisible(true);
-  };
 
   // Function to handle selecting a new avatar from the list
   // It sets the selected avatar to state and saves the choice in AsyncStorage
   const handleAvatarSelect = async (avatar: ImageSourcePropType) => {
     setSelectedAvatar(avatar);
     try {
-      // Save the selected avatar to AsyncStorage
       await AsyncStorage.setItem('selectedAvatar', JSON.stringify(avatar));
     } catch (error) {
       console.error('Failed to save avatar:', error);
     }
-    setModalVisible(false);
+    setAvatarModalVisible(false);
   };
 
   // Function to load the stored avatar from AsyncStorage when the component mounts
   const loadAvatarFromStorage = async () => {
     try {
-      // Retrieve the avatar from AsyncStorage
       const storedAvatar = await AsyncStorage.getItem('selectedAvatar');
       if (storedAvatar) {
-        // Parse and set the retrieved avatar
         setSelectedAvatar(JSON.parse(storedAvatar));
       }
     } catch (error) {
@@ -49,11 +34,9 @@ const CustomAvatar = () => {
     }
   };
 
-  // Function to handle changes to the user's name and save it in AsyncStorage
   const handleNameChange = async (newName: string) => {
     setName(newName);
     try {
-      // Save the updated name to AsyncStorage
       await AsyncStorage.setItem('userName', newName);
     } catch (error) {
       console.error('Failed to save name:', error);
@@ -63,10 +46,8 @@ const CustomAvatar = () => {
   // Function to load the user's name from AsyncStorage when the component mounts
   const loadNameFromStorage = async () => {
     try {
-      // Retrieve the name from AsyncStorage
       const storedName = await AsyncStorage.getItem('userName');
       if (storedName) {
-        // Set the retrieved name
         setName(storedName);
       }
     } catch (error) {
@@ -74,7 +55,6 @@ const CustomAvatar = () => {
     }
   };
 
-  // useEffect hook to load avatar and name from AsyncStorage when the component is first rendered
   useEffect(() => {
     loadAvatarFromStorage();
     loadNameFromStorage();
@@ -83,10 +63,10 @@ const CustomAvatar = () => {
   return (
     <View style={styles.container}>
       {/* TouchableOpacity to open the modal for selecting a new avatar */}
-      <TouchableOpacity onPress={handleAvatarPress}>
+      <TouchableOpacity onPress={()=>setAvatarModalVisible(true)}>
         <Avatar
           rounded
-          source={selectedAvatar} // Display the currently selected avatar
+          source={selectedAvatar} 
           size={130}
           containerStyle={styles.avatar}
         />
@@ -97,9 +77,9 @@ const CustomAvatar = () => {
         <TextInput
           style={styles.nameInput}
           value={name}
-          onChangeText={handleNameChange} // Update the name as the user types
-          onSubmitEditing={() => setEditingName(false)} // Exit edit mode when submitting
-          autoFocus // Automatically focus on the input field when in edit mode
+          onChangeText={handleNameChange} 
+          onSubmitEditing={() => setEditingName(false)} 
+          autoFocus 
         />
       ) : (
         <TouchableOpacity onPress={() => setEditingName(true)}>
@@ -109,17 +89,17 @@ const CustomAvatar = () => {
 
       {/* Modal to display the list of avatar options */}
       <Modal
-        visible={modalVisible}
+        visible={avatarModalVisible}
         transparent={true}
         animationType="fade"
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={() => setAvatarModalVisible(false)}
       >
-        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+        <TouchableWithoutFeedback onPress={() => setAvatarModalVisible(false)}>
           <View style={styles.modalContainer}>
             <FlatList
-              data={avatarOptions} // List of avatar options
-              numColumns={3} // Display avatars in a 3-column grid
-              keyExtractor={(item) => item.toString()} // Use string representation of the item as the key
+              data={avatarOptions} 
+              numColumns={3} 
+              keyExtractor={(item) => item.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => handleAvatarSelect(item)} style={styles.avatarOption}>
                   <Image source={item} style={styles.avatarImage} />
@@ -133,7 +113,6 @@ const CustomAvatar = () => {
   );
 };
 
-// Styles for the component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
