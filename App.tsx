@@ -1,27 +1,131 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component, useState } from 'react';
 import { View, Modal, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import CustomDropdown from './assets/screens/HomeScreen/CustomDropdown';
-import HomeScreen from './assets/screens/HomeScreen/HomeScreen';
+import Ionicons from 'react-native-vector-icons/Ionicons';  // Import Ionicons
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+// Import screens and components
+import HomeScreen from './assets/screens/HomeScreen/screens/HomeScreen';
+import ViewScreen from './assets/screens/HomeScreen/screens/ViewScreen';
+import CreateScreen from './assets/screens/HomeScreen/screens/CreateScreen';
+import EditScreen from './assets/screens/HomeScreen/screens/EditScreen';
+import CustomDropdown from './assets/screens/HomeScreen/CustomDropdown'; // Import CustomDropdown
 import CategoriesScreen from './assets/screens/CategoriesScreen/CategoriesScreen';
-import SettingsScreen from './assets/screens/SettingsScreen';
 import FeedbackScreen from './assets/screens/FeedbackScreen';
 import SearchScreen from './assets/screens/SearchScreen';
 import ReportScreen from './assets/screens/ReportScreen';
-import ExpenditureScreen from './assets/screens/HomeScreen/ExpenditureScreen';
 import CustomDrawerComponent from './assets/components/CustomDrawerComponent';
+import SettingsScreen from './assets/screens/SettingsScreen';
 
+const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
+// Stack Navigator for screens related to HomeScreen
+function HomeStack({ navigation }) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  return (
+    <>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="HomeScreen"
+          component={HomeScreen}
+          options={{
+            headerShown: true,
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+                <Ionicons
+                  name="menu"
+                  size={30}
+                  color="#000"
+                  style={{ marginLeft: 15 }}
+                />
+              </TouchableOpacity>
+            ),
+            headerRight: () => (
+              <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <Ionicons
+                  name="calendar"
+                  size={30}
+                  color="#000"
+                  style={{ marginRight: 15 }}
+                />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="ViewScreen"
+          component={ViewScreen}
+          options={{
+            headerShown: true,
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Ionicons
+                  name="arrow-back"
+                  size={30}
+                  color="#000"
+                  style={{ marginLeft: 15 }}
+                />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="CreateScreen"
+          component={CreateScreen}
+          options={{
+            headerShown: true,
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Ionicons
+                  name="arrow-back"
+                  size={30}
+                  color="#000"
+                  style={{ marginLeft: 15 }}
+                />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="EditScreen"
+          component={EditScreen}
+          options={{
+            headerShown: true,
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Ionicons
+                  name="arrow-back"
+                  size={30}
+                  color="#000"
+                  style={{ marginLeft: 15 }}
+                />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+      </Stack.Navigator>
+
+      {/* Modal for CustomDropdown Calendar */}
+      <Modal visible={modalVisible} transparent={true} animationType="slide">
+        <CustomDropdown
+          selectedDate={selectedDate}
+          onDateSelect={(date) => {
+            setSelectedDate(date);
+            setModalVisible(false);
+          }}
+        />
+      </Modal>
+    </>
+  );
+}
+
+// Drawer Navigator with updated screens
 const MainApp = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-
-  const handleDateSelect = (day: any) => {
-    setSelectedDate(day.dateString);
-  };
-
   return (
     <NavigationContainer>
       <Drawer.Navigator
@@ -46,102 +150,88 @@ const MainApp = () => {
       >
         <Drawer.Screen
           name="Home"
-          component={HomeScreen}
-          options={{
-            headerTitle: () => (
-              <CustomDropdown
-                selectedDate={selectedDate}
-                onDateSelect={handleDateSelect}
-              />
-            ),
-          }}
+          component={HomeStack}
+          options={{ headerShown: false }}
         />
         <Drawer.Screen name="Report" component={ReportScreen} />
         <Drawer.Screen name="Search" component={SearchScreen} />
         <Drawer.Screen name="Categories" component={CategoriesScreen} />
         <Drawer.Screen name="Feedback" component={FeedbackScreen} />
         <Drawer.Screen name="Settings" component={SettingsScreen} />
-        <Drawer.Screen
-          name="Expenditure"
-          component={ExpenditureScreen}
-          options={{
-            swipeEnabled: false,
-            drawerLabel: () => null,
-            title: null,
-            drawerLockMode: 'locked-closed',
-          }}
-        />
       </Drawer.Navigator>
     </NavigationContainer>
   );
 };
 
-const App = () => {
-  const [passcodeIsEnabled, setPasscodeIsEnabled] = useState<boolean>(false);
-  const [passcodeModalVisible, setPasscodeModalVisible] = useState<boolean>(false);
-  const [enteredPasscode, setEnteredPasscode] = useState<string>('');
+export default class App extends Component {
+  state = {
+    passcodeIsEnabled: false,
+    passcodeModalVisible: false,
+    enteredPasscode: '',
+  };
 
-  useEffect(() => {
-    checkPasscodeStatus();
-  }, []);
+  async componentDidMount() {
+    await this.checkPasscodeStatus();
+  }
 
-  const checkPasscodeStatus = async () => {
+  checkPasscodeStatus = async () => {
     const savedPasscode = await AsyncStorage.getItem('appPasscode');
     if (savedPasscode) {
-      setPasscodeIsEnabled(true);
-      setPasscodeModalVisible(true); // Show modal if passcode is enabled
+      this.setState({ passcodeIsEnabled: true, passcodeModalVisible: true });
     } else {
-      setPasscodeIsEnabled(false);
-      setPasscodeModalVisible(false); // Hide modal if passcode is not enabled
+      this.setState({ passcodeIsEnabled: false, passcodeModalVisible: false });
     }
   };
 
-  const handlePasscodeSubmit = async () => {
+  handlePasscodeSubmit = async () => {
+    const { enteredPasscode } = this.state;
     const savedPasscode = await AsyncStorage.getItem('appPasscode');
     if (enteredPasscode === savedPasscode) {
-      setPasscodeModalVisible(false);
-      setEnteredPasscode(''); // Clear input after successful entry
+      this.setState({ passcodeModalVisible: false, enteredPasscode: '' });
     } else {
       Alert.alert('Error', 'Incorrect Passcode');
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <MainApp />
-
-      {passcodeIsEnabled && (
-        <Modal
-          animationType="fade"
-          transparent={false} // Use true for transparent background
-          visible={passcodeModalVisible}
-          onRequestClose={() => {}}
-        >
-          <View style={styles.modalBackground}>
-            <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>Enter Passcode</Text>
-              <TextInput
-                style={styles.modalInput}
-                placeholder="Enter Passcode"
-                keyboardType="numeric"
-                maxLength={4}
-                secureTextEntry={true}
-                value={enteredPasscode}
-                onChangeText={setEnteredPasscode}
-              />
-              <TouchableOpacity
-                style={styles.submitButton}
-                onPress={handlePasscodeSubmit}
-              >
-                <Text style={styles.submitButtonText}>Enter</Text>
-              </TouchableOpacity>
+  render() {
+    const { passcodeIsEnabled, passcodeModalVisible, enteredPasscode } = this.state;
+    
+    return (
+      <View style={styles.container}>
+        <MainApp />
+        {passcodeIsEnabled && (
+          <Modal
+            animationType="fade"
+            transparent={false}
+            visible={passcodeModalVisible}
+            onRequestClose={() => {}}
+          >
+            <View style={styles.modalBackground}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.modalTitle}>Enter Passcode</Text>
+                <TextInput
+                  style={styles.modalInput}
+                  placeholder="Enter Passcode"
+                  keyboardType="numeric"
+                  maxLength={4}
+                  secureTextEntry={true}
+                  value={enteredPasscode}
+                  onChangeText={(text) => this.setState({ enteredPasscode: text })}
+                />
+                <TouchableOpacity
+                  style={styles.submitButton}
+                  onPress={this.handlePasscodeSubmit}
+                >
+                  <Text style={styles.submitButtonText}>Enter</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </Modal>
-      )}
-    </View>
-  );
-};
+          </Modal>
+        )}
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -184,5 +274,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
-export default App;

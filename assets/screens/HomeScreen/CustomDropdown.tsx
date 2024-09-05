@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment'; // For date formatting
 
 const CustomDropdown = ({ selectedDate, onDateSelect }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(true); // Modal is initially visible
   const [currentDate, setCurrentDate] = useState(selectedDate || moment().format('YYYY-MM-DD'));
 
   useEffect(() => {
@@ -24,14 +23,6 @@ const CustomDropdown = ({ selectedDate, onDateSelect }) => {
 
   return (
     <View>
-      <TouchableOpacity
-        onPress={() => setModalVisible(true)}
-        style={[styles.button]}
-      >
-        <Text style={styles.buttonText}>{formattedDate}</Text>
-        <Ionicons name="chevron-down-outline" size={20} color="#4e342e" style={styles.icon} />
-      </TouchableOpacity>
-
       <Modal visible={modalVisible} transparent={true} animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.calendarContainer}>
@@ -68,20 +59,20 @@ const CustomDropdown = ({ selectedDate, onDateSelect }) => {
 
 const styles = StyleSheet.create({
   button: {
-    flexDirection: 'row', // Keep the row direction for icon and text
-    alignItems: 'center', // Vertically center the text and icon
-    justifyContent: 'center', // Horizontally center the text and icon
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 10,
     paddingRight: 10,
     borderRadius: 5,
     backgroundColor: '#ffb300',
-    alignSelf: 'center', // Center the button horizontally in its container
+    alignSelf: 'center',
   },
   buttonText: {
     fontSize: 18,
-    color: '#4e342e', // Text color  
+    color: '#4e342e',
     marginRight: 10,
   },
   icon: {
@@ -91,14 +82,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   calendarContainer: {
-    backgroundColor: '#fff', // Background color for the calendar container
+    backgroundColor: '#fff',
     borderRadius: 10,
     overflow: 'hidden',
     marginHorizontal: 20,
-    padding: 15, // Add padding around the calendar
+    padding: 15,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -109,19 +100,19 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   calendar: {
-    width: 320, // Fixed width for the calendar
-    height: 350, // Fixed height for the calendar
+    width: 320,
+    height: 350,
   },
   selectedDateText: {
     fontSize: 16,
     color: '#4e342e',
-    backgroundColor: '#ffb300', // Background color for the date
-    paddingVertical: 8, // Padding for the date text
-    paddingHorizontal: 12, // Horizontal padding
-    borderRadius: 5, // Border radius for rounded corners
+    backgroundColor: '#ffb300',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 5,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 6, // Space between the text and the calendar
+    marginBottom: 6,
   },
   closeButton: {
     marginTop: 20,
@@ -133,7 +124,6 @@ const styles = StyleSheet.create({
   closeButtonText: {
     fontSize: 16,
     color: '#4e342e',
-    fontWeight: 'bold',
   },
 });
 
