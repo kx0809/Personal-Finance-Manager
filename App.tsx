@@ -2,16 +2,14 @@ import React, { Component, useState } from 'react';
 import { View, Modal, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Ionicons from 'react-native-vector-icons/Ionicons';  // Import Ionicons
+import Ionicons from 'react-native-vector-icons/Ionicons';  
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
-// Import screens and components
 import HomeScreen from './assets/screens/HomeScreen/screens/HomeScreen';
 import ViewScreen from './assets/screens/HomeScreen/screens/ViewScreen';
 import CreateScreen from './assets/screens/HomeScreen/screens/CreateScreen';
 import EditScreen from './assets/screens/HomeScreen/screens/EditScreen';
-import CustomDropdown from './assets/screens/HomeScreen/CustomDropdown'; // Import CustomDropdown
+import CustomDropdown from './assets/screens/HomeScreen/CustomDropdown'; 
 import CategoriesScreen from './assets/screens/CategoriesScreen/CategoriesScreen';
 import FeedbackScreen from './assets/screens/FeedbackScreen';
 import SearchScreen from './assets/screens/SearchScreen';
@@ -31,15 +29,23 @@ function HomeStack({ navigation }) {
     <>
       <Stack.Navigator>
         <Stack.Screen
-          name="HomeScreen"
+          name="Home"
           component={HomeScreen}
           options={{
             headerShown: true,
+            headerStyle: {
+              backgroundColor: '#ffb300',
+            },
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 25,
+            },
+            headerTitleAlign: 'center',
             headerLeft: () => (
               <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
                 <Ionicons
                   name="menu"
-                  size={30}
+                  size={25}
                   color="#000"
                   style={{ marginLeft: 15 }}
                 />
@@ -62,6 +68,14 @@ function HomeStack({ navigation }) {
           component={ViewScreen}
           options={{
             headerShown: true,
+            headerStyle: {
+              backgroundColor: '#ffb300',
+            },
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 25,
+            },
+            headerTitleAlign: 'center',
             headerLeft: () => (
               <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Ionicons
@@ -79,6 +93,14 @@ function HomeStack({ navigation }) {
           component={CreateScreen}
           options={{
             headerShown: true,
+            headerStyle: {
+              backgroundColor: '#ffb300',
+            },
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 25,
+            },
+            headerTitleAlign: 'center',
             headerLeft: () => (
               <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Ionicons
@@ -96,6 +118,14 @@ function HomeStack({ navigation }) {
           component={EditScreen}
           options={{
             headerShown: true,
+            headerStyle: {
+              backgroundColor: '#ffb300',
+            },
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 25,
+            },
+            headerTitleAlign: 'center',
             headerLeft: () => (
               <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Ionicons
@@ -131,17 +161,15 @@ const MainApp = () => {
       <Drawer.Navigator
         drawerContent={(props) => <CustomDrawerComponent {...props} />}
         screenOptions={{
-          drawerActiveTintColor: '#ffb300',
-          drawerInactiveTintColor: '#4e342e',
-          drawerStyle: { backgroundColor: '#fefbe9' },
+          drawerActiveTintColor: '#fff', // Color for the active item
+          drawerInactiveTintColor: '#4e342e', // Color for inactive items
+          drawerStyle: { backgroundColor: '#ffb300' }, // Set drawer background color
           drawerLabelStyle: { fontSize: 15, textAlign: 'center' },
           headerTitleAlign: 'center',
           headerStyle: {
-            backgroundColor: '#fefbe9',
-            borderBottomWidth: 3,
-            borderBottomColor: '#4e342e',
+            backgroundColor: '#ffb300', // Header background color
           },
-          headerTintColor: '#4e342e',
+          headerTintColor: '#4e342e', // Header text color
           headerTitleStyle: {
             fontWeight: 'bold',
             fontSize: 25,
@@ -149,7 +177,7 @@ const MainApp = () => {
         }}
       >
         <Drawer.Screen
-          name="Home"
+          name="HomeScreen"
           component={HomeStack}
           options={{ headerShown: false }}
         />

@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     textAlignVertical: 'center',
   },
-
   TextInput: {
     fontSize: 24,
     color: '#000099',

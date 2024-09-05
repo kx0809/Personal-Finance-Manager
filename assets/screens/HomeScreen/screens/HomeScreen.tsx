@@ -31,7 +31,7 @@ const HomeScreen = ({ route, navigation }: any) => {
         showsVerticalScrollIndicator={true}
         renderItem={({ item }: any) => (
           <TouchableHighlight
-            underlayColor="pink"
+            underlayColor="#d7ccc8"
             onPress={() => {
               navigation.navigate('ViewScreen', {
                 id: item.id,
@@ -51,7 +51,7 @@ const HomeScreen = ({ route, navigation }: any) => {
       <FloatingAction
         actions={actions}
         overrideWithAction={true}
-        color={'#a80000'}
+        color={'#ffb300'}
         onPressItem={() => {
           navigation.navigate('CreateScreen', {
             refresh: _query,

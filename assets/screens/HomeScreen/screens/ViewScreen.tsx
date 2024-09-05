@@ -8,14 +8,14 @@ import { getDBConnection, getExpenditureById, deleteExpenditure } from '../db-se
 const actions = [
   {
     text: 'Edit',
-    color: '#c80000',
+    color: '#ffb300',
     icon: require('../icons/edit_icon.png'),
     name: 'edit',
     position: 2,
   },
   {
     text: 'Delete',
-    color: '#c80000',
+    color: '#ffb300',
     icon: require('../icons/delete_icon.jpg'),
     name: 'delete',
     position: 1,
@@ -82,7 +82,7 @@ const ViewScreen = ({route, navigation} : any ) => {
         </ScrollView>
         <FloatingAction
           actions={actions}
-          color={'#a80000'} //   floatingIcon={( //     <Image //       source={require('./images/baseline_edit_white_18dp.png')} //     /> //   )}
+          color={'#ffb300'} 
           onPressItem={type => {
             switch (type) {
               case 'edit':

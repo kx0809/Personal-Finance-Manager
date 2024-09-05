@@ -50,7 +50,7 @@ export const AppButton = ( props: any ) => {
               backgroundColorTheme = '#c9302c';
               break;
           case 'primary':
-              backgroundColorTheme = '#60717d';
+              backgroundColorTheme = '#ffb300';
               break;
           default:
               backgroundColorTheme = '#286090';
