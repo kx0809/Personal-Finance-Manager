@@ -4,6 +4,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { FloatingAction } from 'react-native-floating-action';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { getDBConnection, getExpenditures } from '../db-service';
+import { formatted } from '../utility';
 
 // Define your expense and income data
 const expensesData = [
@@ -40,7 +41,15 @@ const HomeScreen = ({ route, navigation }: any) => {
   const [expenditures, setExpenditures] = useState<any>([]);
 
   const _query = async () => {
-    setExpenditures(await getExpenditures(await getDBConnection()));
+    const dbConnection = await getDBConnection();
+    const fetchedExpenditures = await getExpenditures(dbConnection);
+
+    // Sort expenditures by date in descending order
+    const sortedExpenditures = fetchedExpenditures.sort((a: any, b: any) => {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+
+    setExpenditures(sortedExpenditures);
   };
 
   useEffect(() => {
@@ -72,7 +81,6 @@ const HomeScreen = ({ route, navigation }: any) => {
                 refresh: _query,
               });
             }}>
-            
             <View style={[styles.details, { backgroundColor: getBackgroundColor(item.category) }]}>
               <View style={styles.item}>
                 <View style={styles.type}>
@@ -80,6 +88,7 @@ const HomeScreen = ({ route, navigation }: any) => {
                   <Text style={styles.itemTitle}>{item.type}</Text>
                 </View>
                 <Text style={styles.itemDescription}>{item.description}</Text>
+                <Text style={styles.itemSubtitle}>{formatted(new Date(item.date))}</Text>
               </View>
               <Text style={styles.itemAmount}>RM{item.amount}</Text>
             </View>
@@ -134,6 +143,11 @@ const styles = StyleSheet.create({
   },
   itemDescription: {
     fontSize: 17,
+    marginLeft: 10,
+  },
+  itemSubtitle: {
+    fontSize: 15,
+    color: '#555',
     marginLeft: 10,
   },
   itemAmount: {
