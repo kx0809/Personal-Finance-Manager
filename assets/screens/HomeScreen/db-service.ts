@@ -1,6 +1,6 @@
 import { SQLiteDatabase, enablePromise, openDatabase } from 'react-native-sqlite-storage';
 
-const databaseName = 'myexpenseincome.sqlite';
+const databaseName = 'myincomeexpense.sqlite';
 
 // Enable promise for SQLite
 enablePromise(true);
@@ -16,7 +16,7 @@ export const getDBConnection = async () => {
 export const getExpenditures = async (db: SQLiteDatabase): Promise<any> => {
     try {
         const expenditureData: any = [];
-        const query = `SELECT * FROM ExpenseIncome ORDER BY type`;
+        const query = `SELECT * FROM IncomeExpense ORDER BY type`;
         const results = await db.executeSql(query);
         results.forEach(result => {
             (result.rows.raw()).forEach((item: any) => {
@@ -32,7 +32,7 @@ export const getExpenditures = async (db: SQLiteDatabase): Promise<any> => {
 
 export const getExpenditureById = async (db: SQLiteDatabase, expenditureId: string): Promise<any> => {
     try {
-        const query = `SELECT * FROM ExpenseIncome WHERE id=?`;
+        const query = `SELECT * FROM IncomeExpense WHERE id=?`;
         const results = await db.executeSql(query, [expenditureId]);
         return results[0].rows.item(0)
     } catch (error) {
@@ -46,11 +46,12 @@ export const createExpenditure = async (
     type: string,
     amount: string,
     description: string,
-    category: string // Add this parameter
+    category: string, // Add this parameter
+    date: number
 ) => {
     try {
-        const query = 'INSERT INTO ExpenseIncome(type, amount, description, category) VALUES(?, ?, ?, ?)';
-        const parameters = [type, amount, description, category];
+        const query = 'INSERT INTO IncomeExpense(type, amount, description, category, date) VALUES(?, ?, ?, ?, ?)';
+        const parameters = [type, amount, description, category, date];
         await db.executeSql(query, parameters);
     } catch (error) {
         console.error(error);
@@ -59,16 +60,10 @@ export const createExpenditure = async (
 }
 
 export const updateExpenditure = async (
-    db: SQLiteDatabase,
-    type: string,
-    amount: string,
-    description: string,
-    category: string, // Add this parameter
-    expenditureId: string
-) => {
+db: SQLiteDatabase, type: string, amount: string, description: string, category: string, date: number, expenditureId: string) => {
     try {
-        const query = 'UPDATE ExpenseIncome SET type=?, amount=?, description=?, category=? WHERE id=?';
-        const parameters = [type, amount, description, category, expenditureId];
+        const query = 'UPDATE IncomeExpense SET type=?, amount=?, description=?, category=?, date=? WHERE id=?';
+        const parameters = [type, amount, description, category, date, expenditureId, ];
         await db.executeSql(query, parameters);
     } catch (error) {
         console.error(error);
@@ -81,7 +76,7 @@ export const deleteExpenditure = async (
     expenditureId: string
 ) => {
     try {
-        const query = 'DELETE FROM ExpenseIncome WHERE id = ?';
+        const query = 'DELETE FROM IncomeExpense WHERE id = ?';
         await db.executeSql(query, [expenditureId]);
     } catch (error) {
         console.error(error);

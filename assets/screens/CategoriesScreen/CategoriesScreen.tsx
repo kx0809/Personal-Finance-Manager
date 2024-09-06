@@ -29,7 +29,7 @@ const CategoriesScreen = () => {
   const [activeTab, setActiveTab] = useState('Expense');
   const translateX = useRef(new Animated.Value(0)).current;
 
-  const handleTabPress = (tabName) => {
+  const handleTabPress = (tabName: React.SetStateAction<string>) => {
     setActiveTab(tabName);
     Animated.spring(translateX, {
       toValue: tabName === 'Expense' ? 0 : -width, // Move to the correct tab

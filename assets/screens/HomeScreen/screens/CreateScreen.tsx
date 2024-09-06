@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, ScrollView, View, TouchableWithoutFeedback, Modal, FlatList, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, View, TouchableWithoutFeedback, Modal, FlatList, Text, TouchableOpacity, Platform } from 'react-native';
 import { InputWithLabel, AppButton } from '../UI';
 import { LogBox } from 'react-native';
 import { getDBConnection, createExpenditure } from '../db-service';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { formatted } from '../utility';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -36,13 +38,15 @@ const CreateScreen = ({ route, navigation }) => {
   const [description, setDescription] = useState('');
   const [isPickerOpen, setPickerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Expense'); // Default category
+  const[date, setDate] = useState(new Date(Date.now()));
+  const[openPicker, setOpenPicker] = useState(false);
 
   useEffect(() => {
       navigation.setOptions({ headerTitle: 'Add New' });
   }, []);
 
   const _insert = async () => {
-      await createExpenditure(await getDBConnection(), type, amount, description, selectedCategory);
+      await createExpenditure(await getDBConnection(), type, amount, description, selectedCategory, date.getTime());
       route.params.refresh();
       navigation.goBack();
   };
@@ -55,6 +59,15 @@ const CreateScreen = ({ route, navigation }) => {
       setType(selectedType);
       setPickerOpen(false);
   };
+
+  const openDatePicker = () => {
+    setOpenPicker(true);
+}
+
+const onDateSelected = (event: DateTimePickerEvent, value: any ) => {
+    setDate(value);
+    setOpenPicker(false);
+}
 
   return (
       <ScrollView style={styles.container}>
@@ -95,6 +108,28 @@ const CreateScreen = ({ route, navigation }) => {
               onChangeText={(description: React.SetStateAction<string>) => setDescription(description)}
               orientation={'vertical'}
           />
+
+          <TouchableWithoutFeedback onPress={openDatePicker}>
+          <View>
+            <InputWithLabel
+              textInputStyle={styles.TextInput}
+              textLabelStyle={styles.TextLabel}
+              label="Date:"
+              value={formatted(new Date(date))}
+              editable={false}>
+            </InputWithLabel>
+          </View>
+          </TouchableWithoutFeedback>
+
+        {openPicker &&
+          <DateTimePicker
+            value={new Date(date)}
+            mode={'date'}
+            display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
+            is24Hour={false}
+            onChange={onDateSelected}
+            style={styles.datePicker}
+        />}
 
           {/* Save Button */}
           <AppButton
@@ -221,6 +256,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#4e342e',
+  },
+  datePicker: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    width: 320,
+    height: 260,
+    display: 'flex',
+  },
+  pickerItemStyle: {
+    fontSize: 20,
+    color: '#000099',
   },
 });
 

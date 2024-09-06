@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { FloatingAction } from 'react-native-floating-action';
 import { getDBConnection, getExpenditureById, deleteExpenditure } from '../db-service';
+import { formatted } from '../utility'; // Import your utility function
 
 const actions = [
   {
@@ -53,6 +54,8 @@ const ViewScreen = ({ route, navigation }) => {
     return <Text>Loading...</Text>;
   }
 
+  const formattedDate = formatted(new Date(expenditure.date));
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -71,6 +74,10 @@ const ViewScreen = ({ route, navigation }) => {
         <View style={styles.detailRow}>
           <Text style={styles.label}>Category:</Text>
           <Text style={styles.value}>{expenditure.category}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Date:</Text>
+          <Text style={styles.value}>{formattedDate}</Text>
         </View>
       </ScrollView>
       <FloatingAction
@@ -129,6 +136,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  pickerItemStyle: {
+    fontSize: 20,
+    color: '#000099',
   },
 });
 

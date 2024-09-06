@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, TouchableWithoutFeedback, Modal, FlatList, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, ScrollView, TouchableWithoutFeedback, Modal, FlatList, Text, TouchableOpacity, Platform } from 'react-native';
 import { InputWithLabel, AppButton } from '../UI';
 import { getDBConnection, updateExpenditure, getExpenditureById } from '../db-service';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { formatted } from '../utility';
 
 const expensesData = [
   { id: '1', name: 'Food', icon: 'cutlery' },
@@ -32,6 +34,8 @@ const EditScreen = ({ route, navigation }) => {
   const [description, setDescription] = useState('');
   const [isPickerOpen, setPickerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Expense');
+  const[date, setDate] = useState(new Date(Date.now()));
+  const[openPicker, setOpenPicker] = useState(false);
 
   const _query = async () => {
       const result = await getExpenditureById(await getDBConnection(), expenditureId);
@@ -39,6 +43,7 @@ const EditScreen = ({ route, navigation }) => {
       setAmount(result.amount);
       setDescription(result.description);
       setSelectedCategory(result.category); // Set category from result
+      setDate(new Date(result.date));
   }
 
   useEffect(() => {
@@ -46,7 +51,7 @@ const EditScreen = ({ route, navigation }) => {
   }, []);
 
   const _update = async () => {
-      await updateExpenditure(await getDBConnection(), type, amount, description, selectedCategory, expenditureId);
+      await updateExpenditure(await getDBConnection(), type, amount, description, selectedCategory,date.getTime(), expenditureId);
       route.params.refresh(expenditureId);
       route.params.homeRefresh();
       navigation.goBack();
@@ -60,6 +65,15 @@ const EditScreen = ({ route, navigation }) => {
       setType(selectedType);
       setPickerOpen(false);
   };
+
+  const openDatePicker = () => {
+    setOpenPicker(true);
+  }
+
+  const onDateSelected = (event: DateTimePickerEvent, value: any ) => {
+      setDate(value);
+      setOpenPicker(false);
+  }
 
   return (
       <View style={styles.container}>
@@ -97,6 +111,26 @@ const EditScreen = ({ route, navigation }) => {
                   onChangeText={(description: React.SetStateAction<string>) => setDescription(description)}
                   orientation={'vertical'}
               />
+              <TouchableWithoutFeedback onPress={openDatePicker}>
+                <View>
+                  <InputWithLabel
+                    textInputStyle={styles.TextInput}
+                    textLabelStyle={styles.TextLabel}
+                    label="Date:"
+                    value={formatted(new Date(date))}
+                    editable={false}></InputWithLabel>
+                </View>
+              </TouchableWithoutFeedback>
+
+              {openPicker &&
+                <DateTimePicker
+                  value={new Date(date)}
+                  mode={'date'}
+                  display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
+                  is24Hour={false}
+                  onChange={onDateSelected}
+                  style={styles.datePicker}
+              />}
               <AppButton
                   style={styles.button}
                   title={'Save'}
@@ -223,6 +257,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#4e342e',
   },
+  pickerItemStyle: {
+    fontSize: 20,
+    color: '#000099',
+  },
+  datePicker: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    width: 320,
+    height: 260,
+    display: 'flex',
+  }
 });
 
 export default EditScreen;
