@@ -72,11 +72,16 @@ const HomeScreen = ({ route, navigation }: any) => {
                 refresh: _query,
               });
             }}>
-            <View style={[styles.item, { backgroundColor: getBackgroundColor(item.category) }]}>
-              <Icon name={getIcon(item.type, item.category)} size={24} color="#000" />
-              <Text style={styles.itemTitle}>{item.type}</Text>
-              <Text style={styles.itemSubtitle}>{item.amount}</Text>
-              <Text style={styles.itemSubtitle}>{item.description}</Text>
+            
+            <View style={[styles.details, { backgroundColor: getBackgroundColor(item.category) }]}>
+              <View style={styles.item}>
+                <View style={styles.type}>
+                  <Icon name={getIcon(item.type, item.category)} size={20} color="#000" />
+                  <Text style={styles.itemTitle}>{item.type}</Text>
+                </View>
+                <Text style={styles.itemDescription}>{item.description}</Text>
+              </View>
+              <Text style={styles.itemAmount}>RM{item.amount}</Text>
             </View>
           </TouchableHighlight>
         )}
@@ -103,24 +108,39 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   item: {
+    flexDirection: 'column',
+    paddingVertical: 10,
+    flex: 1, 
+  },
+  type: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 25,
-    paddingRight: 25,
-    borderBottomWidth: 1,
+    paddingLeft: 12,
+  },
+  details: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Add this line to space out the amount and the item details
+    paddingHorizontal: 20, 
+    paddingVertical: 3,
+    borderBottomWidth: 0.5,
     borderColor: '#ccc',
   },
   itemTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '500',
     color: '#000',
     marginLeft: 10,
   },
-  itemSubtitle: {
-    fontSize: 18,
+  itemDescription: {
+    fontSize: 17,
     marginLeft: 10,
+  },
+  itemAmount: {
+    fontSize: 18,
+    fontWeight: 'bold', // Optional: make the amount bold
+    textAlign: 'right',
+    marginLeft: 'auto', // Add this to push the amount to the right
   },
 });
 
