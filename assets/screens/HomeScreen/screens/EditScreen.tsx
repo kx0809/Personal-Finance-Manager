@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {StyleSheet, View, ScrollView, TouchableWithoutFeedback, Modal, FlatList, Text} from 'react-native';
-import {InputWithLabel, AppButton} from '../UI';
+import { StyleSheet, View, ScrollView, TouchableWithoutFeedback, Modal, FlatList, Text, TouchableOpacity } from 'react-native';
+import { InputWithLabel, AppButton } from '../UI';
 import { getDBConnection, updateExpenditure, getExpenditureById } from '../db-service';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -13,44 +13,56 @@ const expensesData = [
   { id: '6', name: 'Entertainment', icon: 'music' },
 ];
 
-const EditScreen = ({route, navigation} : any )  => {
+const incomeData = [
+  { id: '1', name: 'Salary', icon: 'money' },
+  { id: '2', name: 'Bonus', icon: 'gift' },
+  { id: '3', name: 'Rebate', icon: 'percent' },
+  { id: '4', name: 'Trade', icon: 'exchange' },
+  { id: '5', name: 'Dividend', icon: 'line-chart' },
+  { id: '6', name: 'Rent', icon: 'home' },
+  { id: '7', name: 'Investment', icon: 'home' },
+  { id: '8', name: 'Other', icon: 'home' },
+  { id: '9', name: 'Income', icon: 'home' },
+];
 
-    const[expenditureId, setExpenditureId] = useState(route.params.id);
-    const[type, setType] = useState('');
-    const[amount, setAmount] = useState('');
-    const[description, setDescription] = useState('');
-    const [isPickerOpen, setPickerOpen] = useState(false); // Manage type picker modal
+const EditScreen = ({ route, navigation }) => {
+  const [expenditureId, setExpenditureId] = useState(route.params.id);
+  const [type, setType] = useState('');
+  const [amount, setAmount] = useState('');
+  const [description, setDescription] = useState('');
+  const [isPickerOpen, setPickerOpen] = useState(false); // Manage type picker modal
+  const [selectedCategory, setSelectedCategory] = useState('Expense');
 
-    const _query = async () => {
-        const result = await getExpenditureById(await getDBConnection(), expenditureId);
-        setType(result.type);
-        setAmount(result.amount);
-        setDescription(result.description);
-    }
+  const _query = async () => {
+    const result = await getExpenditureById(await getDBConnection(), expenditureId);
+    setType(result.type);
+    setAmount(result.amount);
+    setDescription(result.description);
+  }
 
-    useEffect(()=>{
-      _query();
-    },[]);
+  useEffect(() => {
+    _query();
+  }, []);
 
-    const _update = async () => {
-        await updateExpenditure(await getDBConnection(), type, amount, description, expenditureId);
-        route.params.refresh(expenditureId);
-        route.params.homeRefresh();
-        navigation.goBack();
-    }
+  const _update = async () => {
+    await updateExpenditure(await getDBConnection(), type, amount, description, expenditureId);
+    route.params.refresh(expenditureId);
+    route.params.homeRefresh();
+    navigation.goBack();
+  }
 
-    const openTypePicker = () => {
-        setPickerOpen(true);
-    };
+  const openTypePicker = () => {
+    setPickerOpen(true);
+  };
 
-    const selectType = (selectedType: string) => {
-        setType(selectedType);
-        setPickerOpen(false);
-    };
+  const selectType = (selectedType) => {
+    setType(selectedType);
+    setPickerOpen(false);
+  };
 
-    return (
-      <View style={styles.container}>
-        <ScrollView>
+  return (
+    <View style={styles.container}>
+      <ScrollView>
 
         {/* Type Picker */}
         <TouchableWithoutFeedback onPress={openTypePicker}>
@@ -72,9 +84,7 @@ const EditScreen = ({route, navigation} : any )  => {
           placeholder={'Enter amount here'}
           label={'Amount'}
           value={amount}
-          onChangeText={(amount:any) => {
-            setAmount(amount);
-          }}
+          onChangeText={(amount) => setAmount(amount)}
           orientation={'vertical'}
         />
         <InputWithLabel
@@ -83,17 +93,15 @@ const EditScreen = ({route, navigation} : any )  => {
           placeholder={'Enter description here'}
           label={'Description'}
           value={description}
-          onChangeText={(description:any) => {
-            setDescription(description);
-          }}
+          onChangeText={(description) => setDescription(description)}
           orientation={'vertical'}
         />
-          <AppButton
-            style={styles.button}
-            title={'Save'}
-            theme={'primary'}
-            onPress={_update}
-          />
+        <AppButton
+          style={styles.button}
+          title={'Save'}
+          theme={'primary'}
+          onPress={_update}
+        />
 
         {/* Type Picker Modal */}
         <Modal
@@ -104,8 +112,23 @@ const EditScreen = ({route, navigation} : any )  => {
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
+              {/* Category Buttons */}
+              <View style={styles.categoryButtons}>
+                <TouchableOpacity
+                  style={[styles.categoryButton, selectedCategory === 'Expense' && styles.selectedCategoryButton]}
+                  onPress={() => setSelectedCategory('Expense')}
+                >
+                  <Text style={styles.categoryButtonText}>Expense</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.categoryButton, selectedCategory === 'Income' && styles.selectedCategoryButton]}
+                  onPress={() => setSelectedCategory('Income')}
+                >
+                  <Text style={styles.categoryButtonText}>Income</Text>
+                </TouchableOpacity>
+              </View>
               <FlatList
-                data={expensesData}
+                data={selectedCategory === 'Expense' ? expensesData : incomeData}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                   <TouchableWithoutFeedback onPress={() => selectType(item.name)}>
@@ -119,10 +142,10 @@ const EditScreen = ({route, navigation} : any )  => {
             </View>
           </View>
         </Modal>
-        
-        </ScrollView>
-      </View>
-    );
+
+      </ScrollView>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -155,6 +178,7 @@ const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: '#fff',
     width: 300,
+    height: 400, // Fixed height for the modal content
     borderRadius: 10,
     padding: 20,
   },
@@ -168,6 +192,26 @@ const styles = StyleSheet.create({
   typeText: {
     marginLeft: 15,
     fontSize: 18,
+    color: '#4e342e',
+  },
+  categoryButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  categoryButton: {
+    flex: 1,
+    padding: 15,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  selectedCategoryButton: {
+    backgroundColor: '#ffa500',
+  },
+  categoryButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
     color: '#4e342e',
   },
 });

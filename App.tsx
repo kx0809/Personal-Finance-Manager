@@ -76,6 +76,7 @@ function HomeStack({ navigation }) {
               fontSize: 25,
             },
             headerTitleAlign: 'center',
+            headerTitle: "Details",
             headerLeft: () => (
               <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Ionicons
