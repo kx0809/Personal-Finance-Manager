@@ -126,6 +126,7 @@ function HomeStack({ navigation }) {
               fontWeight: 'bold',
               fontSize: 25,
             },
+            headerTitle: 'Edit',
             headerTitleAlign: 'center',
             headerLeft: () => (
               <TouchableOpacity onPress={() => navigation.goBack()}>

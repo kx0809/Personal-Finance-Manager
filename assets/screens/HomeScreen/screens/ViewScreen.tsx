@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {StyleSheet, Alert, View} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
-import { InputWithLabel } from '../UI';
-import {FloatingAction} from 'react-native-floating-action';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { FloatingAction } from 'react-native-floating-action';
 import { getDBConnection, getExpenditureById, deleteExpenditure } from '../db-service';
 
 const actions = [
@@ -22,17 +20,20 @@ const actions = [
   },
 ];
 
-const ViewScreen = ({route, navigation} : any ) => {
+const ViewScreen = ({ route, navigation }) => {
+  const [expenditure, setExpenditure] = useState(null);
 
-    const [expenditureId, setExpenditureId] = useState(route.params.id);
-    const [expenditure, setExpenditure] = useState<any>(null);
+  useEffect(() => {
+    const fetchExpenditure = async () => {
+      const result = await getExpenditureById(await getDBConnection(), route.params.id);
+      setExpenditure(result);
+    };
 
-    const _queryByID = async (id: any) => {
-      setExpenditure(await getExpenditureById(await getDBConnection(), id));
-    }
+    fetchExpenditure();
+  }, []);
 
-    const _delete = () => {
-    Alert.alert('Confirm to delete ?', expenditure.name, [
+  const _delete = () => {
+    Alert.alert('Confirm to delete?', expenditure?.name, [
       {
         text: 'No',
         onPress: () => {},
@@ -40,68 +41,60 @@ const ViewScreen = ({route, navigation} : any ) => {
       {
         text: 'Yes',
         onPress: async () => {
-            await deleteExpenditure(await getDBConnection(), expenditureId)
-            route.params.refresh();
-            navigation.goBack();
+          await deleteExpenditure(await getDBConnection(), route.params.id);
+          route.params.refresh();
+          navigation.goBack();
         },
       },
     ]);
+  };
+
+  if (!expenditure) {
+    return <Text>Loading...</Text>;
   }
 
-    useEffect(()=>{
-      _queryByID(expenditureId);
-    },[]);
-
-    return (
-      <View style={styles.container}>
-        <ScrollView>
-          <InputWithLabel
-            textLabelStyle={styles.TextLabel}
-            textInputStyle={styles.TextInput}
-            label={'Type'}
-            value={expenditure ? expenditure.type : ''}
-            orientation={'vertical'}
-            editable={false}
-          />
-          <InputWithLabel
-            textLabelStyle={styles.TextLabel}
-            textInputStyle={styles.TextInput}
-            label={'Amount'}
-            value={expenditure ? expenditure.amount : ''}
-            orientation={'vertical'}
-            editable={false}
-          />
-          <InputWithLabel
-            textLabelStyle={styles.TextLabel}
-            textInputStyle={styles.TextInput}
-            label={'Description'}
-            value={expenditure ? expenditure.description : ''}
-            orientation={'vertical'}
-            editable={false}
-          />
-        </ScrollView>
-        <FloatingAction
-          actions={actions}
-          color={'#ffb300'} 
-          onPressItem={type => {
-            switch (type) {
-              case 'edit':
-                navigation.navigate('EditScreen', {
-                  id: expenditure ? expenditure.id : 0,
-                  headerTitle: expenditure ? expenditure.type : '',
-                  refresh: _queryByID,
-                  homeRefresh: route.params.refresh,
-                });
-                break;
-              case 'delete':
-                _delete();
-                break;
-            }
-          }}
-        />
-      </View>
-    );
-}
+  return (
+    <View style={styles.container}>
+      <ScrollView>
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Type:</Text>
+          <Text style={styles.value}>{expenditure.type}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Amount:</Text>
+          <Text style={styles.value}>{expenditure.amount}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Description:</Text>
+          <Text style={styles.value}>{expenditure.description}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Category:</Text>
+          <Text style={styles.value}>{expenditure.category}</Text>
+        </View>
+      </ScrollView>
+      <FloatingAction
+        actions={actions}
+        color={'#ffb300'}
+        onPressItem={type => {
+          switch (type) {
+            case 'edit':
+              navigation.navigate('EditScreen', {
+                id: expenditure.id,
+                headerTitle: expenditure.type,
+                refresh: route.params.refresh,
+                homeRefresh: route.params.refresh,
+              });
+              break;
+            case 'delete':
+              _delete();
+              break;
+          }
+        }}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -109,19 +102,34 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
-  TextLabel: {
-    flex: 1,
+  detailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  label: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 3,
-    textAlignVertical: 'center',
+    color: '#333',
   },
-
-  TextInput: {
-    fontSize: 24,
-    color: 'black',
+  value: {
+    fontSize: 18,
+    color: '#333',
   },
-
+  button: {
+    backgroundColor: '#ffb300',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
 export default ViewScreen;

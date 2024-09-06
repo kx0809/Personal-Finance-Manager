@@ -35,115 +35,118 @@ const CreateScreen = ({ route, navigation }) => {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [isPickerOpen, setPickerOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('Expense');
+  const [selectedCategory, setSelectedCategory] = useState('Expense'); // Default category
 
   useEffect(() => {
-    navigation.setOptions({ headerTitle: 'Add New' });
+      navigation.setOptions({ headerTitle: 'Add New' });
   }, []);
 
   const _insert = async () => {
-    await createExpenditure(await getDBConnection(), type, amount, description);
-    route.params.refresh();
-    navigation.goBack();
+      await createExpenditure(await getDBConnection(), type, amount, description, selectedCategory);
+      route.params.refresh();
+      navigation.goBack();
   };
 
   const openTypePicker = () => {
-    setPickerOpen(true);
+      setPickerOpen(true);
   };
 
-  const selectType = (selectedType) => {
-    setType(selectedType);
-    setPickerOpen(false);
+  const selectType = (selectedType: React.SetStateAction<string>) => {
+      setType(selectedType);
+      setPickerOpen(false);
   };
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Type Picker */}
-      <TouchableWithoutFeedback onPress={openTypePicker}>
-        <View>
+      <ScrollView style={styles.container}>
+          {/* Type Picker */}
+          <TouchableWithoutFeedback onPress={openTypePicker}>
+              <View>
+                  <InputWithLabel
+                      textLabelStyle={styles.TextLabel}
+                      textInputStyle={styles.TextInput}
+                      label={'Type'}
+                      placeholder={'Select type'}
+                      value={type}
+                      editable={false}
+                  />
+              </View>
+          </TouchableWithoutFeedback>
+
+          {/* Amount Input */}
+          
           <InputWithLabel
-            textLabelStyle={styles.TextLabel}
-            textInputStyle={styles.TextInput}
-            label={'Type'}
-            placeholder={'Select type'}
-            value={type}
-            editable={false}
+              textLabelStyle={styles.TextLabel}
+              textInputStyle={styles.TextInput}
+              placeholder={'Enter amount here'}
+              label={'Amount'}
+              value={amount}
+              onChangeText={(amount: React.SetStateAction<string>) => setAmount(amount)}
+              orientation={'vertical'}
+              keyboardType={'numeric'} // Use numeric keyboard
           />
-        </View>
-      </TouchableWithoutFeedback>
 
-      {/* Amount Input */}
-      <InputWithLabel
-        textLabelStyle={styles.TextLabel}
-        textInputStyle={styles.TextInput}
-        placeholder={'Enter amount here'}
-        label={'Amount'}
-        value={amount}
-        onChangeText={(amount) => setAmount(amount)}
-        orientation={'vertical'}
-      />
+          {/* Description Input */}
+          <InputWithLabel
+              textLabelStyle={styles.TextLabel}
+              textInputStyle={styles.TextInput}
+              placeholder={'Enter description here'}
+              label={'Description'}
+              value={description}
+              onChangeText={(description: React.SetStateAction<string>) => setDescription(description)}
+              orientation={'vertical'}
+          />
 
-      {/* Description Input */}
-      <InputWithLabel
-        textLabelStyle={styles.TextLabel}
-        textInputStyle={styles.TextInput}
-        placeholder={'Enter description here'}
-        label={'Description'}
-        value={description}
-        onChangeText={(description) => setDescription(description)}
-        orientation={'vertical'}
-      />
+          {/* Save Button */}
+          <AppButton
+              style={styles.button}
+              title={'Save'}
+              theme={'primary'}
+              onPress={_insert}
+          />
 
-      {/* Save Button */}
-      <AppButton
-        style={styles.button}
-        title={'Save'}
-        theme={'primary'}
-        onPress={_insert}
-      />
-
-      {/* Type Picker Modal */}
-      <Modal
-        visible={isPickerOpen}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setPickerOpen(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            {/* Category Buttons */}
-            <View style={styles.categoryButtons}>
-              <TouchableOpacity
-                style={[styles.categoryButton, selectedCategory === 'Expense' && styles.selectedCategoryButton]}
-                onPress={() => setSelectedCategory('Expense')}
-              >
-                <Text style={styles.categoryButtonText}>Expense</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.categoryButton, selectedCategory === 'Income' && styles.selectedCategoryButton]}
-                onPress={() => setSelectedCategory('Income')}
-              >
-                <Text style={styles.categoryButtonText}>Income</Text>
-              </TouchableOpacity>
-            </View>
-            <FlatList
-              data={selectedCategory === 'Expense' ? expensesData : incomeData}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <TouchableWithoutFeedback onPress={() => selectType(item.name)}>
-                  <View style={styles.typeOption}>
-                    <FontAwesome name={item.icon} size={24} color="#4e342e" />
-                    <Text style={styles.typeText}>{item.name}</Text>
+          {/* Type Picker Modal */}
+          <Modal
+              visible={isPickerOpen}
+              animationType="slide"
+              transparent={true}
+              onRequestClose={() => setPickerOpen(false)}
+          >
+              <View style={styles.modalContainer}>
+                  <View style={styles.modalContent}>
+                      {/* Category Buttons */}
+                      <View style={styles.categoryButtons}>
+                          <TouchableOpacity
+                              style={[styles.categoryButton, selectedCategory === 'Expense' && styles.selectedExpenseButton]}
+                              onPress={() => setSelectedCategory('Expense')}
+                          >
+                              <Text style={styles.categoryButtonText}>Expense</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                              style={[styles.categoryButton, selectedCategory === 'Income' && styles.selectedIncomeButton]}
+                              onPress={() => setSelectedCategory('Income')}
+                          >
+                              <Text style={styles.categoryButtonText}>Income</Text>
+                          </TouchableOpacity>
+                      </View>
+                      <FlatList
+                          data={selectedCategory === 'Expense' ? expensesData : incomeData}
+                          keyExtractor={(item) => item.id}
+                          renderItem={({ item }) => (
+                              <TouchableWithoutFeedback onPress={() => selectType(item.name)}>
+                                  <View style={styles.typeOption}>
+                                      <FontAwesome name={item.icon} size={24} color="#4e342e" />
+                                      <Text style={styles.typeText}>{item.name}</Text>
+                                  </View>
+                              </TouchableWithoutFeedback>
+                          )}
+                      />
                   </View>
-                </TouchableWithoutFeedback>
-              )}
-            />
-          </View>
-        </View>
-      </Modal>
-    </ScrollView>
+              </View>
+          </Modal>
+      </ScrollView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -195,16 +198,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 20,
   },
   categoryButton: {
     flex: 1,
-    padding: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 7,
+    paddingTop: 7,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ddd',
+    borderRadius: 20,
   },
-  selectedCategoryButton: {
-    backgroundColor: '#ffa500',
+  selectedExpenseButton: {
+    backgroundColor: '#ffe8e8',
+  },
+  selectedIncomeButton: {
+    backgroundColor: '#e8f7ff',
   },
   categoryButtonText: {
     fontSize: 18,

@@ -30,123 +30,124 @@ const EditScreen = ({ route, navigation }) => {
   const [type, setType] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
-  const [isPickerOpen, setPickerOpen] = useState(false); // Manage type picker modal
+  const [isPickerOpen, setPickerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Expense');
 
   const _query = async () => {
-    const result = await getExpenditureById(await getDBConnection(), expenditureId);
-    setType(result.type);
-    setAmount(result.amount);
-    setDescription(result.description);
+      const result = await getExpenditureById(await getDBConnection(), expenditureId);
+      setType(result.type);
+      setAmount(result.amount);
+      setDescription(result.description);
+      setSelectedCategory(result.category); // Set category from result
   }
 
   useEffect(() => {
-    _query();
+      _query();
   }, []);
 
   const _update = async () => {
-    await updateExpenditure(await getDBConnection(), type, amount, description, expenditureId);
-    route.params.refresh(expenditureId);
-    route.params.homeRefresh();
-    navigation.goBack();
+      await updateExpenditure(await getDBConnection(), type, amount, description, selectedCategory, expenditureId);
+      route.params.refresh(expenditureId);
+      route.params.homeRefresh();
+      navigation.goBack();
   }
 
   const openTypePicker = () => {
-    setPickerOpen(true);
+      setPickerOpen(true);
   };
 
-  const selectType = (selectedType) => {
-    setType(selectedType);
-    setPickerOpen(false);
+  const selectType = (selectedType: React.SetStateAction<string>) => {
+      setType(selectedType);
+      setPickerOpen(false);
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
+      <View style={styles.container}>
+          <ScrollView>
+              {/* Type Picker */}
+              <TouchableWithoutFeedback onPress={openTypePicker}>
+                  <View>
+                      <InputWithLabel
+                          textLabelStyle={styles.TextLabel}
+                          textInputStyle={styles.TextInput}
+                          label={'Type'}
+                          placeholder={'Select type'}
+                          value={type}
+                          editable={false}
+                      />
+                  </View>
+              </TouchableWithoutFeedback>
 
-        {/* Type Picker */}
-        <TouchableWithoutFeedback onPress={openTypePicker}>
-          <View>
-            <InputWithLabel
-              textLabelStyle={styles.TextLabel}
-              textInputStyle={styles.TextInput}
-              label={'Type'}
-              placeholder={'Select type'}
-              value={type}
-              editable={false} // Prevent manual editing, only allow picking from modal
-            />
-          </View>
-        </TouchableWithoutFeedback>
-
-        <InputWithLabel
-          textLabelStyle={styles.TextLabel}
-          textInputStyle={styles.TextInput}
-          placeholder={'Enter amount here'}
-          label={'Amount'}
-          value={amount}
-          onChangeText={(amount) => setAmount(amount)}
-          orientation={'vertical'}
-        />
-        <InputWithLabel
-          textLabelStyle={styles.TextLabel}
-          textInputStyle={styles.TextInput}
-          placeholder={'Enter description here'}
-          label={'Description'}
-          value={description}
-          onChangeText={(description) => setDescription(description)}
-          orientation={'vertical'}
-        />
-        <AppButton
-          style={styles.button}
-          title={'Save'}
-          theme={'primary'}
-          onPress={_update}
-        />
-
-        {/* Type Picker Modal */}
-        <Modal
-          visible={isPickerOpen}
-          animationType="slide"
-          transparent={true}
-          onRequestClose={() => setPickerOpen(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              {/* Category Buttons */}
-              <View style={styles.categoryButtons}>
-                <TouchableOpacity
-                  style={[styles.categoryButton, selectedCategory === 'Expense' && styles.selectedCategoryButton]}
-                  onPress={() => setSelectedCategory('Expense')}
-                >
-                  <Text style={styles.categoryButtonText}>Expense</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.categoryButton, selectedCategory === 'Income' && styles.selectedCategoryButton]}
-                  onPress={() => setSelectedCategory('Income')}
-                >
-                  <Text style={styles.categoryButtonText}>Income</Text>
-                </TouchableOpacity>
-              </View>
-              <FlatList
-                data={selectedCategory === 'Expense' ? expensesData : incomeData}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                  <TouchableWithoutFeedback onPress={() => selectType(item.name)}>
-                    <View style={styles.typeOption}>
-                      <FontAwesome name={item.icon} size={24} color="#4e342e" />
-                      <Text style={styles.typeText}>{item.name}</Text>
-                    </View>
-                  </TouchableWithoutFeedback>
-                )}
+              <InputWithLabel
+                  textLabelStyle={styles.TextLabel}
+                  textInputStyle={styles.TextInput}
+                  placeholder={'Enter amount here'}
+                  label={'Amount'}
+                  value={amount}
+                  onChangeText={(amount: React.SetStateAction<string>) => setAmount(amount)}
+                  orientation={'vertical'}
+                  keyboardType={'numeric'}
               />
-            </View>
-          </View>
-        </Modal>
+              <InputWithLabel
+                  textLabelStyle={styles.TextLabel}
+                  textInputStyle={styles.TextInput}
+                  placeholder={'Enter description here'}
+                  label={'Description'}
+                  value={description}
+                  onChangeText={(description: React.SetStateAction<string>) => setDescription(description)}
+                  orientation={'vertical'}
+              />
+              <AppButton
+                  style={styles.button}
+                  title={'Save'}
+                  theme={'primary'}
+                  onPress={_update}
+              />
 
-      </ScrollView>
-    </View>
+              {/* Type Picker Modal */}
+              <Modal
+                  visible={isPickerOpen}
+                  animationType="slide"
+                  transparent={true}
+                  onRequestClose={() => setPickerOpen(false)}
+              >
+                  <View style={styles.modalContainer}>
+                      <View style={styles.modalContent}>
+                          {/* Category Buttons */}
+                          <View style={styles.categoryButtons}>
+                              <TouchableOpacity
+                                  style={[styles.categoryButton, selectedCategory === 'Expense' && styles.selectedExpenseButton]}
+                                  onPress={() => setSelectedCategory('Expense')}
+                              >
+                                  <Text style={styles.categoryButtonText}>Expense</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                  style={[styles.categoryButton, selectedCategory === 'Income' && styles.selectedIncomeButton]}
+                                  onPress={() => setSelectedCategory('Income')}
+                              >
+                                  <Text style={styles.categoryButtonText}>Income</Text>
+                              </TouchableOpacity>
+                          </View>
+                          <FlatList
+                              data={selectedCategory === 'Expense' ? expensesData : incomeData}
+                              keyExtractor={(item) => item.id}
+                              renderItem={({ item }) => (
+                                  <TouchableWithoutFeedback onPress={() => selectType(item.name)}>
+                                      <View style={styles.typeOption}>
+                                          <FontAwesome name={item.icon} size={24} color="#4e342e" />
+                                          <Text style={styles.typeText}>{item.name}</Text>
+                                      </View>
+                                  </TouchableWithoutFeedback>
+                              )}
+                          />
+                      </View>
+                  </View>
+              </Modal>
+          </ScrollView>
+      </View>
   );
-}
+};
+
 
 const styles = StyleSheet.create({
   container: {
@@ -198,16 +199,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 20,
   },
   categoryButton: {
     flex: 1,
-    padding: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 7,
+    paddingTop: 7,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ddd',
+    borderRadius: 20,
   },
-  selectedCategoryButton: {
-    backgroundColor: '#ffa500',
+  selectedExpenseButton: {
+    backgroundColor: '#ffe8e8',
+  },
+  selectedIncomeButton: {
+    backgroundColor: '#e8f7ff',
   },
   categoryButtonText: {
     fontSize: 18,
