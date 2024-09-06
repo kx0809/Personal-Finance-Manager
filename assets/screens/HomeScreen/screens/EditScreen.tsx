@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import {StyleSheet, View, ScrollView} from 'react-native';
+import {StyleSheet, View, ScrollView, TouchableWithoutFeedback, Modal, FlatList, Text} from 'react-native';
 import {InputWithLabel, AppButton} from '../UI';
 import { getDBConnection, updateExpenditure, getExpenditureById } from '../db-service';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+const expensesData = [
+  { id: '1', name: 'Food', icon: 'cutlery' },
+  { id: '2', name: 'Transport', icon: 'bus' },
+  { id: '3', name: 'Shopping', icon: 'shopping-cart' },
+  { id: '4', name: 'Rent', icon: 'home' },
+  { id: '5', name: 'Bills', icon: 'file-text' },
+  { id: '6', name: 'Entertainment', icon: 'music' },
+];
 
 const EditScreen = ({route, navigation} : any )  => {
 
@@ -9,6 +19,7 @@ const EditScreen = ({route, navigation} : any )  => {
     const[type, setType] = useState('');
     const[amount, setAmount] = useState('');
     const[description, setDescription] = useState('');
+    const [isPickerOpen, setPickerOpen] = useState(false); // Manage type picker modal
 
     const _query = async () => {
         const result = await getExpenditureById(await getDBConnection(), expenditureId);
@@ -28,20 +39,33 @@ const EditScreen = ({route, navigation} : any )  => {
         navigation.goBack();
     }
 
+    const openTypePicker = () => {
+        setPickerOpen(true);
+    };
+
+    const selectType = (selectedType: string) => {
+        setType(selectedType);
+        setPickerOpen(false);
+    };
+
     return (
       <View style={styles.container}>
         <ScrollView>
-        <InputWithLabel
-          textLabelStyle={styles.TextLabel}
-          textInputStyle={styles.TextInput}
-          label={'Type'}
-          placeholder={'Enter type here'}
-          value={type}
-          onChangeText={(type:any) => {
-            setType(type);
-          }}
-          orientation={'vertical'}
-        />
+
+        {/* Type Picker */}
+        <TouchableWithoutFeedback onPress={openTypePicker}>
+          <View>
+            <InputWithLabel
+              textLabelStyle={styles.TextLabel}
+              textInputStyle={styles.TextInput}
+              label={'Type'}
+              placeholder={'Select type'}
+              value={type}
+              editable={false} // Prevent manual editing, only allow picking from modal
+            />
+          </View>
+        </TouchableWithoutFeedback>
+
         <InputWithLabel
           textLabelStyle={styles.TextLabel}
           textInputStyle={styles.TextInput}
@@ -70,10 +94,37 @@ const EditScreen = ({route, navigation} : any )  => {
             theme={'primary'}
             onPress={_update}
           />
+
+        {/* Type Picker Modal */}
+        <Modal
+          visible={isPickerOpen}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setPickerOpen(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <FlatList
+                data={expensesData}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <TouchableWithoutFeedback onPress={() => selectType(item.name)}>
+                    <View style={styles.typeOption}>
+                      <FontAwesome name={item.icon} size={24} color="#4e342e" />
+                      <Text style={styles.typeText}>{item.name}</Text>
+                    </View>
+                  </TouchableWithoutFeedback>
+                )}
+              />
+            </View>
+          </View>
+        </Modal>
+        
         </ScrollView>
       </View>
     );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -95,10 +146,30 @@ const styles = StyleSheet.create({
     margin: 5,
     alignItems: 'center',
   },
-  buttonText: {
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    width: 300,
+    borderRadius: 10,
     padding: 20,
-    fontSize: 20,
-    color: 'white',
+  },
+  typeOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  typeText: {
+    marginLeft: 15,
+    fontSize: 18,
+    color: '#4e342e',
   },
 });
+
 export default EditScreen;
