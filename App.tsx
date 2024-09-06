@@ -11,8 +11,6 @@ import CreateScreen from './assets/screens/HomeScreen/screens/CreateScreen';
 import EditScreen from './assets/screens/HomeScreen/screens/EditScreen';
 import CustomDropdown from './assets/screens/HomeScreen/CustomDropdown'; 
 import CategoriesScreen from './assets/screens/CategoriesScreen/CategoriesScreen';
-import FeedbackScreen from './assets/screens/FeedbackScreen';
-import SearchScreen from './assets/screens/SearchScreen';
 import ReportScreen from './assets/screens/ReportScreen';
 import CustomDrawerComponent from './assets/components/CustomDrawerComponent';
 import SettingsScreen from './assets/screens/SettingsScreen';
@@ -184,9 +182,7 @@ const MainApp = () => {
           options={{ headerShown: false }}
         />
         <Drawer.Screen name="Report" component={ReportScreen} />
-        <Drawer.Screen name="Search" component={SearchScreen} />
         <Drawer.Screen name="Categories" component={CategoriesScreen} />
-        <Drawer.Screen name="Feedback" component={FeedbackScreen} />
         <Drawer.Screen name="Settings" component={SettingsScreen} />
       </Drawer.Navigator>
     </NavigationContainer>

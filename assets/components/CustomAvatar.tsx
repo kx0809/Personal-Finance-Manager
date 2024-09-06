@@ -1,28 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput, Text, FlatList, ImageSourcePropType } from "react-native";
+import { View, Image, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput, Text, Button } from "react-native";
 import { Avatar } from "@rneui/base";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import avatarOptions from './AvatarOptions';
+import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
 
 const CustomAvatar = () => {
-  const [avatarModalVisible, setAvatarModalVisible] = useState<boolean>(false);
-  const [name, setName] = useState<string>('Your Name');
-  const [editingName, setEditingName] = useState<boolean>(false);
-  const [selectedAvatar, setSelectedAvatar] = useState<ImageSourcePropType>(avatarOptions[0]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [name, setName] = useState('Your Name');
+  const [editingName, setEditingName] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
 
-  // Function to handle selecting a new avatar from the list
-  // It sets the selected avatar to state and saves the choice in AsyncStorage
-  const handleAvatarSelect = async (avatar: ImageSourcePropType) => {
-    setSelectedAvatar(avatar);
-    try {
-      await AsyncStorage.setItem('selectedAvatar', JSON.stringify(avatar));
-    } catch (error) {
-      console.error('Failed to save avatar:', error);
-    }
-    setAvatarModalVisible(false);
+  // Open the modal for avatar selection
+  const handleAvatarPress = () => {
+    setModalVisible(true);
   };
 
-  // Function to load the stored avatar from AsyncStorage when the component mounts
+  // Handle image pick from the user's photo album
+  const handleImagePick = () => {
+    launchImageLibrary({}, async (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.errorMessage) {
+        console.log('ImagePicker Error: ', response.errorMessage);
+      } else {
+        const newAvatar = { uri: response.assets[0].uri };
+        setSelectedAvatar(newAvatar);
+        await AsyncStorage.setItem('selectedAvatar', JSON.stringify(newAvatar));
+        setModalVisible(false);
+      }
+    });
+  };
+
+  // Load avatar from AsyncStorage
   const loadAvatarFromStorage = async () => {
     try {
       const storedAvatar = await AsyncStorage.getItem('selectedAvatar');
@@ -34,16 +43,13 @@ const CustomAvatar = () => {
     }
   };
 
+  // Handle name change
   const handleNameChange = async (newName: string) => {
     setName(newName);
-    try {
-      await AsyncStorage.setItem('userName', newName);
-    } catch (error) {
-      console.error('Failed to save name:', error);
-    }
+    await AsyncStorage.setItem('userName', newName);
   };
 
-  // Function to load the user's name from AsyncStorage when the component mounts
+  // Load name from AsyncStorage
   const loadNameFromStorage = async () => {
     try {
       const storedName = await AsyncStorage.getItem('userName');
@@ -62,24 +68,22 @@ const CustomAvatar = () => {
 
   return (
     <View style={styles.container}>
-      {/* TouchableOpacity to open the modal for selecting a new avatar */}
-      <TouchableOpacity onPress={()=>setAvatarModalVisible(true)}>
+      <TouchableOpacity onPress={handleAvatarPress}>
         <Avatar
           rounded
-          source={selectedAvatar} 
+          source={selectedAvatar ? selectedAvatar : require('../defaultAvatar/defaultAvatar.png')} // Placeholder for default avatar
           size={130}
           containerStyle={styles.avatar}
         />
       </TouchableOpacity>
 
-      {/* Conditional rendering for editing the user's name */}
       {editingName ? (
         <TextInput
           style={styles.nameInput}
           value={name}
-          onChangeText={handleNameChange} 
-          onSubmitEditing={() => setEditingName(false)} 
-          autoFocus 
+          onChangeText={handleNameChange}
+          onSubmitEditing={() => setEditingName(false)}
+          autoFocus
         />
       ) : (
         <TouchableOpacity onPress={() => setEditingName(true)}>
@@ -87,25 +91,24 @@ const CustomAvatar = () => {
         </TouchableOpacity>
       )}
 
-      {/* Modal to display the list of avatar options */}
       <Modal
-        visible={avatarModalVisible}
+        visible={modalVisible}
         transparent={true}
         animationType="fade"
-        onRequestClose={() => setAvatarModalVisible(false)}
+        onRequestClose={() => setModalVisible(false)}
       >
-        <TouchableWithoutFeedback onPress={() => setAvatarModalVisible(false)}>
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
           <View style={styles.modalContainer}>
-            <FlatList
-              data={avatarOptions} 
-              numColumns={3} 
-              keyExtractor={(item) => item.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleAvatarSelect(item)} style={styles.avatarOption}>
-                  <Image source={item} style={styles.avatarImage} />
-                </TouchableOpacity>
-              )}
-            />
+            <TouchableWithoutFeedback>
+              <View style={styles.imageContainer}>
+                {selectedAvatar ? (
+                  <Image source={{ uri: selectedAvatar.uri }} style={styles.largeImage} />
+                ) : (
+                  <Text>No Avatar Selected</Text>
+                )}
+              </View>
+            </TouchableWithoutFeedback>
+            <Button title="Select Photo from Album" onPress={handleImagePick} />
           </View>
         </TouchableWithoutFeedback>
       </Modal>
@@ -144,14 +147,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    padding: 20,
   },
-  avatarOption: {
-    margin: 10,
+  imageContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
   },
-  avatarImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+  largeImage: {
+    width: 300,
+    height: 300,
+    borderRadius: 150,
   },
 });
 
