@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, Modal, Button } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { FloatingAction } from 'react-native-floating-action';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { getDBConnection, getExpenditures } from '../db-service';
 import { formatted } from '../utility';
+
 
 // Define your expense and income data
 const expensesData = [
@@ -39,6 +40,8 @@ const actions = [
 
 const HomeScreen = ({ route, navigation }: any) => {
   const [expenditures, setExpenditures] = useState<any>([]);
+  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+  const [selectedMonthYear, setSelectedMonthYear] = useState({ month: '0', year: `${new Date().getFullYear()}` });
 
   const _query = async () => {
     const dbConnection = await getDBConnection();
@@ -66,8 +69,15 @@ const HomeScreen = ({ route, navigation }: any) => {
     return item ? item.icon : 'question'; // Default icon if type is not found
   };
 
+  
+
   return (
     <View style={styles.container}>
+      
+
+      
+
+      {/* FlatList displaying expenditures */}
       <FlatList
         data={expenditures}
         showsVerticalScrollIndicator={true}
@@ -96,6 +106,7 @@ const HomeScreen = ({ route, navigation }: any) => {
         )}
         keyExtractor={(item: any) => item.id.toString()}
       />
+
       <FloatingAction
         actions={actions}
         overrideWithAction={true}
@@ -116,6 +127,28 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: '#fff',
   },
+  header: {
+    padding: 10,
+    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)', // Semi-transparent background
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    marginHorizontal: 30,
+    borderRadius: 10,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
   item: {
     flexDirection: 'column',
     paddingVertical: 10,
@@ -129,7 +162,7 @@ const styles = StyleSheet.create({
   details: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Add this line to space out the amount and the item details
+    justifyContent: 'space-between', 
     paddingHorizontal: 20, 
     paddingVertical: 3,
     borderBottomWidth: 0.5,
@@ -152,9 +185,9 @@ const styles = StyleSheet.create({
   },
   itemAmount: {
     fontSize: 18,
-    fontWeight: 'bold', // Optional: make the amount bold
+    fontWeight: 'bold', 
     textAlign: 'right',
-    marginLeft: 'auto', // Add this to push the amount to the right
+    marginLeft: 'auto', 
   },
 });
 

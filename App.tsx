@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
-import { View, Modal, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { View, Modal, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Button } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';  
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -14,6 +14,7 @@ import CategoriesScreen from './assets/screens/CategoriesScreen/CategoriesScreen
 import ReportScreen from './assets/screens/ReportScreen';
 import CustomDrawerComponent from './assets/components/CustomDrawerComponent';
 import SettingsScreen from './assets/screens/SettingsScreen';
+import MonthYearDropdown from './assets/screens/HomeScreen/MonthYearDropdown'; 
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -21,7 +22,30 @@ const Drawer = createDrawerNavigator();
 // Stack Navigator for screens related to HomeScreen
 function HomeStack({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [monthYearModalVisible, setMonthYearModalVisible] = useState(false); // Separate state for monthYearModal
   const [selectedDate, setSelectedDate] = useState(null);
+
+  // Get current date and initialize state
+  const now = new Date();
+  const currentMonth = now.getMonth(); // 0-based (0 = January, 1 = February, ...)
+  const currentYear = now.getFullYear();
+
+  const [selectedMonthYear, setSelectedMonthYear] = useState({ 
+    month: currentMonth.toString(), // Convert to string for consistent format
+    year: currentYear.toString() 
+  });
+
+  const handleMonthYearChange = (selected) => {
+    setSelectedMonthYear(selected);
+    setMonthYearModalVisible(false); // Close monthYear modal after selection
+  };
+
+  const formatMonthYear = (month: string, year: string) => {
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    return `${monthNames[parseInt(month)]} ${year}`;
+  };
 
   return (
     <>
@@ -34,10 +58,19 @@ function HomeStack({ navigation }) {
             headerStyle: {
               backgroundColor: '#ffb300',
             },
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              fontSize: 25,
-            },
+            headerTitle: () => (
+              <View style={styles.header}>
+                <TouchableOpacity style={styles.dateButton} onPress={() => setMonthYearModalVisible(true)}>
+                  <Text style={styles.dateButtonText}>{formatMonthYear(selectedMonthYear.month, selectedMonthYear.year)}</Text>
+                  <Ionicons
+                  name="chevron-down-outline"
+                  size={18}
+                  color="#4e342e"
+                  style={{ marginLeft: 8}}
+                />
+                </TouchableOpacity>
+              </View>
+            ),
             headerTitleAlign: 'center',
             headerLeft: () => (
               <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
@@ -142,13 +175,34 @@ function HomeStack({ navigation }) {
 
       {/* Modal for CustomDropdown Calendar */}
       <Modal visible={modalVisible} transparent={true} animationType="slide">
-        <CustomDropdown
-          selectedDate={selectedDate}
-          onDateSelect={(date) => {
-            setSelectedDate(date);
-            setModalVisible(false);
-          }}
-        />
+        <View style={styles.modalContainer}>
+          <CustomDropdown
+            selectedDate={selectedDate}
+            onDateSelect={(date) => {
+              setSelectedDate(date);
+              setModalVisible(false);
+            }}
+          />
+        </View>
+      </Modal>
+
+      {/* Modal for MonthYearDropdown */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={monthYearModalVisible} // Use monthYearModalVisible here
+        onRequestClose={() => {
+          setMonthYearModalVisible(!monthYearModalVisible);
+        }}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Select Month and Year</Text>
+            <MonthYearDropdown selectedMonthYear={selectedMonthYear} onMonthYearChange={handleMonthYearChange} />
+            <TouchableOpacity style={styles.saveButton} onPress={() => setMonthYearModalVisible(false)}>
+              <Text style={styles.saveButtonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </Modal>
     </>
   );
@@ -236,19 +290,17 @@ export default class App extends Component {
               <View style={styles.modalContainer}>
                 <Text style={styles.modalTitle}>Enter Passcode</Text>
                 <TextInput
-                  style={styles.modalInput}
-                  placeholder="Enter Passcode"
-                  keyboardType="numeric"
-                  maxLength={4}
-                  secureTextEntry={true}
+                  style={styles.passcodeInput}
                   value={enteredPasscode}
                   onChangeText={(text) => this.setState({ enteredPasscode: text })}
+                  keyboardType="numeric"
+                  secureTextEntry
                 />
-                <TouchableOpacity
-                  style={styles.submitButton}
-                  onPress={this.handlePasscodeSubmit}
-                >
-                  <Text style={styles.submitButtonText}>Enter</Text>
+                <TouchableOpacity style={styles.submitButton} onPress={this.handlePasscodeSubmit}>
+                  <Text style={styles.submitButtonText}>Submit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.cancelButton} onPress={() => this.setState({ passcodeModalVisible: false })}>
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -263,40 +315,87 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dateButton: {
+    backgroundColor: '#fefbe9', // Background color
+    paddingVertical: 8, // Vertical padding
+    paddingHorizontal: 12, // Horizontal padding
+    borderRadius: 5, // Border radius
+    flexDirection: 'row',
+    alignItems: 'center', // Align items to center vertically
+    justifyContent: 'center', // Center content horizontally
+  },
+  dateButtonText: {
+    color: '#4e342e', // Text color
+    fontSize: 16,
+    fontWeight: 'regular',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  passcodeInput: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    width: '100%',
+    padding: 10,
+    marginBottom: 20,
+    fontSize: 18,
+  },
+  submitButton: {
+    backgroundColor: '#4e342e',
+    padding: 10,
+    borderRadius: 5,
+    width: '100%',
+    alignItems: 'center',
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 18,
+  },
+  cancelButton: {
+    marginTop: 10,
+  },
+  cancelButtonText: {
+    color: '#4e342e',
+    fontSize: 18,
+  },
   modalBackground: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  modalContainer: {
-    width: '80%',
-    backgroundColor: '#fefbe9',
-    padding: 20,
-    borderRadius: 10,
+  saveButton: {
+    backgroundColor: '#ffb300', // Background color
+    paddingVertical: 10, // Padding
+    width: '73%',
+    borderRadius: 5, // Border radius
+    marginBottom: 10, // Margin top for spacing
     alignItems: 'center',
   },
-  modalTitle: {
-    fontSize: 20,
-    marginBottom: 15,
-  },
-  modalInput: {
-    width: '100%',
-    padding: 10,
-    borderColor: '#000',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  submitButton: {
-    backgroundColor: '#4caf50',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  submitButtonText: {
-    color: '#fff',
+  saveButtonText: {
+    color: '#4e342e', 
     fontSize: 16,
+    fontWeight: 'bold',
+
   },
 });
