@@ -84,6 +84,31 @@ export const deleteExpenditure = async (
     }
 }
 
+export const getMonthlyExpenditures = async (db: SQLiteDatabase): Promise<any> => {
+    try {
+        const query = `SELECT type, strftime('%Y-%m', date / 1000, 'unixepoch') AS month, SUM(amount) AS total
+                       FROM IncomeExpense
+                       GROUP BY type, month
+                       ORDER BY month, type`;
+        const results = await db.executeSql(query);
+        const expenditures: { [key: string]: { [type: string]: number } } = {};
+        
+        results.forEach(result => {
+            result.rows.raw().forEach((row: any) => {
+                const { month, type, total } = row;
+                if (!expenditures[month]) {
+                    expenditures[month] = {};
+                }
+                expenditures[month][type] = total;
+            });
+        });
+        return expenditures;
+    } catch (error) {
+        console.error(error);
+        throw Error('Failed to get Monthly Expenditures!');
+    }
+}
+
 const openCallback = () => {
     console.log('database open success');
 }
