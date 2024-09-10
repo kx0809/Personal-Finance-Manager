@@ -65,7 +65,7 @@ const ViewScreen = ({ route, navigation }) => {
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.label}>Amount:</Text>
-          <Text style={styles.value}>RM{expenditure.amount}</Text>
+          <Text style={styles.value}>RM {expenditure.amount}</Text>
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.label}>Description:</Text>

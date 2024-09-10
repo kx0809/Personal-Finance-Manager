@@ -45,13 +45,11 @@ const HomeScreen = ({ route, navigation }: any) => {
     year: new Date().getFullYear().toString(),
   });
 
-  // Function to fetch and update expenditures
   const _query = useCallback(async () => {
     console.log('Fetching data with:', selectedMonthYear);
     const dbConnection = await getDBConnection();
     const fetchedExpenditures = await getExpenditures(dbConnection);
 
-    // Filter expenditures based on the selected month and year
     const filteredExpenditures = fetchedExpenditures.filter((item: any) => {
       const itemDate = new Date(item.date);
       return (
@@ -60,26 +58,33 @@ const HomeScreen = ({ route, navigation }: any) => {
       );
     });
 
-    // Sort expenditures by date in descending order
     const sortedExpenditures = filteredExpenditures.sort((a: any, b: any) => {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
 
-    // Group expenditures by date
     const groupedExpenditures = sortedExpenditures.reduce((groups: any, item: any) => {
       const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
       if (!groups[dateKey]) {
-        groups[dateKey] = [];
+        groups[dateKey] = { income: 0, expense: 0, data: [] };
       }
-      groups[dateKey].push(item);
+      if (item.category === 'Income') {
+        groups[dateKey].income += item.amount;
+      } else {
+        groups[dateKey].expense += item.amount;
+      }
+      groups[dateKey].data.push(item);
       return groups;
     }, {});
 
-    // Convert grouped data to an array of sections
-    const sections = Object.keys(groupedExpenditures).map(dateKey => ({
-      title: dateKey,
-      data: groupedExpenditures[dateKey] || [], // Ensure data is an array
-    }));
+    const sections = Object.keys(groupedExpenditures).map(dateKey => {
+      const { income, expense, data } = groupedExpenditures[dateKey];
+      const netTotal = income - expense || 0;
+      return {
+        title: dateKey,
+        netTotal,
+        data,
+      };
+    });
 
     setExpenditures(sections);
   }, [selectedMonthYear]);
@@ -121,67 +126,69 @@ const HomeScreen = ({ route, navigation }: any) => {
     return item ? item.icon : 'question';
   };
 
+  // Format net total with proper sign
+  const formatNetTotal = (netTotal: number) => {
+    if (netTotal < 0) {
+      return `- RM ${Math.abs(netTotal).toFixed(2)}`;
+    }
+    return `RM ${netTotal.toFixed(2)}`;
+  };
+
   return (
     <View style={styles.container}>
-      {/* SectionList displaying expenditures */}
-      
       <SectionList
-  sections={expenditures}
-  keyExtractor={(item: any) => item.id.toString()}
-  renderSectionHeader={({ section: { title } }) => (
-    <View style={styles.sectionHeaderWrapper}>
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>{title}</Text>
-      </View>
-    </View>
-  )}
-  renderItem={({ item, index, section }) => {
-    // Check if the current item is the last one in the section
-    const isLastItem = index === section.data.length - 1;
-
-    return (
-      <View
-        style={[
-          styles.itemWrapper,
-          isLastItem && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }, // Apply rounded corners to last item
-          { backgroundColor: getBackgroundColor(item.category) },
-        ]}
-      >
-        <TouchableHighlight
-          underlayColor="#d7ccc8"
-          onPress={() => {
-            navigation.navigate('ViewScreen', {
-              id: item.id,
-              headerTitle: item.type,
-              refresh: _query,
-            });
-          }}>
-          <View
-            style={styles.details}>
-            <View style={styles.item}>
-              <View style={styles.type}>
-                <Icon name={getIcon(item.type, item.category)} size={20} color="#000" />
-                <Text style={styles.itemTitle}>{item.type}</Text>
-              </View>
-              <Text style={styles.itemDescription}>{item.description}</Text>
+        sections={expenditures}
+        keyExtractor={(item: any) => item.id.toString()}
+        renderSectionHeader={({ section: { title, netTotal } }) => (
+          <View style={styles.sectionHeaderWrapper}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>{title}</Text>
+              <Text style={styles.sectionNetTotal}>{formatNetTotal(netTotal)}</Text>
             </View>
-            <Text style={styles.itemAmount}>{getPlusMinus(item.category)}RM{item.amount}</Text>
           </View>
-        </TouchableHighlight>
-      </View>
-    );
-  }}
-/>
+        )}
+        renderItem={({ item, index, section }) => {
+          const isLastItem = index === section.data.length - 1;
 
+          return (
+            <View
+              style={[
+                styles.itemWrapper,
+                isLastItem && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 },
+                { backgroundColor: getBackgroundColor(item.category) },
+              ]}
+            >
+              <TouchableHighlight
+                underlayColor="#d7ccc8"
+                onPress={() => {
+                  navigation.navigate('ViewScreen', {
+                    id: item.id,
+                    headerTitle: item.type,
+                    refresh: _query,
+                  });
+                }}>
+                <View style={styles.details}>
+                  <View style={styles.item}>
+                    <View style={styles.type}>
+                      <Icon name={getIcon(item.type, item.category)} size={20} color="#000" />
+                      <Text style={styles.itemTitle}>{item.type}</Text>
+                    </View>
+                    <Text style={styles.itemDescription}>{item.description}</Text>
+                  </View>
+                  <Text style={styles.itemAmount}>{getPlusMinus(item.category)}RM {item.amount}</Text>
+                </View>
+              </TouchableHighlight>
+            </View>
+          );
+        }}
+      />
 
       <FloatingAction
         actions={actions}
-        overrideWithAction={true}
-        color={'#ffb300'}
-        onPressItem={() => {
-          navigation.navigate('CreateScreen', {
-            refresh: _query,
-          });
+        onPressItem={name => {
+          if (name === 'add') {
+            navigation.navigate('CreateScreen', { refresh: _query });
+          }
         }}
       />
     </View>
@@ -206,11 +213,18 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10, // Rounded corners for the header
     borderWidth: 1,
     borderColor: '#ccc',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#4e342e', // Dark brown text color
+  },
+  sectionNetTotal: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#ffb300', // Accent color for net total
   },
   itemWrapper: {
     marginHorizontal: 15,
