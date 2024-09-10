@@ -1,36 +1,70 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const months = [
-  { label: 'January', value: '0' },
-  { label: 'February', value: '1' },
-  { label: 'March', value: '2' },
-  { label: 'April', value: '3' },
-  { label: 'May', value: '4' },
-  { label: 'June', value: '5' },
-  { label: 'July', value: '6' },
-  { label: 'August', value: '7' },
-  { label: 'September', value: '8' },
-  { label: 'October', value: '9' },
-  { label: 'November', value: '10' },
-  { label: 'December', value: '11' },
+  { label: 'January', value: '1' },
+  { label: 'February', value: '2' },
+  { label: 'March', value: '3' },
+  { label: 'April', value: '4' },
+  { label: 'May', value: '5' },
+  { label: 'June', value: '6' },
+  { label: 'July', value: '7' },
+  { label: 'August', value: '8' },
+  { label: 'September', value: '9' },
+  { label: 'October', value: '10' },
+  { label: 'November', value: '11' },
+  { label: 'December', value: '12' },
 ];
 
 const years = Array.from({ length: 50 }, (_, index) => `${new Date().getFullYear() - index}`);
 
 const MonthYearDropdown = ({ selectedMonthYear, onMonthYearChange }: any) => {
-  const [selectedMonth, setSelectedMonth] = useState(selectedMonthYear.month || '0');
+  const [selectedMonth, setSelectedMonth] = useState(selectedMonthYear.month || '1');
   const [selectedYear, setSelectedYear] = useState(selectedMonthYear.year || years[0]);
+
+  useEffect(() => {
+    loadMonthYearData();
+  }, []);
 
   const handleMonthChange = (month: string) => {
     setSelectedMonth(month);
     onMonthYearChange({ month, year: selectedYear });
+    handleSave(month, selectedYear);
   };
 
   const handleYearChange = (year: string) => {
     setSelectedYear(year);
     onMonthYearChange({ month: selectedMonth, year });
+    handleSave(selectedMonth, year);
+  };
+
+  const handleSave = async (month: string, year: string) => {
+    try {
+      await AsyncStorage.setItem('Month', month);
+      await AsyncStorage.setItem('Year', year);
+      console.log('Month and Year saved successfully:', month, year); // Log success message
+    } catch (error) {
+      console.error('Failed to save the month and year:', error); // Log error
+    }
+  };
+
+  const loadMonthYearData = async () => {
+    try {
+      const savedMonth = await AsyncStorage.getItem('Month');
+      const savedYear = await AsyncStorage.getItem('Year');
+      console.log('Loaded Month:', savedMonth); // Log the loaded month
+      console.log('Loaded Year:', savedYear); // Log the loaded year
+
+      if (savedMonth !== null && savedYear !== null) {
+        setSelectedMonth(savedMonth);
+        setSelectedYear(savedYear);
+        onMonthYearChange({ month: savedMonth, year: savedYear });
+      }
+    } catch (error) {
+      console.error('Failed to load the month and year:', error); // Log error
+    }
   };
 
   return (

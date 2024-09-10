@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { View, Modal, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Button } from 'react-native';
+import { View, Modal, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';  
@@ -27,7 +27,7 @@ function HomeStack({ navigation }) {
 
   // Get current date and initialize state
   const now = new Date();
-  const currentMonth = now.getMonth(); // 0-based (0 = January, 1 = February, ...)
+  const currentMonth = now.getMonth() + 1; // 1-based (1 = January, 2 = February, ...)
   const currentYear = now.getFullYear();
 
   const [selectedMonthYear, setSelectedMonthYear] = useState({ 
@@ -37,15 +37,19 @@ function HomeStack({ navigation }) {
 
   const handleMonthYearChange = (selected) => {
     setSelectedMonthYear(selected);
-    setMonthYearModalVisible(false); // Close monthYear modal after selection
   };
 
   const formatMonthYear = (month: string, year: string) => {
     const monthNames = [
       'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
     ];
-    return `${monthNames[parseInt(month)]} ${year}`;
+  
+    // Convert month from 1-based to 0-based for array lookup
+    const monthIndex = parseInt(month, 10) - 1;
+  
+    return `${monthNames[monthIndex]} ${year}`;
   };
+  
 
   return (
     <>
@@ -193,7 +197,8 @@ function HomeStack({ navigation }) {
         visible={monthYearModalVisible} // Use monthYearModalVisible here
         onRequestClose={() => {
           setMonthYearModalVisible(!monthYearModalVisible);
-        }}>
+        }}
+      >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Select Month and Year</Text>
