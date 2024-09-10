@@ -1,17 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Dimensions, ActivityIndicator, StyleSheet } from 'react-native';
-import { BarChart } from 'react-native-chart-kit';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { getDBConnection, getMonthlyExpenditures } from './HomeScreen/db-service'; // Adjust the import path accordingly
+import { getDBConnection, getMonthlyExpenditures } from './HomeScreen/db-service'; 
+import CustomPieChart from '../components/CustomPieChart'; 
 
-const { width: screenWidth } = Dimensions.get('window');
+const formatMonth = (month: string) => {
+    const [year, monthIndex] = month.split('-');
+    const date = new Date(Number(year), Number(monthIndex) - 1); 
+    return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+};
+
+const getCurrentMonth = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    return `${year}-${month}`;
+};
 
 const ReportScreen = () => {
-    const [chartData, setChartData] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
     const [selectedMonth, setSelectedMonth] = useState<string>('');
     const [months, setMonths] = useState<string[]>([]);
     const [monthlyExpenditures, setMonthlyExpenditures] = useState<any>({});
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -19,19 +29,17 @@ const ReportScreen = () => {
                 const db = await getDBConnection();
                 const data = await getMonthlyExpenditures(db);
 
-                // Extract months from data
                 const availableMonths = Object.keys(data);
-
                 if (availableMonths.length > 0) {
                     setMonths(availableMonths);
                     setMonthlyExpenditures(data);
-                    const firstMonth = availableMonths[0];
-                    setSelectedMonth(firstMonth);
-                    updateChartData(firstMonth, data);
-                } else {
-                    setMonths([]);
-                    setMonthlyExpenditures({});
-                    setSelectedMonth('');
+                    const currentMonth = getCurrentMonth();
+
+                    if (availableMonths.includes(currentMonth)) {
+                        setSelectedMonth(currentMonth);
+                    } else {
+                        setSelectedMonth(availableMonths[0]);
+                    }
                 }
             } catch (error) {
                 console.error(error);
@@ -43,26 +51,12 @@ const ReportScreen = () => {
         fetchData();
     }, []);
 
-    const updateChartData = (month: string, data: any) => {
-        const monthData = data[month] || {};
-        const chartData = {
-            labels: Object.keys(monthData),
-            datasets: [
-                {
-                    data: Object.values(monthData)
-                }
-            ]
-        };
-        setChartData(chartData);
-    };
-
     const handleMonthChange = (month: string) => {
         setSelectedMonth(month);
-        updateChartData(month, monthlyExpenditures);
     };
 
     if (loading) {
-        return <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />;
+        return <ActivityIndicator size="large" color="#ffb300" style={styles.loader} />;
     }
 
     return (
@@ -74,38 +68,21 @@ const ReportScreen = () => {
                         selectedValue={selectedMonth}
                         onValueChange={(itemValue) => handleMonthChange(itemValue)}
                         style={styles.picker}
+                        mode="dropdown"
                     >
                         {months.map((month) => (
-                            <Picker.Item key={month} label={month} value={month} />
+                            <Picker.Item
+                                key={month}
+                                label={formatMonth(month)}
+                                value={month}
+                                color="#4e342e" 
+                            />
                         ))}
                     </Picker>
-                    {chartData && chartData.labels.length > 0 ? (
-                        <BarChart
-                            data={chartData}
-                            width={screenWidth * 0.95} // Adjust chart width
-                            height={220}
-                            yAxisLabel="$"
-                            chartConfig={{
-                                backgroundGradientFrom: "#f0f0f0",
-                                backgroundGradientTo: "#ffffff",
-                                decimalPlaces: 2,
-                                color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
-                                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                                style: {
-                                    borderRadius: 16,
-                                },
-                                propsForDots: {
-                                    r: '6',
-                                    strokeWidth: '2',
-                                    stroke: '#ffa726',
-                                },
-                            }}
-                            verticalLabelRotation={30}
-                            style={styles.chart}
-                        />
-                    ) : (
-                        <Text style={styles.noData}>No data available for the selected month</Text>
-                    )}
+                    <CustomPieChart
+                        data={monthlyExpenditures[selectedMonth]}
+                        selectedMonth={selectedMonth}
+                    />
                 </>
             ) : (
                 <Text style={styles.noData}>No data available for any month</Text>
@@ -118,33 +95,31 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-        backgroundColor: '#fff'
+        backgroundColor: '#fefbe9', 
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 16
+        marginBottom: 16,
+        color: '#4e342e', 
     },
     picker: {
         height: 50,
         width: '100%',
-        marginBottom: 16
+        marginBottom: 16,
+        backgroundColor: '#d7ccc8', 
     },
     loader: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
-    },
-    chart: {
-        marginVertical: 8,
-        borderRadius: 16
+        alignItems: 'center',
     },
     noData: {
         fontSize: 18,
         textAlign: 'center',
         marginTop: 20,
-        color: '#888'
-    }
+        color: '#4e342e', 
+    },
 });
 
 export default ReportScreen;
