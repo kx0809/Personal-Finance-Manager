@@ -190,6 +190,7 @@ const HomeScreen = ({ route, navigation }: any) => {
             navigation.navigate('CreateScreen', { refresh: _query });
           }
         }}
+        color="#ffb300" 
       />
     </View>
   );
