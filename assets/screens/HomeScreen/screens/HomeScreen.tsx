@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import { View, Text, StyleSheet, TouchableHighlight, SectionList } from 'react-native';
 import { FloatingAction } from 'react-native-floating-action';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { getDBConnection, getExpenditures } from '../db-service';
@@ -66,7 +65,23 @@ const HomeScreen = ({ route, navigation }: any) => {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
 
-    setExpenditures(sortedExpenditures);
+    // Group expenditures by date
+    const groupedExpenditures = sortedExpenditures.reduce((groups: any, item: any) => {
+      const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
+      }
+      groups[dateKey].push(item);
+      return groups;
+    }, {});
+
+    // Convert grouped data to an array of sections
+    const sections = Object.keys(groupedExpenditures).map(dateKey => ({
+      title: dateKey,
+      data: groupedExpenditures[dateKey] || [], // Ensure data is an array
+    }));
+
+    setExpenditures(sections);
   }, [selectedMonthYear]);
 
   useEffect(() => {
@@ -96,6 +111,10 @@ const HomeScreen = ({ route, navigation }: any) => {
     return type === 'Expense' ? '#ffe8e8' : '#e8f7ff';
   };
 
+  const getPlusMinus = (type: string) => {
+    return type === 'Expense' ? '- ' : '+';
+  };
+
   const getIcon = (type: string, category: string) => {
     const data = category === 'Expense' ? expensesData : incomeData;
     const item = data.find((item) => item.name === type);
@@ -104,35 +123,56 @@ const HomeScreen = ({ route, navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      {/* FlatList displaying expenditures */}
-      <FlatList
-        data={expenditures}
-        showsVerticalScrollIndicator={true}
-        renderItem={({ item }: any) => (
-          <TouchableHighlight
-            underlayColor="#d7ccc8"
-            onPress={() => {
-              navigation.navigate('ViewScreen', {
-                id: item.id,
-                headerTitle: item.type,
-                refresh: _query,
-              });
-            }}>
-            <View style={[styles.details, { backgroundColor: getBackgroundColor(item.category) }]}>
-              <View style={styles.item}>
-                <View style={styles.type}>
-                  <Icon name={getIcon(item.type, item.category)} size={20} color="#000" />
-                  <Text style={styles.itemTitle}>{item.type}</Text>
-                </View>
-                <Text style={styles.itemDescription}>{item.description}</Text>
-                <Text style={styles.itemSubtitle}>{formatted(new Date(item.date))}</Text>
+      {/* SectionList displaying expenditures */}
+      
+      <SectionList
+  sections={expenditures}
+  keyExtractor={(item: any) => item.id.toString()}
+  renderSectionHeader={({ section: { title } }) => (
+    <View style={styles.sectionHeaderWrapper}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+      </View>
+    </View>
+  )}
+  renderItem={({ item, index, section }) => {
+    // Check if the current item is the last one in the section
+    const isLastItem = index === section.data.length - 1;
+
+    return (
+      <View
+        style={[
+          styles.itemWrapper,
+          isLastItem && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }, // Apply rounded corners to last item
+          { backgroundColor: getBackgroundColor(item.category) },
+        ]}
+      >
+        <TouchableHighlight
+          underlayColor="#d7ccc8"
+          onPress={() => {
+            navigation.navigate('ViewScreen', {
+              id: item.id,
+              headerTitle: item.type,
+              refresh: _query,
+            });
+          }}>
+          <View
+            style={styles.details}>
+            <View style={styles.item}>
+              <View style={styles.type}>
+                <Icon name={getIcon(item.type, item.category)} size={20} color="#000" />
+                <Text style={styles.itemTitle}>{item.type}</Text>
               </View>
-              <Text style={styles.itemAmount}>RM{item.amount}</Text>
+              <Text style={styles.itemDescription}>{item.description}</Text>
             </View>
-          </TouchableHighlight>
-        )}
-        keyExtractor={(item: any) => item.id.toString()}
-      />
+            <Text style={styles.itemAmount}>{getPlusMinus(item.category)}RM{item.amount}</Text>
+          </View>
+        </TouchableHighlight>
+      </View>
+    );
+  }}
+/>
+
 
       <FloatingAction
         actions={actions}
@@ -154,27 +194,28 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: '#fff',
   },
-  header: {
-    padding: 10,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
+  sectionHeaderWrapper: {
+    marginHorizontal: 15, // Adds space on the sides
+    marginTop: 20, // Adds space above each section header
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)', // Semi-transparent background
+  sectionHeader: {
+    backgroundColor: 'white', // Beige background for the header
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderTopRightRadius: 10, // Rounded corners for the header
+    borderTopLeftRadius: 10, // Rounded corners for the header
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    marginHorizontal: 30,
-    borderRadius: 10,
-  },
-  modalTitle: {
-    fontSize: 18,
+  sectionTitle: {
+    fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
+    color: '#4e342e', // Dark brown text color
+  },
+  itemWrapper: {
+    marginHorizontal: 15,
+    borderWidth: 1, // Border width for each item
+    borderColor: '#ccc',
   },
   item: {
     flexDirection: 'column',
@@ -191,7 +232,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingVertical: 3,
+    paddingVertical: 8,
     borderBottomWidth: 0.5,
     borderColor: '#ccc',
   },
@@ -205,11 +246,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     marginLeft: 10,
   },
-  itemSubtitle: {
-    fontSize: 15,
-    color: '#555',
-    marginLeft: 10,
-  },
   itemAmount: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -217,5 +253,6 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
   },
 });
+
 
 export default HomeScreen;
