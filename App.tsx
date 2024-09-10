@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { View, Modal, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,6 +24,7 @@ function HomeStack({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [monthYearModalVisible, setMonthYearModalVisible] = useState(false); // Separate state for monthYearModal
   const [selectedDate, setSelectedDate] = useState(null);
+  
 
   // Get current date and initialize state
   const now = new Date();
@@ -31,12 +32,35 @@ function HomeStack({ navigation }) {
   const currentYear = now.getFullYear();
 
   const [selectedMonthYear, setSelectedMonthYear] = useState({ 
-    month: currentMonth.toString(), // Convert to string for consistent format
+    month: currentMonth.toString(), 
     year: currentYear.toString() 
   });
 
-  const handleMonthYearChange = (selected) => {
+  useEffect(() => {
+    const loadMonthYearData = async () => {
+      try {
+        const savedMonth = await AsyncStorage.getItem('Month');
+        const savedYear = await AsyncStorage.getItem('Year');
+        if (savedMonth !== null && savedYear !== null) {
+          setSelectedMonthYear({ month: savedMonth, year: savedYear });
+        }
+      } catch (error) {
+        console.error('Failed to load the month and year:', error);
+      }
+    };
+
+    loadMonthYearData();
+  }, []);
+
+  const handleMonthYearChange = async (selected) => {
     setSelectedMonthYear(selected);
+    try {
+      await AsyncStorage.setItem('Month', selected.month);
+      await AsyncStorage.setItem('Year', selected.year);
+      console.log('Save month and year successfully 3:');
+    } catch (error) {
+      console.error('Failed to save month and year:', error);
+    }
   };
 
   const formatMonthYear = (month: string, year: string) => {
@@ -50,6 +74,7 @@ function HomeStack({ navigation }) {
     return `${monthNames[monthIndex]} ${year}`;
   };
   
+  
 
   return (
     <>
@@ -57,6 +82,7 @@ function HomeStack({ navigation }) {
         <Stack.Screen
           name="Home"
           component={HomeScreen}
+          initialParams={selectedMonthYear}  // Pass selectedMonthYear as initialParams
           options={{
             headerShown: true,
             headerStyle: {

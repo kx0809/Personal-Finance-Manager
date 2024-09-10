@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, Alert } from 'react-native';
 import { FloatingAction } from 'react-native-floating-action';
 import { getDBConnection, getExpenditureById, deleteExpenditure } from '../db-service';
 import { formatted } from '../utility'; // Import your utility function

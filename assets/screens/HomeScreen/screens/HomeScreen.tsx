@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, Modal, Button } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { FloatingAction } from 'react-native-floating-action';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { getDBConnection, getExpenditures } from '../db-service';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { formatted } from '../utility';
-
+import { useFocusEffect } from '@react-navigation/native';
 
 // Define your expense and income data
 const expensesData = [
@@ -40,43 +41,69 @@ const actions = [
 
 const HomeScreen = ({ route, navigation }: any) => {
   const [expenditures, setExpenditures] = useState<any>([]);
-  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
-  const [selectedMonthYear, setSelectedMonthYear] = useState({ month: '0', year: `${new Date().getFullYear()}` });
+  const [selectedMonthYear, setSelectedMonthYear] = useState<{ month: string; year: string }>({
+    month: '1',
+    year: new Date().getFullYear().toString(),
+  });
 
-  const _query = async () => {
+  // Function to fetch and update expenditures
+  const _query = useCallback(async () => {
+    console.log('Fetching data with:', selectedMonthYear);
     const dbConnection = await getDBConnection();
     const fetchedExpenditures = await getExpenditures(dbConnection);
 
+    // Filter expenditures based on the selected month and year
+    const filteredExpenditures = fetchedExpenditures.filter((item: any) => {
+      const itemDate = new Date(item.date);
+      return (
+        itemDate.getMonth() === parseInt(selectedMonthYear.month, 10) - 1 &&
+        itemDate.getFullYear() === parseInt(selectedMonthYear.year, 10)
+      );
+    });
+
     // Sort expenditures by date in descending order
-    const sortedExpenditures = fetchedExpenditures.sort((a: any, b: any) => {
+    const sortedExpenditures = filteredExpenditures.sort((a: any, b: any) => {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
 
     setExpenditures(sortedExpenditures);
-  };
+  }, [selectedMonthYear]);
 
   useEffect(() => {
-    _query();
+    const loadMonthYearData = async () => {
+      try {
+        const savedMonth = await AsyncStorage.getItem('Month');
+        const savedYear = await AsyncStorage.getItem('Year');
+        if (savedMonth !== null && savedYear !== null) {
+          setSelectedMonthYear({ month: savedMonth, year: savedYear });
+        }
+      } catch (error) {
+        console.error('Failed to load the month and year:', error);
+      }
+    };
+
+    loadMonthYearData();
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      console.log('HomeScreen focused, updating data...');
+      _query();
+    }, [_query])
+  );
+
   const getBackgroundColor = (type: string) => {
-    return type === 'Expense' ? '#ffe8e8' : '#e8f7ff'; // Change background color based on type
+    return type === 'Expense' ? '#ffe8e8' : '#e8f7ff';
   };
 
   const getIcon = (type: string, category: string) => {
     const data = category === 'Expense' ? expensesData : incomeData;
     const item = data.find((item) => item.name === type);
-    return item ? item.icon : 'question'; // Default icon if type is not found
+    return item ? item.icon : 'question';
   };
-
-  
 
   return (
     <View style={styles.container}>
-      
-
-      
-
       {/* FlatList displaying expenditures */}
       <FlatList
         data={expenditures}
@@ -152,7 +179,7 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'column',
     paddingVertical: 10,
-    flex: 1, 
+    flex: 1,
   },
   type: {
     flexDirection: 'row',
@@ -162,8 +189,8 @@ const styles = StyleSheet.create({
   details: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', 
-    paddingHorizontal: 20, 
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
     paddingVertical: 3,
     borderBottomWidth: 0.5,
     borderColor: '#ccc',
@@ -185,9 +212,9 @@ const styles = StyleSheet.create({
   },
   itemAmount: {
     fontSize: 18,
-    fontWeight: 'bold', 
+    fontWeight: 'bold',
     textAlign: 'right',
-    marginLeft: 'auto', 
+    marginLeft: 'auto',
   },
 });
 
