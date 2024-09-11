@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { getDBConnection } from 'D:/AsmApp/assets/screens/HomeScreen/db-service'; 
+import { getDBConnection } from '../db-service';
 
 const TransportScreen = () => {
   const [data, setData] = useState<any[]>([]);
