@@ -23,7 +23,7 @@ const incomeData = [
   { id: '3', name: 'Rebate', icon: 'percent' },
   { id: '4', name: 'Trade', icon: 'exchange' },
   { id: '5', name: 'Dividend', icon: 'line-chart' },
-  { id: '6', name: 'Rent', icon: 'home' },
+  { id: '6', name: 'IncomeRent', icon: 'home' },
   { id: '7', name: 'Investment', icon: 'home' },
   { id: '8', name: 'Other', icon: 'home' },
   { id: '9', name: 'Income', icon: 'home' },

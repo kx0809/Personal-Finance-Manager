@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Animated, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
 
 const expensesData = [
   { id: '1', name: 'Food', icon: 'cutlery' },
@@ -17,7 +18,7 @@ const incomeData = [
   { id: '3', name: 'Rebate', icon: 'percent' },
   { id: '4', name: 'Trade', icon: 'exchange' },
   { id: '5', name: 'Dividend', icon: 'line-chart' },
-  { id: '6', name: 'Rent', icon: 'home' },
+  { id: '6', name: 'IncomeRent', icon: 'home' },
   { id: '7', name: 'Investment', icon: 'home' },
   { id: '8', name: 'Other', icon: 'home' },
   { id: '9', name: 'Income', icon: 'home' },
@@ -26,6 +27,7 @@ const incomeData = [
 const { width } = Dimensions.get('window');
 
 const CategoriesScreen = () => {
+  const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState('Expense');
   const translateX = useRef(new Animated.Value(0)).current;
 
@@ -37,14 +39,20 @@ const CategoriesScreen = () => {
     }).start();
   };
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }) => {
+    const handlePress = () => {
+      navigation.navigate(item.name);
+    };
+
+    return (
     <View style={styles.itemContainer}>
-      <TouchableOpacity style={styles.iconButton}>
+      <TouchableOpacity style={styles.iconButton} onPress={handlePress}>
         <Icon name={item.icon} size={30} color="#000" />
       </TouchableOpacity>
       <Text style={styles.itemText}>{item.name}</Text>
     </View>
   );
+};
 
   return (
     <View style={styles.container}>
