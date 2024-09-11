@@ -8,6 +8,8 @@ const drawerItems = [
   { label: "Home", icon: "home", route: 'Home' },
   { label: "Report", icon: "book", route: 'Report' },
   { label: "Categories", icon: "category", route: 'Categories' },
+  { label: "Feedback", icon: "feedback", route: 'Feedback' },
+  { label: "Calculator", icon: "calculate", route: 'Calculator' },
 ];
 
 const CustomDrawerComponent = (props: any) => {
@@ -28,19 +30,19 @@ const CustomDrawerComponent = (props: any) => {
 
           {/* Main Drawer Items */}
           <View style={{ padding: 10, height: windowHeight * .65 }}>
-            {drawerItems.map((item, index) => (
-              <DrawerItem
-                key={item.label}
-                label={item.label}
-                onPress={() => navigation.navigate(item.route)}
-                icon={() => (
-                  <MaterialIcons name={item.icon} color={"#4e342e"} size={20} />
-                )}
-                focused={state.index === index}
-                activeBackgroundColor='#d7ccc8'
-                activeTintColor='#4e342e'
-              />
-            ))}
+          {drawerItems.map((item) => (
+            <DrawerItem
+              key={item.label}
+              label={item.label}
+              onPress={() => navigation.navigate(item.route)}
+              icon={() => (
+                <MaterialIcons name={item.icon} color={"#4e342e"} size={20} />
+              )}
+              focused={state.routeNames[state.index] === item.route}  
+              activeBackgroundColor='#d7ccc8'
+              activeTintColor='#4e342e'
+            />
+          ))}
           </View>
         </View>
 

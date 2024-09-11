@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from '../styles/settingScreenStyles'
 
-const App = () => {
+const SettingsScreen = () => {
     const [passcodeIsEnabled, setPasscodeIsEnabled] = useState<boolean>(false);
     const [passcodeModalVisible, setPasscodeModalVisible] = useState<boolean>(false);
     const [enteredPasscode, setEnteredPasscode] = useState<string>('');
@@ -126,4 +126,4 @@ const App = () => {
     );
 };
 
-export default App;
+export default SettingsScreen;

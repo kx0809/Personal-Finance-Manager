@@ -16,6 +16,8 @@ import CustomDrawerComponent from './assets/components/CustomDrawerComponent';
 import SettingsScreen from './assets/screens/SettingsScreen';
 import MonthYearDropdown from './assets/screens/HomeScreen/MonthYearDropdown'; 
 import CategoriesStackNavigator from './assets/screens/CategoriesScreen/CategoriesStackNavigator';
+import FeedbackScreen from './assets/screens/FeedbackScreen';
+import CalculatorScreen from './assets/screens/CalculatorScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -268,6 +270,9 @@ const MainApp = () => {
         <Drawer.Screen name="Report" component={ReportScreen} />
         <Drawer.Screen name="Categories" component={CategoriesStackNavigator} />
         <Drawer.Screen name="Settings" component={SettingsScreen} />
+        <Drawer.Screen name="Feedback" component={FeedbackScreen} />
+        <Drawer.Screen name="Calculator" component={CalculatorScreen} />
+        
       </Drawer.Navigator>
     </NavigationContainer>
   );
