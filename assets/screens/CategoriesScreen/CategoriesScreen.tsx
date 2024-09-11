@@ -21,9 +21,9 @@ const incomeData = [
   { id: '4', name: 'Trade', icon: 'exchange' },
   { id: '5', name: 'Dividend', icon: 'line-chart' },
   { id: '6', name: 'IncomeRent', icon: 'home' },
-  { id: '7', name: 'Investment', icon: 'home' },
-  { id: '8', name: 'Other', icon: 'home' },
-  { id: '9', name: 'Income', icon: 'home' },
+  { id: '7', name: 'Investment', icon: 'stack-overflow' },
+  { id: '8', name: 'Other', icon: 'ellipsis-h' },
+  { id: '9', name: 'Income', icon: 'xing' },
 ];
 
 const { width } = Dimensions.get('window');
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#4e342e',
+    borderColor: '#FFFACD',
     marginHorizontal: 10,
   },
   activeNavItem: {
