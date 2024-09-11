@@ -108,7 +108,7 @@ const CategoriesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fefbe9',
     padding: 10,
   },
   navBar: {
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffb300',
   },
   navText: {
+    marginHorizontal: 10,
     fontSize: 16,
     color: '#4e342e'
   },
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   itemText: {
-    fontSize: 14,
+    fontSize: 15,
     textAlign: 'center',
   },
 });
