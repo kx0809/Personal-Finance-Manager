@@ -96,31 +96,35 @@ const CalculatorScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Display Screen */}
+    <LinearGradient
+      colors={['#ffb300', '#fefbe9']} // Define gradient colors similar to the image
+      style={styles.container}
+    >
+      {/* Top Section - Display */}
       <View style={styles.displayContainer}>
         <Text style={styles.displayText}>{result !== null ? result : display || "0"}</Text>
+        <Text style={styles.subText}>{display}</Text>
       </View>
 
       {/* Calculator Buttons */}
       <View style={styles.buttonsContainer}>
-        {/* First row */}
+        {/* First Row */}
         <View style={styles.row}>
           <TouchableOpacity style={styles.button} onPress={handleClear}>
             <Text style={styles.buttonText}>C</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => handlePress("%")}>
+            <Text style={styles.buttonText}>%</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={() => handlePress("/")}>
             <Text style={styles.buttonText}>/</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={() => handlePress("*")}>
-            <Text style={styles.buttonText}>*</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => handlePress("-")}>
-            <Text style={styles.buttonText}>-</Text>
+            <Text style={styles.buttonText}>x</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Second row */}
+        {/* Second Row */}
         <View style={styles.row}>
           <TouchableOpacity style={styles.button} onPress={() => handlePress("7")}>
             <Text style={styles.buttonText}>7</Text>
@@ -131,12 +135,12 @@ const CalculatorScreen = () => {
           <TouchableOpacity style={styles.button} onPress={() => handlePress("9")}>
             <Text style={styles.buttonText}>9</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => handlePress("+")}>
-            <Text style={styles.buttonText}>+</Text>
+          <TouchableOpacity style={styles.button} onPress={() => handlePress("-")}>
+            <Text style={styles.buttonText}>-</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Third row */}
+        {/* Third Row */}
         <View style={styles.row}>
           <TouchableOpacity style={styles.button} onPress={() => handlePress("4")}>
             <Text style={styles.buttonText}>4</Text>
@@ -147,12 +151,12 @@ const CalculatorScreen = () => {
           <TouchableOpacity style={styles.button} onPress={() => handlePress("6")}>
             <Text style={styles.buttonText}>6</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonEqual} onPress={handleCalculate}>
-            <Text style={styles.buttonText}>=</Text>
+          <TouchableOpacity style={styles.button} onPress={() => handlePress("+")}>
+            <Text style={styles.buttonText}>+</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Fourth row */}
+        {/* Fourth Row */}
         <View style={styles.row}>
           <TouchableOpacity style={styles.button} onPress={() => handlePress("1")}>
             <Text style={styles.buttonText}>1</Text>
@@ -163,46 +167,49 @@ const CalculatorScreen = () => {
           <TouchableOpacity style={styles.button} onPress={() => handlePress("3")}>
             <Text style={styles.buttonText}>3</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => handlePress(".")}>
-            <Text style={styles.buttonText}>.</Text>
+          <TouchableOpacity style={styles.buttonEqual} onPress={handleCalculate}>
+            <Text style={styles.buttonText}>=</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Fifth row */}
+        {/* Fifth Row */}
         <View style={styles.row}>
           <TouchableOpacity style={[styles.button, styles.zeroButton]} onPress={() => handlePress("0")}>
             <Text style={styles.buttonText}>0</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => handlePress(".")}>
+            <Text style={styles.buttonText}>.</Text>
+            </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#fefbe9",
   },
   displayContainer: {
     flex: 2,
     justifyContent: "center",
     alignItems: "flex-end",
-    backgroundColor: "#ffffff",
     paddingRight: 20,
     paddingLeft: 20,
-    borderColor: "#d7ccc8",
-    borderWidth: 1,
+    paddingBottom: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   displayText: {
-    fontSize: 40,
-    color: "#4e342e",
+    fontSize: 60,
+    color: "#ffffff",
+  },
+  subText: {
+    fontSize: 24,
+    color: "rgba(255, 255, 255, 0.7)",
   },
   buttonsContainer: {
     flex: 5,
-    padding: 20,
-    backgroundColor: "#d7ccc8",
+    padding: 10,
   },
   row: {
     flexDirection: "row",
@@ -210,30 +217,30 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   button: {
-    backgroundColor: "#ffb300",
     padding: 20,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 5,
-    width: 60,
+    width: 70,
+    height: 70,
   },
   buttonText: {
-    fontSize: 24,
-    color: "#ffffff",
+    fontSize: 28,
+    color: "#4e342e",
   },
   buttonEqual: {
-    backgroundColor: "#ff7043",
+    backgroundColor: "#FF7043",
     padding: 20,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 5,
-    width: 60,
+    width: 70,
+    height: 70,
   },
   zeroButton: {
     flex: 2,
-    width: '100%', // Make the button span the full width
-    backgroundColor: "#ffb300",
+    width: '100%',
   },
 });
 
 export default CalculatorScreen;
+
+
