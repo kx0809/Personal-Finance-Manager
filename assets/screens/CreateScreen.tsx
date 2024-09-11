@@ -1,36 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, ScrollView, View, TouchableWithoutFeedback, Modal, FlatList, Text, TouchableOpacity, Platform } from 'react-native';
-import { InputWithLabel, AppButton } from '../UI';
+import { InputWithLabel, AppButton } from '../components//UI';
 import { LogBox } from 'react-native';
-import { getDBConnection, createExpenditure } from '../db-service';
+import { getDBConnection, createExpenditure } from '../components/db-service';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { formatted } from '../utility';
+import { formatted } from '../components//utility';
+import { readDataFromFile } from '../components/ExpenseIncomeData'; 
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ]);
-
-const expensesData = [
-  { id: '1', name: 'Food', icon: 'cutlery' },
-  { id: '2', name: 'Transport', icon: 'bus' },
-  { id: '3', name: 'Shopping', icon: 'shopping-cart' },
-  { id: '4', name: 'Rent', icon: 'home' },
-  { id: '5', name: 'Bills', icon: 'file-text' },
-  { id: '6', name: 'Entertainment', icon: 'music' },
-];
-
-const incomeData = [
-  { id: '1', name: 'Salary', icon: 'money' },
-  { id: '2', name: 'Bonus', icon: 'gift' },
-  { id: '3', name: 'Rebate', icon: 'percent' },
-  { id: '4', name: 'Trade', icon: 'exchange' },
-  { id: '5', name: 'Dividend', icon: 'line-chart' },
-  { id: '6', name: 'IncomeRent', icon: 'home' },
-  { id: '7', name: 'Investment', icon: 'home' },
-  { id: '8', name: 'Other', icon: 'home' },
-  { id: '9', name: 'Income', icon: 'home' },
-];
 
 const CreateScreen = ({ route, navigation }) => {
   const [type, setType] = useState('');
@@ -38,36 +18,47 @@ const CreateScreen = ({ route, navigation }) => {
   const [description, setDescription] = useState('');
   const [isPickerOpen, setPickerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Expense'); // Default category
-  const[date, setDate] = useState(new Date(Date.now()));
-  const[openPicker, setOpenPicker] = useState(false);
+  const [date, setDate] = useState(new Date(Date.now()));
+  const [openPicker, setOpenPicker] = useState(false);
+  const [expensesData, setExpensesData] = useState([]);
+  const [incomeData, setIncomeData] = useState([]);
 
   useEffect(() => {
-      navigation.setOptions({ headerTitle: 'Add New' });
+    navigation.setOptions({ headerTitle: 'Add New' });
+
+    // Fetch data from the file and set state
+    const loadData = async () => {
+      const { expensesData, incomeData } = await readDataFromFile();
+      setExpensesData(expensesData);
+      setIncomeData(incomeData);
+    };
+
+    loadData();
   }, []);
 
   const _insert = async () => {
-      await createExpenditure(await getDBConnection(), type, amount, description, selectedCategory, date.getTime());
-      route.params.refresh();
-      navigation.goBack();
+    await createExpenditure(await getDBConnection(), type, amount, description, selectedCategory, date.getTime());
+    route.params.refresh();
+    navigation.goBack();
   };
 
   const openTypePicker = () => {
-      setPickerOpen(true);
+    setPickerOpen(true);
   };
 
-  const selectType = (selectedType: React.SetStateAction<string>) => {
-      setType(selectedType);
-      setPickerOpen(false);
+  const selectType = (selectedType: string) => {
+    setType(selectedType);
+    setPickerOpen(false);
   };
 
   const openDatePicker = () => {
     setOpenPicker(true);
-}
+  };
 
-const onDateSelected = (event: DateTimePickerEvent, value: any ) => {
+  const onDateSelected = (event: DateTimePickerEvent, value: any) => {
     setDate(value);
     setOpenPicker(false);
-}
+  };
 
   return (
       <ScrollView style={styles.container}>

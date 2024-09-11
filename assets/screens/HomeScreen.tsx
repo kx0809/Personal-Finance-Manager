@@ -1,33 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, SectionList, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, SectionList, ScrollView, LogBox } from 'react-native';
 import { FloatingAction } from 'react-native-floating-action';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { getDBConnection, getExpenditures } from '../db-service';
+import { getDBConnection, getExpenditures } from '../components//db-service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { formatted } from '../utility';
+import { formatted } from '../components//utility';
 import { useFocusEffect } from '@react-navigation/native';
-import CustomHomeScreenPieChart from '../CustomHomeScreenPieChart'; // Import the Pie Chart component
+import CustomHomeScreenPieChart from '../components/CustomHomeScreenPieChart'; 
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { readDataFromFile } from '../components/ExpenseIncomeData';
 
-const expensesData = [
-  { id: '1', name: 'Food', icon: 'cutlery' },
-  { id: '2', name: 'Transport', icon: 'bus' },
-  { id: '3', name: 'Shopping', icon: 'shopping-cart' },
-  { id: '4', name: 'Rent', icon: 'home' },
-  { id: '5', name: 'Bills', icon: 'file-text' },
-  { id: '6', name: 'Entertainment', icon: 'music' },
-];
-
-const incomeData = [
-  { id: '1', name: 'Salary', icon: 'money' },
-  { id: '2', name: 'Bonus', icon: 'gift' },
-  { id: '3', name: 'Rebate', icon: 'percent' },
-  { id: '4', name: 'Trade', icon: 'exchange' },
-  { id: '5', name: 'Dividend', icon: 'line-chart' },
-  { id: '6', name: 'IncomeRent', icon: 'home' },
-  { id: '7', name: 'Investment', icon: 'home' },
-  { id: '8', name: 'Other', icon: 'home' },
-  { id: '9', name: 'Income', icon: 'home' },
-];
+LogBox.ignoreLogs([
+  ' VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.',
+]);
 
 const actions = [
   {
@@ -46,6 +31,8 @@ const HomeScreen = ({ route, navigation }: any) => {
     month: '1',
     year: new Date().getFullYear().toString(),
   });
+  const [incomeData, setIncomeData] = useState<any[]>([]);
+  const [expensesData, setExpensesData] = useState<any[]>([]);
 
   const _query = useCallback(async () => {
     console.log('Fetching data with:', selectedMonthYear);
@@ -101,7 +88,7 @@ const HomeScreen = ({ route, navigation }: any) => {
     setExpenditures(sections);
     setTotalExpense(totalExpense);
     setTotalIncome(totalIncome); 
-  }, [selectedMonthYear]);
+  }, [selectedMonthYear, incomeData, expensesData]);
 
   useEffect(() => {
     const loadMonthYearData = async () => {
@@ -116,7 +103,14 @@ const HomeScreen = ({ route, navigation }: any) => {
       }
     };
 
+    const loadDefaultData = async () => {
+      const data = await readDataFromFile();
+      setIncomeData(data.incomeData);
+      setExpensesData(data.expensesData);
+    };
+
     loadMonthYearData();
+    loadDefaultData();
   }, []);
 
   useFocusEffect(
@@ -154,7 +148,6 @@ const HomeScreen = ({ route, navigation }: any) => {
       return 'RM 0.00';
     }
     return `RM ${income.toFixed(2)}`;
-
   };
 
   const formatTotalExpense = (expense: number) => {
@@ -163,7 +156,6 @@ const HomeScreen = ({ route, navigation }: any) => {
       return 'RM 0.00';
     }
     return `RM ${expense.toFixed(2)}`;
-
   };
 
   // Determine border colors
@@ -184,14 +176,15 @@ const HomeScreen = ({ route, navigation }: any) => {
           </View>
         </View>
 
-      
-        <CustomHomeScreenPieChart
-          data={{
-            Expense: totalExpense,
-            Income: totalIncome
-          }}
-          selectedMonth={`${selectedMonthYear.month}-${selectedMonthYear.year}`}
-        />
+        <TouchableOpacity>
+          <CustomHomeScreenPieChart
+            data={{
+              Expense: totalExpense,
+              Income: totalIncome
+            }}
+            selectedMonth={`${selectedMonthYear.month}-${selectedMonthYear.year}`}
+          />
+        </TouchableOpacity>
         
         {expenditures.length === 0 ? (
           <Text style={styles.noRecordsText}>No record, press + to add</Text>
@@ -216,7 +209,6 @@ const HomeScreen = ({ route, navigation }: any) => {
                   styles.itemWrapper,
                   isLastItem && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 },
                   { backgroundColor: getBackgroundColor(item.category) },
-                  index === 0 && { borderTopLeftRadius: 10, borderTopRightRadius: 10 },
                 ]}
               >
                 <TouchableHighlight

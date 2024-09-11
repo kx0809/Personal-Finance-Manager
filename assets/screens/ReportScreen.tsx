@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import PagerView from 'react-native-pager-view';
-import { getDBConnection, getMonthlyExpenditures, getMonthlyIncome } from './HomeScreen/db-service'; 
+import { getDBConnection, getMonthlyExpenditures, getMonthlyIncome } from '../components/db-service'; 
 import CustomPieChart from '../components/CustomPieChart'; 
 import styles from '../styles/reportScreenStyles';
 

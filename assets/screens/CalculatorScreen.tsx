@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import io from "socket.io-client";
+import LinearGradient from 'react-native-linear-gradient'; // Import LinearGradient
+
 
 const CalculatorScreen = () => {
   const [display, setDisplay] = useState(""); // Display for calculator input

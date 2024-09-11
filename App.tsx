@@ -5,16 +5,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';  
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './assets/screens/HomeScreen/screens/HomeScreen';
-import ViewScreen from './assets/screens/HomeScreen/screens/ViewScreen';
-import CreateScreen from './assets/screens/HomeScreen/screens/CreateScreen';
-import EditScreen from './assets/screens/HomeScreen/screens/EditScreen';
-import CustomDropdown from './assets/screens/HomeScreen/CustomDropdown'; 
-import CategoriesScreen from './assets/screens/CategoriesScreen/CategoriesScreen';
+import HomeScreen from './assets/screens/HomeScreen';
+import ViewScreen from './assets/screens/ViewScreen';
+import CreateScreen from './assets/screens/CreateScreen';
+import EditScreen from './assets/screens/EditScreen';
+import CustomDropdown from './assets/components/CustomDropdown'; 
 import ReportScreen from './assets/screens/ReportScreen';
 import CustomDrawerComponent from './assets/components/CustomDrawerComponent';
 import SettingsScreen from './assets/screens/SettingsScreen';
-import MonthYearDropdown from './assets/screens/HomeScreen/MonthYearDropdown'; 
+import MonthYearDropdown from './assets/components/MonthYearDropdown'; 
 import CategoriesStackNavigator from './assets/screens/CategoriesScreen/CategoriesStackNavigator';
 import FeedbackScreen from './assets/screens/FeedbackScreen';
 import CalculatorScreen from './assets/screens/CalculatorScreen';
@@ -270,7 +269,10 @@ const MainApp = () => {
         <Drawer.Screen name="Report" component={ReportScreen} />
         <Drawer.Screen name="Categories" component={CategoriesStackNavigator} />
         <Drawer.Screen name="Settings" component={SettingsScreen} />
-        <Drawer.Screen name="Feedback" component={FeedbackScreen} />
+        <Drawer.Screen 
+          name="Feedback" 
+          component={FeedbackScreen}
+          options={{headerTitle: 'Feedback Form'}}/>
         <Drawer.Screen name="Calculator" component={CalculatorScreen} />
         
       </Drawer.Navigator>

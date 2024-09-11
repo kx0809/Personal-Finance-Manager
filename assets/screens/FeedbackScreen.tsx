@@ -42,7 +42,6 @@ const FeedbackScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Feedback Form</Text>
 
       <TextInput
         style={styles.input}
