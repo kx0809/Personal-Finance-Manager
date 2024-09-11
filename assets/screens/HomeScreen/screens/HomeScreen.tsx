@@ -40,6 +40,8 @@ const actions = [
 
 const HomeScreen = ({ route, navigation }: any) => {
   const [expenditures, setExpenditures] = useState<any>([]);
+  const [totalIncome, setTotalIncome] = useState<number>(0);
+  const [totalExpense, setTotalExpense] = useState<number>(0);
   const [selectedMonthYear, setSelectedMonthYear] = useState<{ month: string; year: string }>({
     month: '1',
     year: new Date().getFullYear().toString(),
@@ -49,7 +51,7 @@ const HomeScreen = ({ route, navigation }: any) => {
     console.log('Fetching data with:', selectedMonthYear);
     const dbConnection = await getDBConnection();
     const fetchedExpenditures = await getExpenditures(dbConnection);
-
+  
     const filteredExpenditures = fetchedExpenditures.filter((item: any) => {
       const itemDate = new Date(item.date);
       return (
@@ -57,25 +59,25 @@ const HomeScreen = ({ route, navigation }: any) => {
         itemDate.getFullYear() === parseInt(selectedMonthYear.year, 10)
       );
     });
-
+  
     const sortedExpenditures = filteredExpenditures.sort((a: any, b: any) => {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
-
+  
     const groupedExpenditures = sortedExpenditures.reduce((groups: any, item: any) => {
       const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
       if (!groups[dateKey]) {
         groups[dateKey] = { income: 0, expense: 0, data: [] };
       }
       if (item.category === 'Income') {
-        groups[dateKey].income += item.amount;
+        groups[dateKey].income += parseFloat(item.amount); // Ensure amount is treated as a float
       } else {
-        groups[dateKey].expense += item.amount;
+        groups[dateKey].expense += parseFloat(item.amount); // Ensure amount is treated as a float
       }
       groups[dateKey].data.push(item);
       return groups;
     }, {});
-
+  
     const sections = Object.keys(groupedExpenditures).map(dateKey => {
       const { income, expense, data } = groupedExpenditures[dateKey];
       const netTotal = income - expense || 0;
@@ -85,8 +87,22 @@ const HomeScreen = ({ route, navigation }: any) => {
         data,
       };
     });
+  
+    // Calculate total income
+    const totalIncome = filteredExpenditures.reduce((sum: number, item: any) => {
+      return item.category === 'Income' ? sum + parseFloat(item.amount) : sum;
+    }, 0);
 
+    // Calculate total expense
+    const totalExpense = filteredExpenditures.reduce((sum: number, item: any) => {
+      return item.category === 'Expense' ? sum + parseFloat(item.amount) : sum;
+    }, 0);
+  
+    console.log('Total Income:', totalIncome); // Debugging statement
+  
     setExpenditures(sections);
+    setTotalExpense(totalExpense);
+    setTotalIncome(totalIncome); // Update the state with total income
   }, [selectedMonthYear]);
 
   useEffect(() => {
@@ -134,8 +150,38 @@ const HomeScreen = ({ route, navigation }: any) => {
     return `RM ${netTotal.toFixed(2)}`;
   };
 
+  const formatTotalIncome = (income: number) => {
+    if (typeof income !== 'number' || isNaN(income)) {
+      console.error('Invalid totalIncome value:', income);
+      return 'RM 0.00';
+    }
+    return `RM ${income.toFixed(2)}`;
+
+  };
+
+  const formatTotalExpense = (expense: number) => {
+    if (typeof expense !== 'number' || isNaN(expense)) {
+      console.error('Invalid totalIncome value:', expense);
+      return 'RM 0.00';
+    }
+    return `RM ${expense.toFixed(2)}`;
+
+  };
+  
+
+
   return (
     <View style={styles.container}>
+      <View style={styles.totalContainer}>
+        <View style={styles.totalExpenseIncomeContainer}>
+          <Text style={styles.totalExpenseText}>Expense:</Text>
+          <Text style={styles.totalAmount}>{formatTotalExpense(totalExpense)}</Text>
+        </View>
+        <View style={styles.totalExpenseIncomeContainer}>
+          <Text style={styles.totalIncomeText}>Income:</Text>
+          <Text style={styles.totalAmount}>{formatTotalIncome(totalIncome)}</Text>
+        </View>
+      </View>
       <SectionList
         sections={expenditures}
         keyExtractor={(item: any) => item.id.toString()}
@@ -267,6 +313,35 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginLeft: 'auto',
   },
+  totalContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: -15,
+  },
+  totalIncomeText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4e342e',
+    borderBottomWidth: 7, // Adjust the width as needed
+    borderBottomColor: '#e8f7ff', // Adjust the color as needed
+    paddingBottom: 0, // Adjust this value to move the border up
+  },
+  totalExpenseText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4e342e',
+    borderBottomWidth: 7, // Adjust the width as needed
+    borderBottomColor: '#ffe8e8', // Adjust the color as needed
+  },
+  totalAmount: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4e342e',
+  },
+  totalExpenseIncomeContainer:{
+    margin: 15,
+    padding: 10,
+  }
 });
 
 

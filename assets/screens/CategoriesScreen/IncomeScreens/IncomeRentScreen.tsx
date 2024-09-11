@@ -28,9 +28,9 @@ const IncomeRentScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Income Rent Data</Text>
+      <Text style={styles.title}>Income from incoming rent</Text>
       {data.length === 0 ? (
-        <Text style={styles.noData}>No data available for Income Rent</Text>
+        <Text style={styles.noData}>No income coming from incoming rent</Text>
       ) : (
         <FlatList
           data={data}

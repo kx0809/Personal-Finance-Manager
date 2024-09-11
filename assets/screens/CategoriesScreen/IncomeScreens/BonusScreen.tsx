@@ -28,9 +28,9 @@ const BonusScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bonus Data</Text>
+      <Text style={styles.title}>Income from bonus</Text>
       {data.length === 0 ? (
-        <Text style={styles.noData}>No data available for bonus</Text>
+        <Text style={styles.noData}>No income coming from bonus</Text>
       ) : (
         <FlatList
           data={data}

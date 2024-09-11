@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import CategoriesScreen from './CategoriesScreen'; // Your existing CategoriesScreen
+import CategoriesScreen from './CategoriesScreen'; 
 import FoodScreen from './ExpenseScreens/FoodScreen';
 import TransportScreen from './ExpenseScreens/TransportScreen';
 import ShoppingScreen from './ExpenseScreens/ShoppingScreen';
@@ -25,7 +25,7 @@ const CategoriesStackNavigator = () => {
         <Stack.Screen
         name="Categories"
         component={CategoriesScreen}
-        options={{ headerShown: false }} // Optional: Hide header if you don't want it
+        options={{ headerShown: false }} 
       />
       {/* Expenses screens */}
       <Stack.Screen

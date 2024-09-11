@@ -28,9 +28,9 @@ const SalaryScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Salary Data</Text>
+      <Text style={styles.title}>Income from salary</Text>
       {data.length === 0 ? (
-        <Text style={styles.noData}>No data available for salary</Text>
+        <Text style={styles.noData}>No income coming from salary</Text>
       ) : (
         <FlatList
           data={data}
