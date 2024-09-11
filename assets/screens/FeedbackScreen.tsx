@@ -7,25 +7,17 @@ const FeedbackScreen = () => {
   const [message, setMessage] = useState("");
 
   const handleSubmit = () => {
-    // Email validation regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
     if (name === "" || email === "" || message === "") {
       Alert.alert("Error", "Please fill all the fields");
       return;
     }
-  
-    if (!emailRegex.test(email)) {
-      Alert.alert("Error", "Please enter a valid email address");
-      return;
-    }
-  
+
     const feedbackData = {
       name: name,
       email: email,
       message: message,
     };
-  
+
     fetch('http://10.0.2.2:5000/feedback', {
       method: 'POST',
       headers: {

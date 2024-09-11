@@ -4,7 +4,7 @@ import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")  # Initialize SocketIO after Flask app
 
 # Handle connection to /calculator namespace
 @socketio.on('connect', namespace='/calculator')
@@ -14,25 +14,30 @@ def handle_connect_calculator():
 # Handle client messages with numbers and operation
 @socketio.on('client_send', namespace='/calculator')
 def handle_client_send_calculator(data):
-    number1 = data['number1']
-    number2 = data['number2']
-    operation = data['operation']
-    
-    result = None
-    if operation == 'add':
-        result = number1 + number2
-    elif operation == 'subtract':
-        result = number1 - number2
-    elif operation == 'multiply':
-        result = number1 * number2
-    elif operation == 'divide':
-        if number2 != 0:
-            result = number1 / number2
-        else:
-            result = 'Error: Division by zero'
-    
-    # Emit result back to the client
-    emit('server_send', json.dumps({'result': result}), namespace='/calculator')
+    try:
+        number1 = data['number1']
+        number2 = data['number2']
+        operation = data['operation']
+        
+        result = None
+        if operation == 'add':
+            result = number1 + number2
+        elif operation == 'subtract':
+            result = number1 - number2
+        elif operation == 'multiply':
+            result = number1 * number2
+        elif operation == 'divide':
+            if number2 != 0:
+                result = number1 / number2
+            else:
+                result = 'Error: Division by zero'
 
+        # Send result back to client
+        emit('server_send', json.dumps({'result': result}), namespace='/calculator')
+
+    except Exception as e:
+        emit('server_send', json.dumps({'result': 'Error'}), namespace='/calculator')
+
+# Start the server
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5001)

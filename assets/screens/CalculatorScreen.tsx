@@ -1,9 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import io from "socket.io-client";
 
 const CalculatorScreen = () => {
   const [display, setDisplay] = useState(""); // Display for calculator input
   const [result, setResult] = useState(null); // Final calculated result
+  const [socket, setSocket] = useState(null); // Socket.IO client instance
+
+  useEffect(() => {
+    // Initialize WebSocket connection
+    const socketInstance = io('http://10.0.2.2:5001/calculator'); // Update with your server address
+    setSocket(socketInstance);
+
+    // Handle connection event
+    socketInstance.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    // Handle server response
+    socketInstance.on('server_send', (data) => {
+      const parsedData = JSON.parse(data);
+      setResult(parsedData.result);
+    });
+
+    // Handle errors
+    socketInstance.on('connect_error', (error) => {
+      console.error('Connection error:', error);
+    });
+
+    return () => {
+      socketInstance.disconnect();
+    };
+  }, []);
 
   // Function to handle number and operator presses
   const handlePress = (value) => {
@@ -26,13 +54,42 @@ const CalculatorScreen = () => {
     setResult(null);
   };
 
-  // Function to calculate the result using eval (simple expressions)
+  // Function to calculate the result using WebSocket
   const handleCalculate = () => {
     try {
-      const calculatedResult = eval(display); // Evaluate the expression
-      setResult(calculatedResult); // Set the result
+      const [number1, operation, number2] = display.split(/([+\-*/])/);
+      if (!number1 || !number2 || !operation) {
+        setResult("Error");
+        return;
+      }
+      const data = {
+        number1: parseFloat(number1),
+        number2: parseFloat(number2),
+        operation: getOperation(operation),
+      };
+
+      // Send data to the WebSocket server
+      if (socket) {
+        socket.emit('client_send', data);
+      }
     } catch (error) {
-      setResult("Error"); // If an error occurs (e.g., invalid input)
+      setResult("Error");
+    }
+  };
+
+  // Function to convert operation symbol to WebSocket operation
+  const getOperation = (op) => {
+    switch (op) {
+      case '+':
+        return 'add';
+      case '-':
+        return 'subtract';
+      case '*':
+        return 'multiply';
+      case '/':
+        return 'divide';
+      default:
+        return '';
     }
   };
 
@@ -174,9 +231,6 @@ const styles = StyleSheet.create({
     flex: 2,
     width: '100%', // Make the button span the full width
     backgroundColor: "#ffb300",
-  },
-  emptyButton: {
-    width: 60, // Empty button to align the row properly
   },
 });
 
