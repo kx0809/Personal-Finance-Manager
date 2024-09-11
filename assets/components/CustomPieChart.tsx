@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 
 type CustomPieChartProps = {
@@ -23,7 +23,7 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({ data, selectedMonth }) 
         return {
             name: label,
             amount: value,
-            color: ['#ff6384', '#36a2eb', '#ffce56', '#4caf50', '#ff5722', '#8e44ad'][index % 6],
+            color: ['#ff6384', '#36a2eb', '#ffce56', '#4caf50', '#ff5722', '#8e44ad', '#00bcd4', '#c2185b', '#3f51b5'][index % 9],
         };
     });
 
@@ -32,7 +32,7 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({ data, selectedMonth }) 
             <View style={styles.pieChartContainer}>
                 <PieChart
                     data={pieData}
-                    width={300}
+                    width={350}
                     height={200}
                     chartConfig={{
                         backgroundColor: '#fefbe9', 
@@ -51,19 +51,16 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({ data, selectedMonth }) 
                     absolute={false}
                 />
 
-                <View style={styles.legendContainer}>
+                <ScrollView style={styles.legendContainer}>
                     {pieData.map((item, index) => (
                         <View key={index} style={styles.legendItem}>
                             <View style={[styles.legendColor, { backgroundColor: item.color }]} />
                             <Text style={styles.legendText}>
-                                {item.name}: RM {item.amount}
+                                {item.name}: RM {item.amount.toFixed(2)}
                             </Text>
                         </View>
                     ))}
-                </View>
-            </View>
-            <View>
-                <Text style={styles.totalAmount}>Total Expenditure: RM {totalExpenditure}</Text>
+                </ScrollView>
             </View>
         </View>
     );
@@ -93,7 +90,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         borderTopWidth: 1,
         borderTopColor: '#d7ccc8',
-        maxHeight: 150,
+        maxHeight: 300, 
     },
     legendItem: {
         flexDirection: 'row',
@@ -115,11 +112,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '500',
         color: '#4e342e',
-    },
-    totalAmount: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#4e342e',
+        flexShrink: 1,
     },
 });
 

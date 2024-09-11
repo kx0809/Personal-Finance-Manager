@@ -88,6 +88,7 @@ export const getMonthlyExpenditures = async (db: SQLiteDatabase): Promise<any> =
     try {
         const query = `SELECT type, strftime('%Y-%m', date / 1000, 'unixepoch') AS month, SUM(amount) AS total
                        FROM IncomeExpense
+                       WHERE category = 'Expense'  
                        GROUP BY type, month
                        ORDER BY month, type`;
         const results = await db.executeSql(query);
@@ -106,6 +107,32 @@ export const getMonthlyExpenditures = async (db: SQLiteDatabase): Promise<any> =
     } catch (error) {
         console.error(error);
         throw Error('Failed to get Monthly Expenditures!');
+    }
+}
+
+export const getMonthlyIncome = async (db: SQLiteDatabase): Promise<any> => {
+    try {
+        const query = `SELECT type, strftime('%Y-%m', date / 1000, 'unixepoch') AS month, SUM(amount) AS total
+                       FROM IncomeExpense
+                       WHERE category = 'Income'  -- Filter to include only income
+                       GROUP BY type, month
+                       ORDER BY month, type`;
+        const results = await db.executeSql(query);
+        const income: { [key: string]: { [type: string]: number } } = {};
+        
+        results.forEach(result => {
+            result.rows.raw().forEach((row: any) => {
+                const { month, type, total } = row;
+                if (!income[month]) {
+                    income[month] = {};
+                }
+                income[month][type] = total;
+            });
+        });
+        return income;
+    } catch (error) {
+        console.error(error);
+        throw Error('Failed to get Monthly Income!');
     }
 }
 
