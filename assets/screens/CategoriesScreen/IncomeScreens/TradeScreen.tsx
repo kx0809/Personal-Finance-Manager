@@ -28,9 +28,9 @@ const TradeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Trade Data</Text>
+      <Text style={styles.title}>Income from Trade</Text>
       {data.length === 0 ? (
-        <Text style={styles.noData}>No data available for Trade</Text>
+        <Text style={styles.noData}>No income coming from trade</Text>
       ) : (
         <FlatList
           data={data}

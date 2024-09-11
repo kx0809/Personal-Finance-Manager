@@ -28,9 +28,9 @@ const OtherScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Other Data</Text>
+      <Text style={styles.title}>Income form other</Text>
       {data.length === 0 ? (
-        <Text style={styles.noData}>No data available for Other</Text>
+        <Text style={styles.noData}>No income coming from other</Text>
       ) : (
         <FlatList
           data={data}

@@ -28,9 +28,9 @@ const RebateScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Rebate Data</Text>
+      <Text style={styles.title}>Income from rebate</Text>
       {data.length === 0 ? (
-        <Text style={styles.noData}>No data available for Rebate</Text>
+        <Text style={styles.noData}>No income coming from rebate</Text>
       ) : (
         <FlatList
           data={data}

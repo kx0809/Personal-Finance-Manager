@@ -28,9 +28,9 @@ const EntertainmentScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Entertainment Data</Text>
+      <Text style={styles.title}>Expenses for entertainment </Text>
       {data.length === 0 ? (
-        <Text style={styles.noData}>No data available for Entertainment</Text>
+        <Text style={styles.noData}>No expenses for entertainment</Text>
       ) : (
         <FlatList
           data={data}
