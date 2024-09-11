@@ -28,9 +28,9 @@ const ShoppingScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Shopping Data</Text>
+      <Text style={styles.title}>Expenses for shopping</Text>
       {data.length === 0 ? (
-        <Text style={styles.noData}>No data available for Shopping</Text>
+        <Text style={styles.noData}>No expenses for shopping</Text>
       ) : (
         <FlatList
           data={data}

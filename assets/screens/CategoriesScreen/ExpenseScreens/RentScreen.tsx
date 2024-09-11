@@ -28,9 +28,9 @@ const RentScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Rent Data</Text>
+      <Text style={styles.title}>Expenses for rent</Text>
       {data.length === 0 ? (
-        <Text style={styles.noData}>No data available for Rent</Text>
+        <Text style={styles.noData}>No expenses for rent</Text>
       ) : (
         <FlatList
           data={data}

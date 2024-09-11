@@ -28,9 +28,9 @@ const BillsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bills Data</Text>
+      <Text style={styles.title}>Expenses for bills</Text>
       {data.length === 0 ? (
-        <Text style={styles.noData}>No data available for bills</Text>
+        <Text style={styles.noData}>No expenses for bills</Text>
       ) : (
         <FlatList
           data={data}

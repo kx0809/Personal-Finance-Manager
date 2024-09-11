@@ -28,9 +28,9 @@ const TransportScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Transport Data</Text>
+      <Text style={styles.title}>Expenses for transport</Text>
       {data.length === 0 ? (
-        <Text style={styles.noData}>No data available for Transport</Text>
+        <Text style={styles.noData}>No expenses for transport</Text>
       ) : (
         <FlatList
           data={data}

@@ -28,9 +28,9 @@ const DividendScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Dividend Data</Text>
+      <Text style={styles.title}>Income from dividend</Text>
       {data.length === 0 ? (
-        <Text style={styles.noData}>No data available for dividend</Text>
+        <Text style={styles.noData}>No income coming from dividend</Text>
       ) : (
         <FlatList
           data={data}
