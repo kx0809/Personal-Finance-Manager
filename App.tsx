@@ -15,21 +15,7 @@ import ReportScreen from './assets/screens/ReportScreen';
 import CustomDrawerComponent from './assets/components/CustomDrawerComponent';
 import SettingsScreen from './assets/screens/SettingsScreen';
 import MonthYearDropdown from './assets/screens/HomeScreen/MonthYearDropdown'; 
-import FoodScreen from './assets/screens/CategoriesScreen/ExpenseScreens/FoodScreen';
-import TransportScreen from './assets/screens/CategoriesScreen/ExpenseScreens/TransportScreen';
-import ShoppingScreen from './assets/screens/CategoriesScreen/ExpenseScreens/ShoppingScreen';
-import RentScreen from './assets/screens/CategoriesScreen/ExpenseScreens/RentScreen';
-import BillsScreen from './assets/screens/CategoriesScreen/ExpenseScreens/BillsScreen';
-import EntertainmentScreen from './assets/screens/CategoriesScreen/ExpenseScreens/EntertainmentScreen';
-import SalaryScreen from './assets/screens/CategoriesScreen/IncomeScreens/SalaryScreen';
-import BonusScreen from './assets/screens/CategoriesScreen/IncomeScreens/BonusScreen';
-import RebateScreen from './assets/screens/CategoriesScreen/IncomeScreens/RebateScreen';
-import TradeScreen from './assets/screens/CategoriesScreen/IncomeScreens/TradeScreen';
-import DividendScreen from './assets/screens/CategoriesScreen/IncomeScreens/DividendScreen';
-import IncomeRentScreen from './assets/screens/CategoriesScreen/IncomeScreens/IncomeRentScreen';
-import InvestmentScreen from './assets/screens/CategoriesScreen/IncomeScreens/InvestmentScreen';
-import OtherScreen from './assets/screens/CategoriesScreen/IncomeScreens/OtherScreen';
-import IncomeScreen from './assets/screens/CategoriesScreen/IncomeScreens/IncomeScreen';
+import CategoriesStackNavigator from './assets/screens/CategoriesScreen/CategoriesStackNavigator';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -88,9 +74,7 @@ function HomeStack({ navigation }) {
   
     return `${monthNames[monthIndex]} ${year}`;
   };
-  
-  
-
+ 
   return (
     <>
       <Stack.Navigator>
@@ -216,203 +200,6 @@ function HomeStack({ navigation }) {
             ),
           }}
         />
-           {/* Expenses screens */}
-          <Stack.Screen
-            name="Food"
-            component={FoodScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Food',
-          }}
-          />
-
-          <Stack.Screen
-            name="Transport"
-            component={TransportScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Transport',
-          }}
-          />
-
-          <Stack.Screen
-            name="Shopping"
-            component={ShoppingScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Shopping',
-          }}
-          />
-
-          <Stack.Screen
-            name="Rent"
-            component={RentScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Rent',
-          }}
-          />
-
-
-          <Stack.Screen
-            name="Bills"
-            component={BillsScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Bills',
-          }}
-          />
-
-          <Stack.Screen
-            name="Entertainment"
-            component={EntertainmentScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Entertainment',
-          }}
-          />
-
-      {/* Income screens */}
-      <Stack.Screen
-            name="Salary"
-            component={SalaryScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Salary',
-          }}
-          />
-
-          <Stack.Screen
-            name="Bonus"
-            component={BonusScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Bonus',
-          }}
-          />
-
-          <Stack.Screen
-            name="Rebate"
-            component={RebateScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Rebate',
-          }}
-          />
-
-          <Stack.Screen
-            name="Trade"
-            component={TradeScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Trade',
-          }}
-          />
-
-          <Stack.Screen
-            name="Dividend"
-            component={DividendScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Dividend',
-          }}
-          />
-
-          <Stack.Screen
-            name="IncomeRent"
-            component={IncomeRentScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Income Rent',
-          }}
-          />
-
-          <Stack.Screen
-            name="Investment"
-            component={InvestmentScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Investment',
-          }}
-          />
-
-          <Stack.Screen
-            name="Other"
-            component={OtherScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Other',
-          }}
-          />
-
-          <Stack.Screen
-            name="Income"
-            component={IncomeScreen}
-            options={{
-            headerShown: true,
-            headerStyle: {
-            backgroundColor: '#ffb300',
-            },
-            headerTitleAlign: 'center',
-            headerTitle: 'Income',
-          }}
-          />
       </Stack.Navigator>
 
       {/* Modal for CustomDropdown Calendar */}
@@ -479,7 +266,7 @@ const MainApp = () => {
           options={{ headerShown: false }}
         />
         <Drawer.Screen name="Report" component={ReportScreen} />
-        <Drawer.Screen name="Categories" component={CategoriesScreen} />
+        <Drawer.Screen name="Categories" component={CategoriesStackNavigator} />
         <Drawer.Screen name="Settings" component={SettingsScreen} />
       </Drawer.Navigator>
     </NavigationContainer>

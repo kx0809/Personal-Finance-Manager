@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Animated, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
 
 const expensesData = [
   { id: '1', name: 'Food', icon: 'cutlery' },
@@ -25,6 +27,7 @@ const incomeData = [
 ];
 
 const { width } = Dimensions.get('window');
+
 
 const CategoriesScreen = () => {
   const navigation = useNavigation();
@@ -101,6 +104,7 @@ const CategoriesScreen = () => {
           />
         </View>
       </Animated.View>
+      
     </View>
   );
 };
