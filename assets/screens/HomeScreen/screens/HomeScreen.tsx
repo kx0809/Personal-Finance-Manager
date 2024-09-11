@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, SectionList } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, SectionList, ScrollView } from 'react-native';
 import { FloatingAction } from 'react-native-floating-action';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { getDBConnection, getExpenditures } from '../db-service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { formatted } from '../utility';
 import { useFocusEffect } from '@react-navigation/native';
+import CustomHomeScreenPieChart from '../CustomHomeScreenPieChart'; // Import the Pie Chart component
 
-// Define your expense and income data
 const expensesData = [
   { id: '1', name: 'Food', icon: 'cutlery' },
   { id: '2', name: 'Transport', icon: 'bus' },
@@ -70,9 +70,9 @@ const HomeScreen = ({ route, navigation }: any) => {
         groups[dateKey] = { income: 0, expense: 0, data: [] };
       }
       if (item.category === 'Income') {
-        groups[dateKey].income += parseFloat(item.amount); // Ensure amount is treated as a float
+        groups[dateKey].income += parseFloat(item.amount); 
       } else {
-        groups[dateKey].expense += parseFloat(item.amount); // Ensure amount is treated as a float
+        groups[dateKey].expense += parseFloat(item.amount); 
       }
       groups[dateKey].data.push(item);
       return groups;
@@ -98,11 +98,9 @@ const HomeScreen = ({ route, navigation }: any) => {
       return item.category === 'Expense' ? sum + parseFloat(item.amount) : sum;
     }, 0);
   
-    console.log('Total Income:', totalIncome); // Debugging statement
-  
     setExpenditures(sections);
     setTotalExpense(totalExpense);
-    setTotalIncome(totalIncome); // Update the state with total income
+    setTotalIncome(totalIncome); 
   }, [selectedMonthYear]);
 
   useEffect(() => {
@@ -161,74 +159,93 @@ const HomeScreen = ({ route, navigation }: any) => {
 
   const formatTotalExpense = (expense: number) => {
     if (typeof expense !== 'number' || isNaN(expense)) {
-      console.error('Invalid totalIncome value:', expense);
+      console.error('Invalid totalExpense value:', expense);
       return 'RM 0.00';
     }
     return `RM ${expense.toFixed(2)}`;
 
   };
+
+  // Determine border colors
+  const expenseBorderColor = totalExpense === 0 ? '#cccccc' : '#ffe8e8';
+  const incomeBorderColor = totalIncome === 0 ? '#cccccc' : '#e8f7ff';
   
-
-
   return (
     <View style={styles.container}>
-      <View style={styles.totalContainer}>
-        <View style={styles.totalExpenseIncomeContainer}>
-          <Text style={styles.totalExpenseText}>Expense:</Text>
-          <Text style={styles.totalAmount}>{formatTotalExpense(totalExpense)}</Text>
-        </View>
-        <View style={styles.totalExpenseIncomeContainer}>
-          <Text style={styles.totalIncomeText}>Income:</Text>
-          <Text style={styles.totalAmount}>{formatTotalIncome(totalIncome)}</Text>
-        </View>
-      </View>
-      <SectionList
-        sections={expenditures}
-        keyExtractor={(item: any) => item.id.toString()}
-        renderSectionHeader={({ section: { title, netTotal } }) => (
-          <View style={styles.sectionHeaderWrapper}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>{title}</Text>
-              <Text style={styles.sectionNetTotal}>{formatNetTotal(netTotal)}</Text>
-            </View>
+      <ScrollView style={styles.listContainer}>
+        <View style={styles.totalContainer}>
+          <View style={styles.totalExpenseIncomeContainer}>
+            <Text style={[styles.totalExpenseText, { borderBottomColor: expenseBorderColor }]}>Expense:</Text>
+            <Text style={styles.totalAmount}>{formatTotalExpense(totalExpense)}</Text>
           </View>
-        )}
-        renderItem={({ item, index, section }) => {
-          const isLastItem = index === section.data.length - 1;
+          <View style={styles.totalExpenseIncomeContainer}>
+            <Text style={[styles.totalIncomeText, { borderBottomColor: incomeBorderColor }]}>Income:</Text>
+            <Text style={styles.totalAmount}>{formatTotalIncome(totalIncome)}</Text>
+          </View>
+        </View>
 
-          return (
-            <View
-              style={[
-                styles.itemWrapper,
-                isLastItem && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 },
-                { backgroundColor: getBackgroundColor(item.category) },
-              ]}
-            >
-              <TouchableHighlight
-                underlayColor="#d7ccc8"
-                onPress={() => {
-                  navigation.navigate('ViewScreen', {
-                    id: item.id,
-                    headerTitle: item.type,
-                    refresh: _query,
-                  });
-                }}>
-                <View style={styles.details}>
-                  <View style={styles.item}>
-                    <View style={styles.type}>
-                      <Icon name={getIcon(item.type, item.category)} size={20} color="#000" />
-                      <Text style={styles.itemTitle}>{item.type}</Text>
-                    </View>
-                    <Text style={styles.itemDescription}>{item.description}</Text>
-                  </View>
-                  <Text style={styles.itemAmount}>{getPlusMinus(item.category)}RM {item.amount}</Text>
-                </View>
-              </TouchableHighlight>
+      
+        <CustomHomeScreenPieChart
+          data={{
+            Expense: totalExpense,
+            Income: totalIncome
+          }}
+          selectedMonth={`${selectedMonthYear.month}-${selectedMonthYear.year}`}
+        />
+        
+        {expenditures.length === 0 ? (
+          <Text style={styles.noRecordsText}>No record, press + to add</Text>
+        ) : (
+        <SectionList
+          sections={expenditures}
+          keyExtractor={(item: any) => item.id.toString()}
+          renderSectionHeader={({ section: { title, netTotal } }) => (
+            <View style={styles.sectionHeaderWrapper}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>{title}</Text>
+                <Text style={styles.sectionNetTotal}>{formatNetTotal(netTotal)}</Text>
+              </View>
             </View>
-          );
-        }}
-      />
+          )}
+          renderItem={({ item, index, section }) => {
+            const isLastItem = index === section.data.length - 1;
 
+            return (
+              <View
+                style={[
+                  styles.itemWrapper,
+                  isLastItem && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 },
+                  { backgroundColor: getBackgroundColor(item.category) },
+                  index === 0 && { borderTopLeftRadius: 10, borderTopRightRadius: 10 },
+                ]}
+              >
+                <TouchableHighlight
+                  underlayColor="#d7ccc8"
+                  onPress={() => {
+                    navigation.navigate('ViewScreen', {
+                      id: item.id,
+                      headerTitle: item.type,
+                      refresh: _query,
+                    });
+                  }}>
+                  <View style={styles.details}>
+                    <View style={styles.item}>
+                      <View style={styles.type}>
+                        <Icon name={getIcon(item.type, item.category)} size={20} color="#000" />
+                        <Text style={styles.itemTitle}>{item.type}</Text>
+                      </View>
+                      <Text style={styles.itemDescription}>{item.description}</Text>
+                    </View>
+                    <Text style={styles.itemAmount}>{getPlusMinus(item.category)}RM {item.amount}</Text>
+                  </View>
+                </TouchableHighlight>
+              </View>
+            );
+          }}
+        />
+        )
+      }
+      </ScrollView>
       <FloatingAction
         actions={actions}
         onPressItem={name => {
@@ -323,7 +340,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#4e342e',
     borderBottomWidth: 7, // Adjust the width as needed
-    borderBottomColor: '#e8f7ff', // Adjust the color as needed
     paddingBottom: 0, // Adjust this value to move the border up
   },
   totalExpenseText: {
@@ -331,7 +347,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#4e342e',
     borderBottomWidth: 7, // Adjust the width as needed
-    borderBottomColor: '#ffe8e8', // Adjust the color as needed
   },
   totalAmount: {
     fontSize: 18,
@@ -341,8 +356,17 @@ const styles = StyleSheet.create({
   totalExpenseIncomeContainer:{
     margin: 15,
     padding: 10,
-  }
+    alignItems: 'center',
+  },
+  listContainer: {
+    flex: 1,
+  },
+  noRecordsText: {
+    fontSize: 16,
+    color: '#999',
+    textAlign: 'center',
+    marginTop: 80,
+  },
 });
-
 
 export default HomeScreen;
