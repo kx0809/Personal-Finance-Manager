@@ -322,7 +322,7 @@ export default class App extends Component {
             onRequestClose={() => {}}
           >
             <View style={styles.modalBackground}>
-              <View style={styles.modalContainer}>
+              <View style={styles.passcodeModalContainer}>
                 <Text style={styles.modalTitle}>Enter Passcode</Text>
                 <TextInput
                   style={styles.passcodeInput}
@@ -331,11 +331,8 @@ export default class App extends Component {
                   keyboardType="numeric"
                   secureTextEntry
                 />
-                <TouchableOpacity style={styles.submitButton} onPress={this.handlePasscodeSubmit}>
-                  <Text style={styles.submitButtonText}>Submit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelButton} onPress={() => this.setState({ passcodeModalVisible: false })}>
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                <TouchableOpacity style={styles.passcodeSubmitButton} onPress={this.handlePasscodeSubmit}>
+                  <Text style={styles.passcodeSubmitButtonText}>Submit</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -402,7 +399,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
-  submitButtonText: {
+  passcodeSubmitButtonText: {
     color: '#fff',
     fontSize: 18,
   },
@@ -431,6 +428,20 @@ const styles = StyleSheet.create({
     color: '#4e342e', 
     fontSize: 16,
     fontWeight: 'bold',
-
+  },
+  passcodeModalContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  passcodeSubmitButton: {
+    backgroundColor: '#4e342e', 
+    padding: 10,
+    borderRadius: 5,
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 10,
   },
 });

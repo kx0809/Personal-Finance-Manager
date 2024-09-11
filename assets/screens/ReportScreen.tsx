@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import PagerView from 'react-native-pager-view';
 import { getDBConnection, getMonthlyExpenditures, getMonthlyIncome } from './HomeScreen/db-service'; 
 import CustomPieChart from '../components/CustomPieChart'; 
+import styles from '../styles/reportScreenStyles';
 
 const formatMonth = (month: string) => {
     const [year, monthIndex] = month.split('-');
@@ -138,45 +139,5 @@ const ReportScreen = () => {
         </PagerView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fefbe9', 
-    },
-    page: {
-        flex: 1,
-        padding: 16,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 16,
-        color: '#4e342e', 
-    },
-    totalAmount: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 16,
-        color: '#4e342e', 
-    },
-    picker: {
-        height: 50,
-        width: '100%',
-        marginBottom: 16,
-        backgroundColor: '#d7ccc8', 
-    },
-    loader: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    noData: {
-        fontSize: 18,
-        textAlign: 'center',
-        marginTop: 20,
-        color: '#4e342e', 
-    },
-});
 
 export default ReportScreen;
