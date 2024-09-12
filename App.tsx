@@ -15,6 +15,7 @@ import SettingsScreen from './assets/screens/SettingsScreen';
 import CategoriesStackNavigator from './assets/screens/CategoriesScreen/CategoriesStackNavigator';
 import FeedbackScreen from './assets/screens/FeedbackScreen';
 import CalculatorScreen from './assets/screens/CalculatorScreen';
+import ExchangeRateScreen from './assets/screens/ExchangeRateScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -150,9 +151,14 @@ const MainApp = () => {
         <Drawer.Screen 
           name="Feedback" 
           component={FeedbackScreen}
-          options={{headerTitle: 'Feedback Form'}}/>
+          />
         <Drawer.Screen name="Calculator" component={CalculatorScreen} />
-        
+        <Drawer.Screen 
+          name="ExchangeRate" 
+          component={ExchangeRateScreen} 
+          options={{headerTitle: 'Currency Rates'}}
+          />
+          
       </Drawer.Navigator>
     </NavigationContainer>
   );

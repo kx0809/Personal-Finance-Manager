@@ -29,7 +29,11 @@ const FeedbackScreen = () => {
     .then(response => response.json())
     .then(data => {
       if (data.status === 'success') {
-      Alert.alert("Success", "Feedback submitted successfully. We will contact you as soon as possible!");
+        Alert.alert("Success", "Feedback submitted successfully. We will contact you as soon as possible!");
+        // Clear the text fields
+        setName("");
+        setEmail("");
+        setMessage("");
       } else {
         Alert.alert("Error", "Failed to submit feedback");
       }
@@ -75,7 +79,5 @@ const FeedbackScreen = () => {
     </View>
   );
 };
-
-
 
 export default FeedbackScreen;
