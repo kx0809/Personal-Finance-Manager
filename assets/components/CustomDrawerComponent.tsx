@@ -10,6 +10,7 @@ const drawerItems = [
   { label: "Categories", icon: "category", route: 'Categories' },
   { label: "Feedback", icon: "feedback", route: 'Feedback' },
   { label: "Calculator", icon: "calculate", route: 'Calculator' },
+  { label: "Currency Rates", icon: "analytics", route: 'ExchangeRate' },
 ];
 
 const CustomDrawerComponent = (props: any) => {
