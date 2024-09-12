@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import PagerView from 'react-native-pager-view';
 import { getDBConnection, getMonthlyExpenditures, getMonthlyIncome } from '../components/db-service'; 
 import CustomPieChart from '../components/CustomPieChart'; 
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
 import styles from '../styles/reportScreenStyles';
 
 const formatMonth = (month: string) => {
@@ -27,38 +28,42 @@ const ReportScreen = () => {
     const [monthlyIncome, setMonthlyIncome] = useState<any>({});
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const db = await getDBConnection();
-                const expenditureData = await getMonthlyExpenditures(db);
-                const incomeData = await getMonthlyIncome(db);
+    const fetchData = async () => {
+        try {
+            const db = await getDBConnection();
+            const expenditureData = await getMonthlyExpenditures(db);
+            const incomeData = await getMonthlyIncome(db);
 
-                const availableExpenditureMonths = Object.keys(expenditureData);
-                const availableIncomeMonths = Object.keys(incomeData);
+            const availableExpenditureMonths = Object.keys(expenditureData);
+            const availableIncomeMonths = Object.keys(incomeData);
 
-                if (availableExpenditureMonths.length > 0 || availableIncomeMonths.length > 0) {
-                    setMonthsWithExpenditure(availableExpenditureMonths);
-                    setMonthsWithIncome(availableIncomeMonths);
-                    setMonthlyExpenditures(expenditureData);
-                    setMonthlyIncome(incomeData);
-                    const currentMonth = getCurrentMonth();
+            if (availableExpenditureMonths.length > 0 || availableIncomeMonths.length > 0) {
+                setMonthsWithExpenditure(availableExpenditureMonths);
+                setMonthsWithIncome(availableIncomeMonths);
+                setMonthlyExpenditures(expenditureData);
+                setMonthlyIncome(incomeData);
+                const currentMonth = getCurrentMonth();
 
-                    if (availableExpenditureMonths.includes(currentMonth) || availableIncomeMonths.includes(currentMonth)) {
-                        setSelectedMonth(currentMonth);
-                    } else {
-                        setSelectedMonth(availableExpenditureMonths[0] || availableIncomeMonths[0]);
-                    }
+                if (availableExpenditureMonths.includes(currentMonth) || availableIncomeMonths.includes(currentMonth)) {
+                    setSelectedMonth(currentMonth);
+                } else {
+                    setSelectedMonth(availableExpenditureMonths[0] || availableIncomeMonths[0]);
                 }
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
             }
-        };
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        fetchData();
-    }, []);
+    // Re-fetch the data every time the screen is focused
+    useFocusEffect(
+        useCallback(() => {
+            setLoading(true);
+            fetchData();  // Trigger data fetch when the screen is focused
+        }, [])
+    );
 
     const handleMonthChange = (month: string) => {
         setSelectedMonth(month);
