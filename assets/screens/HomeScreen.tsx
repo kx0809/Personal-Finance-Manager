@@ -39,6 +39,7 @@ const HomeScreen = ({ navigation }: any) => {
   const [monthYearModalVisible, setMonthYearModalVisible] = useState(false); // Separate state for monthYearModal
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [datesWithItems, setDatesWithItems] = useState<string[]>([]);
 
   const handleMenuPress = () => {
     navigation.toggleDrawer();
@@ -49,7 +50,17 @@ const HomeScreen = ({ navigation }: any) => {
     console.log('Fetching data with:', selectedMonthYear);
     const dbConnection = await getDBConnection();
     const fetchedExpenditures = await getExpenditures(dbConnection);
-  
+
+    // Extract all dates for marking
+    const allDates = fetchedExpenditures.map((item: any) => {
+      const date = new Date(item.date);
+      return formatted(date, 'yyyy-MM-dd'); // Assuming formatted function is used for date formatting
+    });
+
+    // Update datesWithItems state with all dates
+    const uniqueDates = [...new Set(allDates)]; // Use Set to avoid duplicates
+    setDatesWithItems(uniqueDates);
+
     const filteredExpenditures = fetchedExpenditures.filter((item: any) => {
       const itemDate = new Date(item.date);
       return (
@@ -85,6 +96,7 @@ const HomeScreen = ({ navigation }: any) => {
         data,
       };
     });
+
   
     // Calculate total income
     const totalIncome = filteredExpenditures.reduce((sum: number, item: any) => {
@@ -133,7 +145,7 @@ const HomeScreen = ({ navigation }: any) => {
     setSelectedMonthYear(newMonthYear);
   };
 
-  const handleDateSelect = (date) => {
+  const handleDateSelect = (date: string) => {
     setSelectedDate(date);
     // Handle any additional logic when a date is selected
   };
@@ -319,14 +331,20 @@ const HomeScreen = ({ navigation }: any) => {
       </Modal>
 
       {/* Modal for CustomDropdown Calendar */}
-      <Modal visible={modalVisible} transparent={true} animationType="slide">
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
         <View style={styles.modalContainer}>
-        <CustomDropdownCalendar
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
-          selectedDate={selectedDate}
-          onDateSelect={handleDateSelect}
-        />
+          <CustomDropdownCalendar
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            selectedDate={selectedDate}
+            onDateSelect={handleDateSelect}
+            datesWithItems={datesWithItems}
+          />
         </View>
       </Modal>
     </>
@@ -466,6 +484,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   monthYearModalContainer: {
     flex: 1,
