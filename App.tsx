@@ -9,11 +9,9 @@ import HomeScreen from './assets/screens/HomeScreen';
 import ViewScreen from './assets/screens/ViewScreen';
 import CreateScreen from './assets/screens/CreateScreen';
 import EditScreen from './assets/screens/EditScreen';
-import CustomDropdown from './assets/components/CustomDropdown'; 
 import ReportScreen from './assets/screens/ReportScreen';
 import CustomDrawerComponent from './assets/components/CustomDrawerComponent';
 import SettingsScreen from './assets/screens/SettingsScreen';
-import MonthYearDropdown from './assets/components/MonthYearDropdown'; 
 import CategoriesStackNavigator from './assets/screens/CategoriesScreen/CategoriesStackNavigator';
 import FeedbackScreen from './assets/screens/FeedbackScreen';
 import CalculatorScreen from './assets/screens/CalculatorScreen';
@@ -23,105 +21,16 @@ const Drawer = createDrawerNavigator();
 
 // Stack Navigator for screens related to HomeScreen
 function HomeStack({ navigation }) {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [monthYearModalVisible, setMonthYearModalVisible] = useState(false); // Separate state for monthYearModal
-  const [selectedDate, setSelectedDate] = useState(null);
   
-
-  // Get current date and initialize state
-  const now = new Date();
-  const currentMonth = now.getMonth() + 1; // 1-based (1 = January, 2 = February, ...)
-  const currentYear = now.getFullYear();
-
-  const [selectedMonthYear, setSelectedMonthYear] = useState({ 
-    month: currentMonth.toString(), 
-    year: currentYear.toString() 
-  });
-
-  useEffect(() => {
-    const loadMonthYearData = async () => {
-      try {
-        const savedMonth = await AsyncStorage.getItem('Month');
-        const savedYear = await AsyncStorage.getItem('Year');
-        if (savedMonth !== null && savedYear !== null) {
-          setSelectedMonthYear({ month: savedMonth, year: savedYear });
-        }
-      } catch (error) {
-        console.error('Failed to load the month and year:', error);
-      }
-    };
-
-    loadMonthYearData();
-  }, []);
-
-  const handleMonthYearChange = async (selected) => {
-    setSelectedMonthYear(selected);
-    try {
-      await AsyncStorage.setItem('Month', selected.month);
-      await AsyncStorage.setItem('Year', selected.year);
-      console.log('Save month and year successfully 3:');
-    } catch (error) {
-      console.error('Failed to save month and year:', error);
-    }
-  };
-
-  const formatMonthYear = (month: string, year: string) => {
-    const monthNames = [
-      'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
-    ];
   
-    // Convert month from 1-based to 0-based for array lookup
-    const monthIndex = parseInt(month, 10) - 1;
-  
-    return `${monthNames[monthIndex]} ${year}`;
-  };
- 
   return (
     <>
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
           component={HomeScreen}
-          initialParams={selectedMonthYear}  // Pass selectedMonthYear as initialParams
           options={{
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: '#ffb300',
-            },
-            headerTitle: () => (
-              <View style={styles.header}>
-                <TouchableOpacity style={styles.dateButton} onPress={() => setMonthYearModalVisible(true)}>
-                  <Text style={styles.dateButtonText}>{formatMonthYear(selectedMonthYear.month, selectedMonthYear.year)}</Text>
-                  <Ionicons
-                  name="chevron-down-outline"
-                  size={18}
-                  color="#4e342e"
-                  style={{ marginLeft: 8}}
-                />
-                </TouchableOpacity>
-              </View>
-            ),
-            headerTitleAlign: 'center',
-            headerLeft: () => (
-              <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-                <Ionicons
-                  name="menu"
-                  size={25}
-                  color="#000"
-                  style={{ marginLeft: 15 }}
-                />
-              </TouchableOpacity>
-            ),
-            headerRight: () => (
-              <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <Ionicons
-                  name="calendar"
-                  size={30}
-                  color="#000"
-                  style={{ marginRight: 15 }}
-                />
-              </TouchableOpacity>
-            ),
+            headerShown: false,
           }}
         />
         <Stack.Screen
@@ -203,38 +112,7 @@ function HomeStack({ navigation }) {
         />
       </Stack.Navigator>
 
-      {/* Modal for CustomDropdown Calendar */}
-      <Modal visible={modalVisible} transparent={true} animationType="slide">
-        <View style={styles.modalContainer}>
-          <CustomDropdown
-            selectedDate={selectedDate}
-            onDateSelect={(date) => {
-              setSelectedDate(date);
-              setModalVisible(false);
-            }}
-          />
-        </View>
-      </Modal>
-
-      {/* Modal for MonthYearDropdown */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={monthYearModalVisible} // Use monthYearModalVisible here
-        onRequestClose={() => {
-          setMonthYearModalVisible(!monthYearModalVisible);
-        }}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Select Month and Year</Text>
-            <MonthYearDropdown selectedMonthYear={selectedMonthYear} onMonthYearChange={handleMonthYearChange} />
-            <TouchableOpacity style={styles.saveButton} onPress={() => setMonthYearModalVisible(false)}>
-              <Text style={styles.saveButtonText}>Save</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      
     </>
   );
 }
@@ -417,19 +295,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  saveButton: {
-    backgroundColor: '#ffb300', // Background color
-    paddingVertical: 10, // Padding
-    width: '73%',
-    borderRadius: 5, // Border radius
-    marginBottom: 10, // Margin top for spacing
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: '#4e342e', 
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   passcodeModalContainer: {
     backgroundColor: '#fff',
