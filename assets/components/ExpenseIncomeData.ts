@@ -10,7 +10,7 @@ const defaultIncomeData = [
   { id: '5', name: 'Dividend', icon: 'line-chart' },
   { id: '6', name: 'IncomeRent', icon: 'home' },
   { id: '7', name: 'Investment', icon: 'stack-overflow' },
-  { id: '8', name: 'Other', icon: 'ellipsis-h' },
+  { id: '8', name: 'other', icon: 'ellipsis-h' },
   { id: '9', name: 'Income', icon: 'xing' },
 ];
 
@@ -21,7 +21,9 @@ const defaultExpensesData = [
   { id: '4', name: 'Rent', icon: 'home' },
   { id: '5', name: 'Bills', icon: 'file-text' },
   { id: '6', name: 'Entertainment', icon: 'music' },
-  { id: '7', name: 'Hello', icon: 'music' },
+  { id: '7', name: 'Gift', icon: 'gift' },
+  { id: '8', name: 'Insurance', icon: 'wpforms' },
+  { id: '9', name: 'Other', icon: 'ellipsis-h' },
 ];
 
 // Function to save the default data to the file

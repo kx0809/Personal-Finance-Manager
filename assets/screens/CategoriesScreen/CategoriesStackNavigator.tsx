@@ -4,6 +4,9 @@ import CategoriesScreen from './CategoriesScreen';
 import FoodScreen from './ExpenseScreens/FoodScreen';
 import TransportScreen from './ExpenseScreens/TransportScreen';
 import ShoppingScreen from './ExpenseScreens/ShoppingScreen';
+import GiftScreen from './ExpenseScreens/GiftScreen';
+import InsuranceScreen from './ExpenseScreens/InsuranceScreen';
+import OtherExpensesScreen from './ExpenseScreens/OtherExpensesScreen';
 import RentScreen from './ExpenseScreens/RentScreen';
 import BillsScreen from './ExpenseScreens/BillsScreen';
 import EntertainmentScreen from './ExpenseScreens/EntertainmentScreen';
@@ -14,7 +17,7 @@ import TradeScreen from './IncomeScreens/TradeScreen';
 import DividendScreen from './IncomeScreens/DividendScreen';
 import IncomeRentScreen from './IncomeScreens/IncomeRentScreen';
 import InvestmentScreen from './IncomeScreens/InvestmentScreen';
-import OtherScreen from './IncomeScreens/OtherScreen';
+import OtherIncomeScreen from './IncomeScreens/OtherIncomeScreen';
 import IncomeScreen from './IncomeScreens/IncomeScreen';
 import CustomCategoriesScreenHeader from '../../components/CustomCategoriesScreenHeader';
 
@@ -41,6 +44,32 @@ const CategoriesStackNavigator = () => {
             },
             headerTitleAlign: 'center',
             headerTitle: 'Food',
+          }}
+          />
+
+          <Stack.Screen
+            name="Gift"
+            component={GiftScreen}
+            options={{
+            headerShown: true,
+            headerStyle: {
+            backgroundColor: '#ffb300',
+            },
+            headerTitleAlign: 'center',
+            headerTitle: 'Gift',
+          }}
+          />
+
+          <Stack.Screen
+            name="Insurance"
+            component={InsuranceScreen}
+            options={{
+            headerShown: true,
+            headerStyle: {
+            backgroundColor: '#ffb300',
+            },
+            headerTitleAlign: 'center',
+            headerTitle: 'Insurance',
           }}
           />
 
@@ -107,6 +136,19 @@ const CategoriesStackNavigator = () => {
             },
             headerTitleAlign: 'center',
             headerTitle: 'Entertainment',
+          }}
+          />
+
+          <Stack.Screen
+            name="Other"
+            component={OtherExpensesScreen}
+            options={{
+            headerShown: true,
+            headerStyle: {
+            backgroundColor: '#ffb300',
+            },
+            headerTitleAlign: 'center',
+            headerTitle: 'Other',
           }}
           />
 
@@ -203,8 +245,8 @@ const CategoriesStackNavigator = () => {
           />
 
           <Stack.Screen
-            name="Other"
-            component={OtherScreen}
+            name="other"
+            component={OtherIncomeScreen}
             options={{
             headerShown: true,
             headerStyle: {
