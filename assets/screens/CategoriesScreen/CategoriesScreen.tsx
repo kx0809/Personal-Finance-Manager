@@ -53,7 +53,7 @@ const CategoriesScreen = () => {
       {/* Top Navigation Bar */}
       <View style={styles.navBar}>
         <TouchableOpacity
-          style={[styles.navItem, activeTab === 'Expense' && styles.activeNavItem]}
+          style={[styles.navExpense, activeTab === 'Expense' && styles.activeNavExpense]}
           onPress={() => handleTabPress('Expense')}
         >
           <Text style={[styles.navText, activeTab === 'Expense' && styles.activeNavText]}>
@@ -61,7 +61,7 @@ const CategoriesScreen = () => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.navItem, activeTab === 'Income' && styles.activeNavItem]}
+          style={[styles.navIncome, activeTab === 'Income' && styles.activeNavIncome]}
           onPress={() => handleTabPress('Income')}
         >
           <Text style={[styles.navText, activeTab === 'Income' && styles.activeNavText]}>
@@ -103,24 +103,38 @@ const CategoriesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fefbe9',
+    backgroundColor: 'white',
     padding: 10,
   },
   navBar: {
+    marginTop: 25,
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 35,
+    borderWidth: 1.5,
+    borderColor: '#4e342e',
+    borderRadius: 20,
+    alignSelf: 'center',
+    width: '63.5%',
+    paddingVertical: 0.5,
   },
-  navItem: {
+  navIncome: {
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#FFFACD',
-    marginHorizontal: 10,
+    marginLeft: 0,
   },
-  activeNavItem: {
-    backgroundColor: '#ffb300',
+  navExpense: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    marginRight: 0,
+  },
+  activeNavIncome: {
+    backgroundColor: '#EAFFE8',
+  },
+  activeNavExpense: {
+    backgroundColor: '#ffe8e8',
   },
   navText: {
     marginHorizontal: 10,
@@ -128,7 +142,7 @@ const styles = StyleSheet.create({
     color: '#4e342e'
   },
   activeNavText: {
-    color: '#fff',
+    color: '#4e342e',
   },
   contentContainer: {
     flexDirection: 'row',

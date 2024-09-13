@@ -79,7 +79,7 @@ const ReportScreen = () => {
         return (
             <ScrollView contentContainerStyle={styles.page}>
                 <Text style={styles.title}>Monthly Expenditures</Text>
-                <Text style={styles.totalAmount}>Total Amount: RM {totalExpenditure.toFixed(2)}</Text>
+                <View style={styles.pickerWrapper}>
                 <Picker
                     selectedValue={selectedMonth}
                     onValueChange={(itemValue) => handleMonthChange(itemValue)}
@@ -95,6 +95,7 @@ const ReportScreen = () => {
                         />
                     ))}
                 </Picker>
+                </View>
                 <CustomPieChart
                     data={monthlyExpenditures[selectedMonth]}
                     selectedMonth={selectedMonth}
@@ -109,7 +110,6 @@ const ReportScreen = () => {
         return (
             <ScrollView contentContainerStyle={styles.page}>
                 <Text style={styles.title}>Monthly Income</Text>
-                <Text style={styles.totalAmount}>Total Amount: RM {totalIncome.toFixed(2)}</Text>
                 <Picker
                     selectedValue={selectedMonth}
                     onValueChange={(itemValue) => handleMonthChange(itemValue)}

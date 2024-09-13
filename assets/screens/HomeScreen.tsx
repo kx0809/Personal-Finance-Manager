@@ -137,9 +137,6 @@ const HomeScreen = ({ navigation }: any) => {
     loadDefaultData();
   }, []);
 
-  useEffect(() => {
-    _query(); // Fetch data when month or year changes
-  }, [selectedMonthYear, _query]);
 
   const handleMonthYearChange = (newMonthYear: React.SetStateAction<{ month: string; year: string; }>) => {
     setSelectedMonthYear(newMonthYear);

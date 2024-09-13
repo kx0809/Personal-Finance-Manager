@@ -32,8 +32,8 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({ data, selectedMonth }) 
             <View style={styles.pieChartContainer}>
                 <PieChart
                     data={pieData}
-                    width={350}
-                    height={200}
+                    width={570}
+                    height={300}
                     chartConfig={{
                         backgroundColor: '#fefbe9', 
                         backgroundGradientFrom: '#fefbe9',
@@ -50,7 +50,10 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({ data, selectedMonth }) 
                     center={[0, 0]}
                     absolute={false}
                 />
-
+                <View style={styles.centerCircle}>
+                    <Text style={styles.circleText}>Total:</Text>
+                    <Text style={styles.circleText}>RM {totalExpenditure.toFixed(2)}</Text>
+                </View>
                 <ScrollView style={styles.legendContainer}>
                     {pieData.map((item, index) => (
                         <View key={index} style={styles.legendItem}>
@@ -68,13 +71,15 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({ data, selectedMonth }) 
 
 const styles = StyleSheet.create({
     chartContainer: {
-        padding: 16,
-        backgroundColor: '#fefbe9', 
+        paddingVertical: 10,
+        marginBottom: 80,
         alignItems: 'center',
         flex: 1,
+        marginTop: -30,
+        marginRight: 10,
+        marginLeft: 8,
     },
     pieChartContainer: {
-        alignItems: 'center',
         width: '100%',
         flex: 1,
     },
@@ -88,8 +93,6 @@ const styles = StyleSheet.create({
         marginTop: 16,
         width: '100%',
         paddingHorizontal: 16,
-        borderTopWidth: 1,
-        borderTopColor: '#d7ccc8',
         maxHeight: 300, 
     },
     legendItem: {
@@ -97,8 +100,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 8,
         paddingVertical: 6,
-        borderBottomWidth: 1,
-        borderBottomColor: '#d7ccc8',
+        marginLeft: 60,
     },
     legendColor: {
         width: 20,
@@ -114,6 +116,25 @@ const styles = StyleSheet.create({
         color: '#4e342e',
         flexShrink: 1,
     },
+    centerCircle: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        width: 150, // Diameter of the circle
+        height: 150, // Diameter of the circle
+        borderRadius: 75, // Radius for a circle
+        backgroundColor: 'white', // Color of the circle
+        transform: [{ translateX: -73 }, { translateY: -140 }], // Center the circle
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1,
+    },
+    circleText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#4e342e',
+    },
+
 });
 
 export default CustomPieChart;

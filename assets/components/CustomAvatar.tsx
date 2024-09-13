@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput, Text, Button } from "react-native";
+import { View, Image, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput, Text, Button, ImageBackground } from "react-native";
 import { Avatar } from "@rneui/base";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const CustomAvatar = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -67,70 +67,78 @@ const CustomAvatar = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={handleAvatarPress}>
-        <Avatar
-          rounded
-          source={selectedAvatar ? selectedAvatar : require('../defaultAvatar/defaultAvatar.png')} // Placeholder for default avatar
-          size={130}
-          containerStyle={styles.avatar}
-        />
-      </TouchableOpacity>
-
-      {editingName ? (
-        <TextInput
-          style={styles.nameInput}
-          value={name}
-          onChangeText={handleNameChange}
-          onSubmitEditing={() => setEditingName(false)}
-          autoFocus
-        />
-      ) : (
-        <TouchableOpacity onPress={() => setEditingName(true)}>
-          <Text style={styles.name}>{name}</Text>
+    <ImageBackground
+      source={require('../defaultAvatar/DrawerBackground.png')} // Replace with your background image path
+      style={styles.container}
+    >
+      <View style={styles.innerContainer}>
+        <TouchableOpacity onPress={handleAvatarPress}>
+          <Avatar
+            rounded
+            source={selectedAvatar ? selectedAvatar : require('../defaultAvatar/defaultAvatar.png')} // Placeholder for default avatar
+            size={100}
+            containerStyle={styles.avatar}
+          />
         </TouchableOpacity>
-      )}
 
-      <Modal
-        visible={modalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-          <View style={styles.modalContainer}>
-            <TouchableWithoutFeedback>
-              <View style={styles.imageContainer}>
-                {selectedAvatar ? (
-                  <Image source={{ uri: selectedAvatar.uri }} style={styles.largeImage} />
-                ) : (
-                  <Text>No Avatar Selected</Text>
-                )}
-              </View>
-            </TouchableWithoutFeedback>
-            <Button title="Select Photo from Album" onPress={handleImagePick} />
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-    </View>
+        {editingName ? (
+          <TextInput
+            style={styles.nameInput}
+            value={name}
+            onChangeText={handleNameChange}
+            onSubmitEditing={() => setEditingName(false)}
+            autoFocus
+          />
+        ) : (
+          <TouchableOpacity onPress={() => setEditingName(true)}>
+            <Text style={styles.name}>{name}</Text>
+          </TouchableOpacity>
+        )}
+
+        <Modal
+          visible={modalVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+            <View style={styles.modalContainer}>
+              <TouchableWithoutFeedback>
+                <View style={styles.imageContainer}>
+                  {selectedAvatar ? (
+                    <Image source={{ uri: selectedAvatar.uri }} style={styles.largeImage} />
+                  ) : (
+                    <Text>No Avatar Selected</Text>
+                  )}
+                </View>
+              </TouchableWithoutFeedback>
+              <Button title="Select Photo from Album" onPress={handleImagePick} />
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
+    height: '100%',
+    width: '100%',
+  },
+  innerContainer: {
     alignItems: 'center',
-    backgroundColor: '#fefbe9',
+    padding: 20,
+    borderRadius: 10,
   },
   avatar: {
-    borderColor: '#D7CCC8',
-    borderWidth: 5,
+    marginTop: 20,
+    marginLeft: 0,
   },
   name: {
-    marginTop: 10,
+    marginTop: 7,
     fontSize: 18,
-    color: '#4e342e',
+    color: 'white',
     fontWeight: 'bold',
   },
   nameInput: {
@@ -138,7 +146,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#4e342e',
     borderBottomWidth: 1,
     fontSize: 18,
-    color: '#4e342e',
+    color: 'white',
     textAlign: 'center',
     width: 130,
   },

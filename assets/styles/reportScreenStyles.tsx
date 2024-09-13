@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fefbe9', 
+        backgroundColor: 'white', 
     },
     page: {
         flex: 1,
@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 16,
         color: '#4e342e', 
+        textAlign: 'center',
     },
     totalAmount: {
         fontSize: 18,
@@ -22,10 +23,13 @@ const styles = StyleSheet.create({
         color: '#4e342e', 
     },
     picker: {
+        marginTop: 25,
         height: 50,
-        width: '100%',
-        marginBottom: 16,
+        width: '60%',
+        marginBottom: 30,
         backgroundColor: '#d7ccc8', 
+        textAlign: 'center',
+        marginLeft: 70,
     },
     loader: {
         flex: 1,
