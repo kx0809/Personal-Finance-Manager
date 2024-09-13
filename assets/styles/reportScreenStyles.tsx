@@ -3,44 +3,35 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white', 
     },
     page: {
         flex: 1,
-        padding: 16,
+        paddingHorizontal: 16,
+        paddingVertical: 24,
+        backgroundColor: '#f5f5f5', // light grey background
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 16,
-        color: '#4e342e', 
-        textAlign: 'center',
+        color: '#333', // dark text color for better readability
     },
-    totalAmount: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 16,
-        color: '#4e342e', 
+    pickerWrapper: {
+        marginBottom: 24,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd', // light border for the picker
+        backgroundColor: '#fff', // white background for the picker
+        borderRadius: 8,
     },
     picker: {
-        marginTop: 25,
         height: 50,
-        width: '60%',
-        marginBottom: 30,
-        backgroundColor: '#d7ccc8', 
-        textAlign: 'center',
-        marginLeft: 70,
+        width: '100%',
+        color: '#333', // dark text color for better readability
     },
     loader: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
-    },
-    noData: {
-        fontSize: 18,
-        textAlign: 'center',
-        marginTop: 20,
-        color: '#4e342e', 
+        backgroundColor: '#fff', // ensure background is consistent
     },
 });
 
