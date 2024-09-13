@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
         marginTop: 16,
         width: '100%',
         paddingHorizontal: 16,
-        maxHeight: 300, 
+        minHeight: 150
     },
     legendItem: {
         flexDirection: 'row',
