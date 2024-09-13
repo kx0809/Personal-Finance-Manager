@@ -43,7 +43,7 @@ const CategoriesStackNavigator = () => {
             backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Food',
+            headerTitle: 'Expense from Food',
           }}
           />
 
@@ -56,7 +56,7 @@ const CategoriesStackNavigator = () => {
             backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Gift',
+            headerTitle: 'Expense from Gift',
           }}
           />
 
@@ -69,7 +69,7 @@ const CategoriesStackNavigator = () => {
             backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Insurance',
+            headerTitle: 'Expense from Insurance',
           }}
           />
 
@@ -82,7 +82,7 @@ const CategoriesStackNavigator = () => {
             backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Transport',
+            headerTitle: 'Expense from Transport',
           }}
           />
 
@@ -95,7 +95,7 @@ const CategoriesStackNavigator = () => {
             backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Shopping',
+            headerTitle: 'Expense from Shopping',
           }}
           />
 
@@ -108,7 +108,7 @@ const CategoriesStackNavigator = () => {
             backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Rent',
+            headerTitle: 'Expense from Rent',
           }}
           />
 
@@ -122,7 +122,7 @@ const CategoriesStackNavigator = () => {
             backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Bills',
+            headerTitle: 'Expense from Bills',
           }}
           />
 
@@ -135,7 +135,7 @@ const CategoriesStackNavigator = () => {
             backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Entertainment',
+            headerTitle: 'Expense from Entertainment',
           }}
           />
 
@@ -148,7 +148,7 @@ const CategoriesStackNavigator = () => {
             backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Other',
+            headerTitle: 'Expense from Other',
           }}
           />
 
