@@ -298,15 +298,17 @@ const HomeScreen = ({ navigation }: any) => {
         )
       }
       </ScrollView>
-      <FloatingAction
-        actions={actions}
-        onPressItem={name => {
-          if (name === 'add') {
-            navigation.navigate('CreateScreen', { refresh: _query });
-          }
-        }}
-        color="#ffb300" 
-      />
+      <View style={styles.floatingActionContainer}>
+        <FloatingAction
+          actions={actions}
+          onPressItem={name => {
+            if (name === 'add') {
+              navigation.navigate('CreateScreen', { refresh: _query });
+            }
+          }}
+          color="#ffb300" 
+        />
+      </View>
     </View>
     <Modal
         animationType="slide"
@@ -515,6 +517,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingVertical: 10, // Padding
   },
+  floatingActionContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    marginBottom: 8,
+    marginRight: 138,
+  },
+  floatingAction: {
+    position: 'absolute',
+    margin: 16,
+  },
 });
 
 export default HomeScreen;

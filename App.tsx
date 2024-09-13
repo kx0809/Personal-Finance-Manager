@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   passcodeSubmitButton: {
-    backgroundColor: '#4e342e', 
+    backgroundColor: '#ffb300', 
     padding: 10,
     borderRadius: 5,
     width: '100%',
