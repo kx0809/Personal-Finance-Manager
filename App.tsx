@@ -141,7 +141,7 @@ const MainApp = () => {
         }}
       >
         <Drawer.Screen
-          name="HomeScreen"
+          name="Home"
           component={HomeStack}
           options={{ headerShown: false }}
         />
