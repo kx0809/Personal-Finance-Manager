@@ -31,7 +31,7 @@ const OtherScreen = () => {
     try {
       const db = await getDBConnection();
       const query = `SELECT * FROM IncomeExpense WHERE type = ? AND category = ?`;
-      const results = await db.executeSql(query, ['Other', 'Income']);
+      const results = await db.executeSql(query, ['other', 'Income']);
       const otherData = results[0].rows.raw();
 
       // Group other data by date
