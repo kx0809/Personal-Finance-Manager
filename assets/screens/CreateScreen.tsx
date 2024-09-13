@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, ScrollView, View, TouchableWithoutFeedback, Modal, FlatList, Text, TouchableOpacity, Platform } from 'react-native';
-import { InputWithLabel, AppButton } from '../components//UI';
+import { StyleSheet, ScrollView, View, TouchableWithoutFeedback, Modal, FlatList, Text, TouchableOpacity, Platform, Alert } from 'react-native';
+import { InputWithLabel, AppButton } from '../components/UI';
 import { LogBox } from 'react-native';
 import { getDBConnection, createExpenditure } from '../components/db-service';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { formatted } from '../components//utility';
-import { readDataFromFile } from '../components/ExpenseIncomeData'; 
+import { formatted } from '../components/utility';
+import { readDataFromFile } from '../components/ExpenseIncomeData';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -37,6 +37,13 @@ const CreateScreen = ({ route, navigation }) => {
   }, []);
 
   const _insert = async () => {
+    // Validation
+    if (!type.trim() || !amount.trim() || !description.trim()) {
+      Alert.alert('Validation Error', 'Please fill in all fields.');
+      return;
+    }
+
+    // Proceed with insertion if validation passes
     await createExpenditure(await getDBConnection(), type, amount, description, selectedCategory, date.getTime());
     route.params.refresh();
     navigation.goBack();
@@ -46,7 +53,7 @@ const CreateScreen = ({ route, navigation }) => {
     setPickerOpen(true);
   };
 
-  const selectType = (selectedType: string) => {
+  const selectType = (selectedType) => {
     setType(selectedType);
     setPickerOpen(false);
   };
@@ -55,124 +62,122 @@ const CreateScreen = ({ route, navigation }) => {
     setOpenPicker(true);
   };
 
-  const onDateSelected = (event: DateTimePickerEvent, value: any) => {
+  const onDateSelected = (event, value) => {
     setDate(value);
     setOpenPicker(false);
   };
 
   return (
-      <ScrollView style={styles.container}>
-          {/* Type Picker */}
-          <TouchableWithoutFeedback onPress={openTypePicker}>
-              <View>
-                  <InputWithLabel
-                      textLabelStyle={styles.TextLabel}
-                      textInputStyle={styles.TextInput}
-                      label={'Type'}
-                      placeholder={'Select type'}
-                      value={type}
-                      editable={false}
-                  />
-              </View>
-          </TouchableWithoutFeedback>
-
-          {/* Amount Input */}
-          
+    <ScrollView style={styles.container}>
+      {/* Type Picker */}
+      <TouchableWithoutFeedback onPress={openTypePicker}>
+        <View>
           <InputWithLabel
-              textLabelStyle={styles.TextLabel}
-              textInputStyle={styles.TextInput}
-              placeholder={'Enter amount here'}
-              label={'Amount'}
-              value={amount}
-              onChangeText={(amount: React.SetStateAction<string>) => setAmount(amount)}
-              orientation={'vertical'}
-              keyboardType={'numeric'} // Use numeric keyboard
+            textLabelStyle={styles.TextLabel}
+            textInputStyle={styles.TextInput}
+            label={'Type'}
+            placeholder={'Select type'}
+            value={type}
+            editable={false}
           />
+        </View>
+      </TouchableWithoutFeedback>
 
-          {/* Description Input */}
+      {/* Amount Input */}
+      <InputWithLabel
+        textLabelStyle={styles.TextLabel}
+        textInputStyle={styles.TextInput}
+        placeholder={'Enter amount here'}
+        label={'Amount'}
+        value={amount}
+        onChangeText={(amount) => setAmount(amount)}
+        orientation={'vertical'}
+        keyboardType={'numeric'} // Use numeric keyboard
+      />
+
+      {/* Description Input */}
+      <InputWithLabel
+        textLabelStyle={styles.TextLabel}
+        textInputStyle={styles.TextInput}
+        placeholder={'Enter description here'}
+        label={'Description'}
+        value={description}
+        onChangeText={(description) => setDescription(description)}
+        orientation={'vertical'}
+      />
+
+      <TouchableWithoutFeedback onPress={openDatePicker}>
+        <View>
           <InputWithLabel
-              textLabelStyle={styles.TextLabel}
-              textInputStyle={styles.TextInput}
-              placeholder={'Enter description here'}
-              label={'Description'}
-              value={description}
-              onChangeText={(description: React.SetStateAction<string>) => setDescription(description)}
-              orientation={'vertical'}
-          />
+            textInputStyle={styles.TextInput}
+            textLabelStyle={styles.TextLabel}
+            label="Date:"
+            value={formatted(new Date(date))}
+            editable={false}>
+          </InputWithLabel>
+        </View>
+      </TouchableWithoutFeedback>
 
-          <TouchableWithoutFeedback onPress={openDatePicker}>
-          <View>
-            <InputWithLabel
-              textInputStyle={styles.TextInput}
-              textLabelStyle={styles.TextLabel}
-              label="Date:"
-              value={formatted(new Date(date))}
-              editable={false}>
-            </InputWithLabel>
-          </View>
-          </TouchableWithoutFeedback>
+      {openPicker &&
+        <DateTimePicker
+          value={new Date(date)}
+          mode={'date'}
+          display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
+          is24Hour={false}
+          onChange={onDateSelected}
+          style={styles.datePicker}
+      />}
 
-        {openPicker &&
-          <DateTimePicker
-            value={new Date(date)}
-            mode={'date'}
-            display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
-            is24Hour={false}
-            onChange={onDateSelected}
-            style={styles.datePicker}
-        />}
+      {/* Save Button */}
+      <AppButton
+        style={styles.button}
+        title={'Save'}
+        theme={'primary'}
+        onPress={_insert}
+      />
 
-          {/* Save Button */}
-          <AppButton
-              style={styles.button}
-              title={'Save'}
-              theme={'primary'}
-              onPress={_insert}
-          />
-
-          {/* Type Picker Modal */}
-          <Modal
-              visible={isPickerOpen}
-              animationType="slide"
-              transparent={true}
-              onRequestClose={() => setPickerOpen(false)}
-          >
-              <View style={styles.modalContainer}>
-                  <View style={styles.modalContent}>
-                      {/* Category Buttons */}
-                      <View style={styles.categoryButtons}>
-                          <TouchableOpacity
-                              style={[styles.categoryButton, selectedCategory === 'Expense' && styles.selectedExpenseButton]}
-                              onPress={() => setSelectedCategory('Expense')}
-                          >
-                              <Text style={styles.categoryButtonText}>Expense</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                              style={[styles.categoryButton, selectedCategory === 'Income' && styles.selectedIncomeButton]}
-                              onPress={() => setSelectedCategory('Income')}
-                          >
-                              <Text style={styles.categoryButtonText}>Income</Text>
-                          </TouchableOpacity>
-                      </View>
-                      <FlatList
-                          data={selectedCategory === 'Expense' ? expensesData : incomeData}
-                          keyExtractor={(item) => item.id}
-                          renderItem={({ item }) => (
-                              <TouchableWithoutFeedback onPress={() => selectType(item.name)}>
-                                  <View style={styles.typeOption}>
-                                      <FontAwesome name={item.icon} size={24} color="#4e342e" />
-                                      <Text style={styles.typeText}>{item.name}</Text>
-                                  </View>
-                              </TouchableWithoutFeedback>
-                          )}
-                      />
+      {/* Type Picker Modal */}
+      <Modal
+        visible={isPickerOpen}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setPickerOpen(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            {/* Category Buttons */}
+            <View style={styles.categoryButtons}>
+              <TouchableOpacity
+                style={[styles.categoryButton, selectedCategory === 'Expense' && styles.selectedExpenseButton]}
+                onPress={() => setSelectedCategory('Expense')}
+              >
+                <Text style={styles.categoryButtonText}>Expense</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.categoryButton, selectedCategory === 'Income' && styles.selectedIncomeButton]}
+                onPress={() => setSelectedCategory('Income')}
+              >
+                <Text style={styles.categoryButtonText}>Income</Text>
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={selectedCategory === 'Expense' ? expensesData : incomeData}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <TouchableWithoutFeedback onPress={() => selectType(item.name)}>
+                  <View style={styles.typeOption}>
+                    <FontAwesome name={item.icon} size={24} color="#4e342e" />
+                    <Text style={styles.typeText}>{item.name}</Text>
                   </View>
-              </View>
-          </Modal>
-      </ScrollView>
+                </TouchableWithoutFeedback>
+              )}
+            />
+          </View>
+        </View>
+      </Modal>
+    </ScrollView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, TouchableWithoutFeedback, Modal, FlatList, Text, TouchableOpacity, Platform } from 'react-native';
-import { InputWithLabel, AppButton } from '../components//UI';
-import { getDBConnection, updateExpenditure, getExpenditureById } from '../components//db-service';
+import { StyleSheet, View, ScrollView, TouchableWithoutFeedback, Modal, FlatList, Text, TouchableOpacity, Platform, Alert } from 'react-native';
+import { InputWithLabel, AppButton } from '../components/UI';
+import { getDBConnection, updateExpenditure, getExpenditureById } from '../components/db-service';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { formatted } from '../components/utility';
@@ -41,6 +41,19 @@ const EditScreen = ({ route, navigation }) => {
   };
 
   const _update = async () => {
+    // Validation
+    if (!type.trim() || !amount.trim() || !description.trim()) {
+      Alert.alert('Validation Error', 'Please fill in all fields.');
+      return;
+    }
+
+    // Check if amount is a valid number
+    if (isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+      Alert.alert('Validation Error', 'Please enter a valid amount.');
+      return;
+    }
+
+    // Proceed with update if validation passes
     await updateExpenditure(await getDBConnection(), type, amount, description, selectedCategory, date.getTime(), expenditureId);
     route.params.refresh(expenditureId);
     route.params.homeRefresh();
@@ -51,7 +64,7 @@ const EditScreen = ({ route, navigation }) => {
     setPickerOpen(true);
   };
 
-  const selectType = (selectedType: string) => {
+  const selectType = (selectedType) => {
     setType(selectedType);
     setPickerOpen(false);
   };
@@ -60,9 +73,20 @@ const EditScreen = ({ route, navigation }) => {
     setOpenPicker(true);
   };
 
-  const onDateSelected = (event: DateTimePickerEvent, value: any) => {
+  const onDateSelected = (event, value) => {
     setDate(value);
     setOpenPicker(false);
+  };
+
+  const handleAmountChange = (text) => {
+    // Filter out non-numeric characters except decimal point
+    const numericText = text.replace(/[^0-9.]/g, '');
+    // Prevent multiple decimal points
+    const parts = numericText.split('.');
+    if (parts.length > 2) {
+      return;
+    }
+    setAmount(numericText);
   };
 
   return (
@@ -88,7 +112,7 @@ const EditScreen = ({ route, navigation }) => {
           placeholder={'Enter amount here'}
           label={'Amount'}
           value={amount}
-          onChangeText={(amount: string) => setAmount(amount)}
+          onChangeText={handleAmountChange}
           orientation={'vertical'}
           keyboardType={'numeric'}
         />
@@ -98,7 +122,7 @@ const EditScreen = ({ route, navigation }) => {
           placeholder={'Enter description here'}
           label={'Description'}
           value={description}
-          onChangeText={(description: string) => setDescription(description)}
+          onChangeText={(description) => setDescription(description)}
           orientation={'vertical'}
         />
         <TouchableWithoutFeedback onPress={openDatePicker}>
@@ -172,7 +196,6 @@ const EditScreen = ({ route, navigation }) => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
