@@ -7,12 +7,13 @@ CORS(app)  # Allow cross-origin requests
 @app.route('/feedback', methods=['POST'])
 def feedback():
     data = request.get_json()
-    name = data.get('name')
-    email = data.get('email')
-    message = data.get('message')
+    rating = data.get('rating')
+    feedbackType = data.get('feedbackType')
+    comment = data.get('comment')
+    recommendation = data.get('recommendation')
 
     # Here you can handle the received data, save it to a database, etc.
-    print(f"Feedback received: Name={name}, Email={email}, Message={message}")
+    print(f"Feedback received: rating={rating}, feedbackType={feedbackType}, comment={comment}, recommendation={recommendation}")
 
     # For now, we return a success response
     return jsonify({"status": "success"})

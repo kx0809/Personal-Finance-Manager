@@ -1,22 +1,25 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, Alert } from "react-native";
-import styles from "../styles/feedbackScreenStyles";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { RadioButton } from 'react-native-paper'; // Assuming you're using this for the radio buttons
+
 
 const FeedbackScreen = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [rating, setRating] = useState(null);
+  const [feedbackType, setFeedbackType] = useState('');
+  const [comment, setComment] = useState('');
+  const [recommendation, setRecommendation] = useState(null);
 
   const handleSubmit = () => {
-    if (name === "" || email === "" || message === "") {
+    if (rating === "" || feedbackType === "" || comment === "" || recommendation === "") {
       Alert.alert("Error", "Please fill all the fields");
       return;
     }
 
     const feedbackData = {
-      name: name,
-      email: email,
-      message: message,
+      rating: rating,
+      feedbackType: feedbackType,
+      comment: comment,
+      recommendation: recommendation,
     };
 
     fetch('http://10.0.2.2:5000/feedback', {
@@ -31,9 +34,10 @@ const FeedbackScreen = () => {
       if (data.status === 'success') {
         Alert.alert("Success", "Feedback submitted successfully. We will contact you as soon as possible!");
         // Clear the text fields
-        setName("");
-        setEmail("");
-        setMessage("");
+        setRating(null);
+        setFeedbackType("");
+        setComment("");
+        setRecommendation(null);
       } else {
         Alert.alert("Error", "Failed to submit feedback");
       }
@@ -47,37 +51,116 @@ const FeedbackScreen = () => {
   return (
     <View style={styles.container}>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={text => setName(text)}
-        placeholderTextColor="#d7ccc8"  
-      />
+      {/* Rating Section */}
+      <Text style={styles.question}>How do you rate this app? *</Text>
+      <View style={styles.ratingRow}>
+        {['😕', '😐', '😶', '🙂', '😄'].map((emoji, index) => (
+          <TouchableOpacity key={index} onPress={() => setRating(index + 1)}>
+            <Text style={rating === index + 1 ? styles.selectedEmoji : styles.emoji}>{emoji}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={text => setEmail(text)}
-        placeholderTextColor="#d7ccc8"  
-      />
+      {/* Feedback Type (Radio Button) */}
+      <Text style={styles.question}>What is your feedback about?</Text>
+      <RadioButton.Group onValueChange={value => setFeedbackType(value)} value={feedbackType}>
+        <RadioButton.Item label="This app" value="app" />
+        <RadioButton.Item label="The RTG mobile feedback solution" value="feedbackSolution" />
+      </RadioButton.Group>
 
+      {/* Comment Section */}
+      <Text style={styles.question}>Would you like to add a comment?</Text>
       <TextInput
-        style={[styles.input, styles.messageInput]}  
-        placeholder="Message"
-        value={message}
-        onChangeText={text => setMessage(text)}
+        style={styles.commentBox}
+        placeholder="Type your comment here..."
         multiline
-        placeholderTextColor="#d7ccc8"  
-        textAlignVertical="top"  
+        numberOfLines={4}
+        onChangeText={text => setComment(text)}
+        value={comment}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Submit</Text>
+      {/* Recommendation Rating */}
+      <Text style={styles.question}>How likely are you to recommend our in-app feedback solution?</Text>
+      <View style={styles.recommendationRow}>
+        {Array.from({ length: 11 }, (_, i) => (
+          <TouchableOpacity key={i} onPress={() => setRecommendation(i)}>
+            <Text style={recommendation === i ? styles.selectedRecommendation : styles.recommendation}>
+              {i}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Submit Button */}
+      <TouchableOpacity
+        style={styles.submitButton}
+        onPress={handleSubmit}
+      >
+        <Text style={styles.submitButtonText}>Send feedback</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  headerText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  question: {
+    fontSize: 16,
+    marginVertical: 10,
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 15,
+  },
+  emoji: {
+    fontSize: 30,
+  },
+  selectedEmoji: {
+    fontSize: 30,
+    color: '#00aaff',
+  },
+  commentBox: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 10,
+    textAlignVertical: 'top',
+  },
+  recommendationRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 15,
+  },
+  recommendation: {
+    fontSize: 18,
+  },
+  selectedRecommendation: {
+    fontSize: 18,
+    color: '#ffb300',
+  },
+  submitButton: {
+    backgroundColor: '#ffb300',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
 
 export default FeedbackScreen;
