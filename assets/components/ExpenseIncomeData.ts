@@ -21,8 +21,10 @@ const defaultExpensesData = [
   { id: '4', name: 'Rent', icon: 'home' },
   { id: '5', name: 'Bills', icon: 'file-text' },
   { id: '6', name: 'Entertainment', icon: 'music' },
+  { id: '7', name: 'Hello', icon: 'music' },
 ];
 
+// Function to save the default data to the file
 export const saveDefaultDataToFile = async () => {
   const data = {
     incomeData: defaultIncomeData,
@@ -37,14 +39,37 @@ export const saveDefaultDataToFile = async () => {
   }
 };
 
+// Function to delete the existing file and save new default data
+export const resetDataFile = async () => {
+  try {
+    const fileExists = await RNFS.exists(dataFilePath);
+    if (fileExists) {
+      // Delete the existing file if it exists
+      await RNFS.unlink(dataFilePath);
+      console.log('Old data file removed');
+    }
+
+    // Save the new default data
+    await saveDefaultDataToFile();
+    console.log('New default data saved');
+  } catch (error) {
+    console.error('Error resetting data file:', error);
+  }
+};
+
+// Function to read data from the file or reset it if necessary
 export const readDataFromFile = async () => {
   try {
     const fileExists = await RNFS.exists(dataFilePath);
     if (!fileExists) {
-      console.log('Data file does not exist, saving default data.');
-      await saveDefaultDataToFile();
+      console.log('Data file does not exist, resetting data.');
+      await resetDataFile(); // Reset the data if the file doesn't exist
+    } else {
+      // If the file exists, delete it and save new data
+      await resetDataFile();
     }
-    
+
+    // Read the content from the new file
     const fileContent = await RNFS.readFile(dataFilePath, 'utf8');
     return JSON.parse(fileContent);
   } catch (error) {
