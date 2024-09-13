@@ -65,6 +65,9 @@ const CustomDropdownCalendar = ({ modalVisible, setModalVisible, selectedDate, o
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+        <Icon name="close-circle" size={24} color="rgba(0,0,0,0.1)" />
+      </TouchableOpacity>
       <Calendar
         style={styles.calendar}
         markedDates={markedDates}
@@ -84,9 +87,7 @@ const CustomDropdownCalendar = ({ modalVisible, setModalVisible, selectedDate, o
           arrowColor: '#ffb300', // Change color of the navigation arrows
         }}
       />
-      <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-        <Icon name="close-circle" size={24} color="#ffb300" />
-      </TouchableOpacity>
+      
     </View>
   );
 };
@@ -94,18 +95,19 @@ const CustomDropdownCalendar = ({ modalVisible, setModalVisible, selectedDate, o
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    padding: 40,
     borderRadius: 10,
+    
   },
   calendar: {
+    marginTop: -20,
     width: '100%',
   },
   closeButton: {
-    marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
+    marginTop: 16,
+    marginLeft: 275,
+    position: 'absolute',
+    zIndex: 100,
   },
 });
 
