@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     marginRight: 0,
   },
   activeNavIncome: {
-    backgroundColor: '#EAFFE8',
+    backgroundColor: '#e8f7ff',
   },
   activeNavExpense: {
     backgroundColor: '#ffe8e8',

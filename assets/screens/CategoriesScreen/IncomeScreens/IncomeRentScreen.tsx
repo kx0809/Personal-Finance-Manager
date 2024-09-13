@@ -1,57 +1,122 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, SectionList, StyleSheet } from 'react-native';
 import { getDBConnection } from '../db-service';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { formatted } from '../../../components/utility';
+import { readDataFromFile } from '../../../components/ExpenseIncomeData'; 
 import styles from '../../../styles/incomeDetailsStyles';
 
 const IncomeRentScreen = () => {
-  const [data, setData] = useState<any[]>([]);
+  const [sections, setSections] = useState<any[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
-  
-  useEffect(() => {
-    const fetchIncomeRentData = async () => {
-      try {
-        const db = await getDBConnection();
-        const query = `SELECT * FROM IncomeExpense WHERE type = ? AND category = ?`;
-        const results = await db.executeSql(query, ['IncomeRent', 'Income']);
-        const incomeRentData = results[0].rows.raw();
-        setData(incomeRentData);
-        
-        // Calculate the total amount
-        const total = incomeRentData.reduce((sum, item) => sum + parseFloat(item.amount), 0);
-        setTotalAmount(total);
-      } catch (error) {
-        console.error('Failed to fetch incomeRent data:', error);
-      }
-    };
+  const [iconData, setIconData] = useState<any>({});
 
-    fetchIncomeRentData();
+  const fetchIconData = useCallback(async () => {
+    try {
+      const data = await readDataFromFile();
+      setIconData(data.incomeData.reduce((acc: any, item: any) => {
+        acc[item.name] = item.icon;
+        return acc;
+      }, {}));
+    } catch (error) {
+      console.error('Failed to fetch icon data:', error);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchIconData();
+  }, [fetchIconData]);
+
+  const fetchIncomeRentData = useCallback(async () => {
+    try {
+      const db = await getDBConnection();
+      const query = `SELECT * FROM IncomeExpense WHERE type = ? AND category = ?`;
+      const results = await db.executeSql(query, ['IncomeRent', 'Income']);
+      const incomeRentData = results[0].rows.raw();
+
+      // Group income rent data by date
+      const groupedData = incomeRentData.reduce((groups: any, item: any) => {
+        const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
+        if (!groups[dateKey]) {
+          groups[dateKey] = { data: [], total: 0 };
+        }
+        groups[dateKey].data.push(item);
+        groups[dateKey].total += parseFloat(item.amount);
+        return groups;
+      }, {});
+
+      const sections = Object.keys(groupedData).map(dateKey => ({
+        title: dateKey,
+        data: groupedData[dateKey].data,
+        netTotal: groupedData[dateKey].total,
+      }));
+
+      const total = incomeRentData.reduce((sum, item) => sum + parseFloat(item.amount), 0);
+      setSections(sections);
+      setTotalAmount(total);
+    } catch (error) {
+      console.error('Failed to fetch incomeRent data:', error);
+    }
+  }, [fetchIconData]);
+
+  useEffect(() => {
+    fetchIncomeRentData();
+  }, [fetchIncomeRentData]);
+
+  const getIcon = (type: string) => {
+    return iconData[type] || 'question';
+  };
+
+  const formatNetTotal = (netTotal: number) => {
+    if (netTotal < 0) {
+      return `- RM ${Math.abs(netTotal).toFixed(2)}`;
+    }
+    return `RM ${netTotal.toFixed(2)}`;
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Income from incoming rent</Text>
-      {data.length === 0 ? (
+      <View style={styles.footer}>
+        <Text style={styles.totalAmountLabel}>Total IncomeRent:</Text>
+        <Text style={styles.totalAmount}>RM {totalAmount.toFixed(2)}</Text>
+      </View>
+      {sections.length === 0 ? (
         <Text style={styles.noData}>No income coming from incoming rent</Text>
       ) : (
-        <FlatList
-          data={data}
+        <SectionList
+          sections={sections}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.item}>
-              <Text style={styles.itemDate}>Date: {new Date(item.date).toLocaleDateString()}</Text>
-              <Text style={styles.itemAmount}>Amount: RM {item.amount}</Text>
-              <Text style={styles.itemCategory}>Category: {item.category}</Text>
-              <Text style={styles.itemDescription}>Description: {item.description}</Text>
+          renderSectionHeader={({ section: { title, netTotal } }) => (
+            <View style={styles.sectionHeaderWrapper}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>{title}</Text>
+                <Text style={styles.sectionNetTotal}>{formatNetTotal(netTotal)}</Text>
+              </View>
+            </View>
+          )}
+          renderItem={({ item, index, section }) => (
+            <View style={[styles.itemWrapper, 
+              { 
+                backgroundColor: '#e8f7ff', 
+                ...(index === section.data.length - 1 ? styles.lastItemWrapper : {}) 
+              }
+            ]}>
+              <View style={styles.details}>
+                <View style={styles.item}>
+                  <View style={styles.type}>
+                    <Icon name={getIcon(item.type)} size={20} color="#000" />
+                    <Text style={styles.itemTitle}>{item.type}</Text>
+                  </View>
+                  <Text style={styles.itemDescription}>{item.description}</Text>
+                </View>
+                <Text style={styles.itemAmount}>+ RM {item.amount}</Text>
+              </View>
             </View>
           )}
         />
       )}
-      <View style={styles.footer}>
-        <Text style={styles.totalAmount}>Total IncomeRent: RM {totalAmount.toFixed(2)}</Text>
-      </View>
     </View>
   );
 };
-
 
 export default IncomeRentScreen;

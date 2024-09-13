@@ -16,6 +16,7 @@ import IncomeRentScreen from './IncomeScreens/IncomeRentScreen';
 import InvestmentScreen from './IncomeScreens/InvestmentScreen';
 import OtherScreen from './IncomeScreens/OtherScreen';
 import IncomeScreen from './IncomeScreens/IncomeScreen';
+import CustomCategoriesScreenHeader from '../../components/CustomCategoriesScreenHeader';
 
 const Stack = createStackNavigator();
 
@@ -25,7 +26,9 @@ const CategoriesStackNavigator = () => {
         <Stack.Screen
         name="Categories"
         component={CategoriesScreen}
-        options={{ headerShown: false }} 
+        options={({ navigation }) => ({
+          headerTitle: () => <CustomCategoriesScreenHeader onMenuPress={() => navigation.toggleDrawer()} />,
+        })}
       />
       {/* Expenses screens */}
       <Stack.Screen
@@ -34,7 +37,7 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
             headerTitle: 'Food',
@@ -47,7 +50,7 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
             headerTitle: 'Transport',
@@ -60,7 +63,7 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
             headerTitle: 'Shopping',
@@ -73,7 +76,7 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
             headerTitle: 'Rent',
@@ -87,7 +90,7 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
             headerTitle: 'Bills',
@@ -100,7 +103,7 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
             headerTitle: 'Entertainment',
@@ -114,10 +117,10 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Salary',
+            headerTitle: 'Income from Salary',
           }}
           />
 
@@ -127,10 +130,10 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Bonus',
+            headerTitle: 'Income from Bonus',
           }}
           />
 
@@ -140,10 +143,10 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Rebate',
+            headerTitle: 'Income from Rebate',
           }}
           />
 
@@ -153,10 +156,10 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Trade',
+            headerTitle: 'Income from Trade',
           }}
           />
 
@@ -166,10 +169,10 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Dividend',
+            headerTitle: 'Income from Dividend',
           }}
           />
 
@@ -179,10 +182,10 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Income Rent',
+            headerTitle: 'Income from Income Rent',
           }}
           />
 
@@ -192,10 +195,10 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Investment',
+            headerTitle: 'Income from Investment',
           }}
           />
 
@@ -205,10 +208,10 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Other',
+            headerTitle: 'Income from Other',
           }}
           />
 
@@ -218,10 +221,10 @@ const CategoriesStackNavigator = () => {
             options={{
             headerShown: true,
             headerStyle: {
-            backgroundColor: '#ffebcd',
+            backgroundColor: '#ffb300',
             },
             headerTitleAlign: 'center',
-            headerTitle: 'Income',
+            headerTitle: 'Income from incomes',
           }}
           />
     </Stack.Navigator>

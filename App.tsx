@@ -146,7 +146,7 @@ const MainApp = () => {
           options={{ headerShown: false }}
         />
         <Drawer.Screen name="Report" component={ReportScreen} />
-        <Drawer.Screen name="Categories" component={CategoriesStackNavigator} />
+        <Drawer.Screen name="Categories" component={CategoriesStackNavigator} options={{ headerShown: false }}/>
         <Drawer.Screen name="Settings" component={SettingsScreen} />
         <Drawer.Screen 
           name="Feedback" 
