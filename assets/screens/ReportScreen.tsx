@@ -4,7 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import PagerView from 'react-native-pager-view';
 import { getDBConnection, getMonthlyExpenditures, getMonthlyIncome } from '../components/db-service'; 
 import CustomPieChart from '../components/CustomPieChart'; 
-import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
+import { useFocusEffect } from '@react-navigation/native'; 
 import styles from '../styles/reportScreenStyles';
 
 const formatMonth = (month: string) => {
@@ -61,7 +61,7 @@ const ReportScreen = () => {
     useFocusEffect(
         useCallback(() => {
             setLoading(true);
-            fetchData();  // Trigger data fetch when the screen is focused
+            fetchData();  
         }, [])
     );
 

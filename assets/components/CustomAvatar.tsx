@@ -68,14 +68,14 @@ const CustomAvatar = () => {
 
   return (
     <ImageBackground
-      source={require('../defaultAvatar/DrawerBackground.png')} // Replace with your background image path
+      source={require('../defaultAvatar/DrawerBackground.png')} 
       style={styles.container}
     >
       <View style={styles.innerContainer}>
         <TouchableOpacity onPress={handleAvatarPress}>
           <Avatar
             rounded
-            source={selectedAvatar ? selectedAvatar : require('../defaultAvatar/defaultAvatar.png')} // Placeholder for default avatar
+            source={selectedAvatar ? selectedAvatar : require('../defaultAvatar/defaultAvatar.png')} 
             size={100}
             containerStyle={styles.avatar}
           />

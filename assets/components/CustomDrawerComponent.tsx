@@ -22,7 +22,7 @@ const CustomDrawerComponent = (props: any) => {
       <View style={{ flex: 1, justifyContent: "space-between" }}>
         
         <View style={{ height: windowHeight * 0.25 }}>
-          {/* Avatar and User Info */}
+          {/* Avatar and Username */}
           <View style={styles.topDrawerSection}>
             <CustomAvatar />
           </View>
@@ -46,7 +46,7 @@ const CustomDrawerComponent = (props: any) => {
         </View>
 
         <View style={{ height: windowHeight * 0.10 }}>
-          {/* Bottom Drawer Item - Settings */}
+          {/* Bottom Drawer Item */}
           <View style={styles.bottomDrawerSection}>
             <DrawerItem
               icon={() => (
