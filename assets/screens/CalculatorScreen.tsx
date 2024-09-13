@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import io from "socket.io-client";
-import LinearGradient from 'react-native-linear-gradient'; // Import LinearGradient
+import LinearGradient from 'react-native-linear-gradient'; 
 
 
 const CalculatorScreen = () => {
-  const [display, setDisplay] = useState(""); // Display for calculator input
-  const [result, setResult] = useState(null); // Final calculated result
-  const [socket, setSocket] = useState(null); // Socket.IO client instance
+  const [display, setDisplay] = useState(""); 
+  const [result, setResult] = useState(null); 
+  const [socket, setSocket] = useState(null); 
 
   useEffect(() => {
     // Initialize WebSocket connection
-    const socketInstance = io('http://10.0.2.2:5001/calculator'); // Update with your server address
+    const socketInstance = io('http://10.0.2.2:5001/calculator'); 
     setSocket(socketInstance);
 
     // Handle connection event
@@ -38,15 +38,13 @@ const CalculatorScreen = () => {
   // Function to handle number and operator presses
   const handlePress = (value) => {
     if (result !== null && ['+', '-', '*', '/'].includes(value)) {
-      // Continue calculation based on result if an operator is pressed
       setDisplay(result.toString() + value);
       setResult(null);
     } else if (result !== null) {
-      // If a result is already shown, and a number is pressed, start new calculation
       setDisplay(value);
       setResult(null);
     } else {
-      setDisplay(display + value); // Append pressed value to display
+      setDisplay(display + value); 
     }
   };
 
@@ -97,7 +95,7 @@ const CalculatorScreen = () => {
 
   return (
     <LinearGradient
-      colors={['#ffb300', '#fefbe9']} // Define gradient colors similar to the image
+      colors={['#ffb300', '#fefbe9']} 
       style={styles.container}
     >
       {/* Top Section - Display */}

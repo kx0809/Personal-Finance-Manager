@@ -4,14 +4,13 @@ import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, cors_allowed_origins="*")  # Initialize SocketIO after Flask app
+socketio = SocketIO(app, cors_allowed_origins="*")  
 
 # Handle connection to /calculator namespace
 @socketio.on('connect', namespace='/calculator')
 def handle_connect_calculator():
     print('Connected to /calculator')
 
-# Handle client messages with numbers and operation
 @socketio.on('client_send', namespace='/calculator')
 def handle_client_send_calculator(data):
     try:

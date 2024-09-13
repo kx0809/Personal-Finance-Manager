@@ -12,10 +12,8 @@ def feedback():
     comment = data.get('comment')
     recommendation = data.get('recommendation')
 
-    # Here you can handle the received data, save it to a database, etc.
     print(f"Feedback received: rating={rating}, feedbackType={feedbackType}, comment={comment}, recommendation={recommendation}")
 
-    # For now, we return a success response
     return jsonify({"status": "success"})
 
 if __name__ == '__main__':
