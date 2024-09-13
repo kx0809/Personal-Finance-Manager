@@ -79,6 +79,8 @@ const SettingsScreen = () => {
                         style={styles.switch}
                         onValueChange={toggleSwitch}
                         value={passcodeIsEnabled}
+                        trackColor={{ false: '#919090', true: '#ffb300' }} // Light Brown when off, Amber when on
+                        thumbColor={passcodeIsEnabled ? '#ffd061' : '#5c5c5c'} // Beige when on, Dark Brown when off
                     />
                 </View>
             </View>
