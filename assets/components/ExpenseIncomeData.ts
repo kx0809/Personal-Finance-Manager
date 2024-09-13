@@ -21,7 +21,6 @@ const defaultExpensesData = [
   { id: '4', name: 'Rent', icon: 'home' },
   { id: '5', name: 'Bills', icon: 'file-text' },
   { id: '6', name: 'Entertainment', icon: 'music' },
-  { id: '7', name: 'Hello', icon: 'music' },
 ];
 
 // Function to save the default data to the file

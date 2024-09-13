@@ -4,7 +4,7 @@ import { getDBConnection } from '../db-service';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { formatted } from '../../../components/utility';
 import { readDataFromFile } from '../../../components/ExpenseIncomeData'; 
-import styles from '../../../styles/incomeDetailsStyles';
+import styles from '../../../styles/categoriesDetailsStyles';
 
 const IncomeRentScreen = () => {
   const [sections, setSections] = useState<any[]>([]);
