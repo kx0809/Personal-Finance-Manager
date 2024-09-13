@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { getDBConnection } from '../db-service';
+import styles from '../../../styles/incomeDetailsStyles';
 
 const TradeScreen = () => {
   const [data, setData] = useState<any[]>([]);
@@ -51,76 +52,5 @@ const TradeScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 16,
-      backgroundColor: '#fefbe9', // Light background color for better contrast
-    },
-    title: {
-      fontSize: 25,
-      fontWeight: '600', // Slightly bolder for emphasis
-      color: '#333', // Darker color for better readability
-      marginBottom: 16,
-      paddingBottom: 8,
-      borderBottomWidth: 2,
-      borderBottomColor: '#ddd', // Subtle border at the bottom of the title
-    },
-    item: {
-      backgroundColor: '#fff', // White background for items
-      borderRadius: 8, // Rounded corners for each item
-      shadowColor: '#000', // Shadow for subtle depth
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 2, // For Android shadow
-      marginBottom: 16,
-      padding: 16,
-    },
-    itemAmount: {
-      fontSize: 20,
-      fontWeight: 'bold', // Bold for amount to stand out
-      color: '#4caf50', // Green color for amount
-    },
-    itemDescription: {
-      fontSize: 18,
-      color: '#333', // Darker color for readability
-      marginVertical: 4,
-    },
-    itemCategory: {
-      fontSize: 18,
-      color: '#888', // Lighter color for category
-      marginVertical: 4,
-    },
-    itemDate: {
-      fontSize: 18,
-      color: '#555', // Medium gray color for date
-      marginVertical: 4,
-    },
-    footer: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      backgroundColor: '#F0FFF0',
-      padding: 16,
-      borderTopWidth: 1,
-      borderTopColor: '#ccc',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    totalAmount: {
-      fontSize: 22,
-      fontWeight: 'bold',
-      color: '#4caf50', // Green color for total amount
-    },
-    noData: {
-      fontSize: 18,
-      color: '#888', // Lighter color for no data message
-      textAlign: 'center',
-      marginTop: 20,
-    },
-});
 
 export default TradeScreen;

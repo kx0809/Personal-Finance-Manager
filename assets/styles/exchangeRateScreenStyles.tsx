@@ -1,48 +1,68 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 16,
-      backgroundColor: '#fefbe9', 
-    },
-    title: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      color: '#4e342e', 
-      marginBottom: 16,
-    },
-    input: {
-      borderWidth: 1,
-      borderColor: '#d7ccc8', 
-      borderRadius: 4,
-      padding: 8,
-      marginBottom: 16,
-    },
-    button: {
-      backgroundColor: '#ffb300', 
-      padding: 12,
-      borderRadius: 20,
-      alignItems: 'center',
-      marginBottom: 16,
-    },
-    buttonText: {
-      color: '#4e342e', 
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    resultContainer: {
-      marginTop: 16,
-    },
-    result: {
-      fontSize: 18,
-      marginBottom: 8,
-      color: '#4e342e', 
-    },
-    rateInfo: {
-      fontSize: 16,
-      color: '#4e342e', 
-    },
-  });
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    padding: 16,
+  },
+  exchangeContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 10,
+    padding: 20,
+    marginTop: 30,
+  },
+  currencyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  countryPicker: {
+    marginRight: 10,
+  },
+  currencyText: {
+    fontSize: 18,
+    color: 'black',
+    flex: 1,
+    marginHorizontal: 10,
+  },
+  amountInput: {
+    fontSize: 24,
+    color: 'black',
+    textAlign: 'right',
+    flex: 1,
+  },
+  convertedAmount: {
+    fontSize: 24,
+    color: 'black',
+    textAlign: 'right',
+  },
+  swapButton: {
+    alignSelf: 'center',
+    marginVertical: 10,
+  },
+  keypadContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    padding: 20,
+    marginBottom: 15,
+  },
+  keypadButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 10,
+    margin: 10,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 70,
+    height: 70,
+  },
+  keypadButtonText: {
+    fontSize: 24,
+    color: '#4e342e',
+  },
+});
 
 export default styles;

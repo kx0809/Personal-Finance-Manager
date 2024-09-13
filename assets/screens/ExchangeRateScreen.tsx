@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import CountryPicker, { CountryCode } from 'react-native-country-picker-modal';
+import Icon from 'react-native-vector-icons/Ionicons';
 import styles from '../styles/exchangeRateScreenStyles';
 
 const ExchangeRateScreen = () => {
-  const [baseCurrency, setBaseCurrency] = useState('');
-  const [targetCurrency, setTargetCurrency] = useState('');
+  const [baseCurrency, setBaseCurrency] = useState('USD');
+  const [targetCurrency, setTargetCurrency] = useState('VND');
+  const [baseCountryCode, setBaseCountryCode] = useState<CountryCode>('US');
+  const [targetCountryCode, setTargetCountryCode] = useState<CountryCode>('VN');
   const [amount, setAmount] = useState('');
   const [convertedAmount, setConvertedAmount] = useState<number | null>(null);
   const [exchangeRate, setExchangeRate] = useState<number | null>(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const fetchExchangeRate = async () => {
     try {
@@ -28,58 +32,70 @@ const ExchangeRateScreen = () => {
     }
   };
 
-  const handleSubmit = () => {
-    setIsSubmitted(true);
-    fetchExchangeRate();
+  const handleKeyPress = (key: string) => {
+    setAmount((prevAmount) => (prevAmount + key));
+  };
+
+  const handleDelete = () => {
+    setAmount((prevAmount) => prevAmount.slice(0, -1));
+  };
+
+  const handleBaseCountryChange = (country: { cca2: CountryCode; currency: string[] }) => {
+    setBaseCountryCode(country.cca2);
+    setBaseCurrency(country.currency[0]);
+  };
+
+  const handleTargetCountryChange = (country: { cca2: CountryCode; currency: string[] }) => {
+    setTargetCountryCode(country.cca2);
+    setTargetCurrency(country.currency[0]);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Currency Exchange Rate Tracker</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Base Currency (e.g., MYR)"
-        value={baseCurrency}
-        onChangeText={setBaseCurrency}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Target Currency (e.g., USD, CNY, JPY)"
-        value={targetCurrency}
-        onChangeText={setTargetCurrency}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Amount (in Base Currency)"
-        keyboardType="numeric"
-        value={amount}
-        onChangeText={setAmount}
-      />
-
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Submit</Text>
-      </TouchableOpacity>
-
-      {isSubmitted && (
-        <View style={styles.resultContainer}>
-          {exchangeRate !== null ? (
-            <>
-              <Text style={styles.result}>
-                {amount} {baseCurrency} = {(Number(amount) * exchangeRate).toFixed(2)} {targetCurrency}
-              </Text>
-              <Text style={styles.rateInfo}>
-                Exchange Rate: 1 {baseCurrency} = {exchangeRate.toFixed(4)} {targetCurrency}
-              </Text>
-            </>
-          ) : (
-            <Text style={styles.result}>Exchange rate not available</Text>
-          )}
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+      <LinearGradient colors={['#ffb300', '#fefbe9']} style={styles.container}>
+        <View style={styles.exchangeContainer}>
+          <View style={styles.currencyRow}>
+            <CountryPicker
+              countryCode={baseCountryCode}
+              withFilter
+              withFlag
+              withCurrency
+              onSelect={handleBaseCountryChange}
+              containerButtonStyle={styles.countryPicker}
+            />
+            <Text style={styles.currencyText}>{baseCurrency}</Text>
+            <Text style={styles.amountInput}>{amount}</Text>
+          </View>
+          <TouchableOpacity style={styles.swapButton} onPress={fetchExchangeRate}>
+            <Icon name="swap-vertical" size={30} color="black" />
+          </TouchableOpacity>
+          <View style={styles.currencyRow}>
+            <CountryPicker
+              countryCode={targetCountryCode}
+              withFilter
+              withFlag
+              withCurrency
+              onSelect={handleTargetCountryChange}
+              containerButtonStyle={styles.countryPicker}
+            />
+            <Text style={styles.currencyText}>{targetCurrency}</Text>
+            <Text style={styles.convertedAmount}>
+              {convertedAmount !== null ? convertedAmount.toFixed(2) : '0'} ₫
+            </Text>
+          </View>
         </View>
-      )}
-    </View>
+        <View style={styles.keypadContainer}>
+          {['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0'].map((key) => (
+            <TouchableOpacity key={key} style={styles.keypadButton} onPress={() => handleKeyPress(key)}>
+              <Text style={styles.keypadButtonText}>{key}</Text>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity style={styles.keypadButton} onPress={handleDelete}>
+            <Icon name="backspace" size={30} color="#4e342e" />
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+    </KeyboardAvoidingView>
   );
 };
 
