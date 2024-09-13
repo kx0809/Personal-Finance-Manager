@@ -45,7 +45,7 @@ const CustomDrawerComponent = (props: any) => {
           ))}
         </View>
 
-        <View style={{ height: windowHeight * 0.10 }}>
+        <View style={{ height: windowHeight * 0.08 }}>
           {/* Bottom Drawer Item */}
           <View style={styles.bottomDrawerSection}>
             <DrawerItem

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { View, Image, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput, Text, Button, ImageBackground } from "react-native";
-import { Avatar } from "@rneui/base";
+import React, { useState, useEffect } from 'react';
+import { View, Image, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput, Text, ImageBackground } from 'react-native';
+import { Avatar } from '@rneui/base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchImageLibrary } from 'react-native-image-picker';
 
@@ -9,6 +9,7 @@ const CustomAvatar = () => {
   const [name, setName] = useState('Your Name');
   const [editingName, setEditingName] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
+  const [backgroundImage, setBackgroundImage] = useState(null);
 
   // Open the modal for avatar selection
   const handleAvatarPress = () => {
@@ -16,67 +17,64 @@ const CustomAvatar = () => {
   };
 
   // Handle image pick from the user's photo album
-  const handleImagePick = () => {
+  const handleImagePick = async (type) => {
     launchImageLibrary({}, async (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.errorMessage) {
         console.log('ImagePicker Error: ', response.errorMessage);
       } else {
-        const newAvatar = { uri: response.assets[0].uri };
-        setSelectedAvatar(newAvatar);
-        await AsyncStorage.setItem('selectedAvatar', JSON.stringify(newAvatar));
+        if (type === 'avatar') {
+          const newAvatar = { uri: response.assets[0].uri };
+          setSelectedAvatar(newAvatar);
+          await AsyncStorage.setItem('selectedAvatar', JSON.stringify(newAvatar));
+        } else if (type === 'background') {
+          const newBackground = { uri: response.assets[0].uri };
+          setBackgroundImage(newBackground);
+          await AsyncStorage.setItem('backgroundImage', JSON.stringify(newBackground));
+        }
         setModalVisible(false);
       }
     });
   };
 
-  // Load avatar from AsyncStorage
-  const loadAvatarFromStorage = async () => {
+  // Load avatar and background from AsyncStorage
+  const loadFromStorage = async () => {
     try {
       const storedAvatar = await AsyncStorage.getItem('selectedAvatar');
       if (storedAvatar) {
         setSelectedAvatar(JSON.parse(storedAvatar));
       }
-    } catch (error) {
-      console.error('Failed to load avatar:', error);
-    }
-  };
 
-  // Handle name change
-  const handleNameChange = async (newName: string) => {
-    setName(newName);
-    await AsyncStorage.setItem('userName', newName);
-  };
+      const storedBackgroundImage = await AsyncStorage.getItem('backgroundImage');
+      if (storedBackgroundImage) {
+        setBackgroundImage(JSON.parse(storedBackgroundImage));
+      }
 
-  // Load name from AsyncStorage
-  const loadNameFromStorage = async () => {
-    try {
       const storedName = await AsyncStorage.getItem('userName');
       if (storedName) {
         setName(storedName);
       }
     } catch (error) {
-      console.error('Failed to load name:', error);
+      console.error('Failed to load data from storage:', error);
     }
   };
 
   useEffect(() => {
-    loadAvatarFromStorage();
-    loadNameFromStorage();
+    loadFromStorage();
   }, []);
 
   return (
     <ImageBackground
-      source={require('../defaultAvatar/DrawerBackground.png')} 
+      source={backgroundImage ? { uri: backgroundImage.uri } : require('../defaultAvatar/DrawerBackground.png')}
       style={styles.container}
     >
       <View style={styles.innerContainer}>
         <TouchableOpacity onPress={handleAvatarPress}>
           <Avatar
             rounded
-            source={selectedAvatar ? selectedAvatar : require('../defaultAvatar/defaultAvatar.png')} 
-            size={100}
+            source={selectedAvatar ? selectedAvatar : require('../defaultAvatar/defaultAvatar.png')}
+            size={110}
             containerStyle={styles.avatar}
           />
         </TouchableOpacity>
@@ -85,8 +83,11 @@ const CustomAvatar = () => {
           <TextInput
             style={styles.nameInput}
             value={name}
-            onChangeText={handleNameChange}
-            onSubmitEditing={() => setEditingName(false)}
+            onChangeText={setName}
+            onSubmitEditing={async () => {
+              setEditingName(false);
+              await AsyncStorage.setItem('userName', name);
+            }}
             autoFocus
           />
         ) : (
@@ -112,7 +113,18 @@ const CustomAvatar = () => {
                   )}
                 </View>
               </TouchableWithoutFeedback>
-              <Button title="Select Photo from Album" onPress={handleImagePick} />
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => handleImagePick('avatar')}
+              >
+                <Text style={styles.buttonText}>Select Photo for Avatar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => handleImagePick('background')}
+              >
+                <Text style={styles.buttonText}>Select Background Photo</Text>
+              </TouchableOpacity>
             </View>
           </TouchableWithoutFeedback>
         </Modal>
@@ -133,7 +145,6 @@ const styles = StyleSheet.create({
   },
   avatar: {
     marginTop: 20,
-    marginLeft: 0,
   },
   name: {
     marginTop: 7,
@@ -166,6 +177,19 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
+  },
+  modalButton: {
+    backgroundColor: '#ffb300',
+    padding: 15,
+    borderRadius: 5,
+    marginVertical: 5,
+    width: '80%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#4e342e',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
