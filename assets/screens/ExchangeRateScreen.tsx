@@ -6,10 +6,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import styles from '../styles/exchangeRateScreenStyles';
 
 const ExchangeRateScreen = () => {
-  const [baseCurrency, setBaseCurrency] = useState('USD');
-  const [targetCurrency, setTargetCurrency] = useState('VND');
-  const [baseCountryCode, setBaseCountryCode] = useState<CountryCode>('US');
-  const [targetCountryCode, setTargetCountryCode] = useState<CountryCode>('VN');
+  const [baseCurrency, setBaseCurrency] = useState('MYR');
+  const [targetCurrency, setTargetCurrency] = useState('USD');
+  const [baseCountryCode, setBaseCountryCode] = useState<CountryCode>('MY');
+  const [targetCountryCode, setTargetCountryCode] = useState<CountryCode>('US');
   const [amount, setAmount] = useState('');
   const [convertedAmount, setConvertedAmount] = useState<number | null>(null);
   const [exchangeRate, setExchangeRate] = useState<number | null>(null);
@@ -80,7 +80,7 @@ const ExchangeRateScreen = () => {
             />
             <Text style={styles.currencyText}>{targetCurrency}</Text>
             <Text style={styles.convertedAmount}>
-              {convertedAmount !== null ? convertedAmount.toFixed(2) : '0'} ₫
+              {convertedAmount !== null ? convertedAmount.toFixed(2) : '0'}
             </Text>
           </View>
         </View>

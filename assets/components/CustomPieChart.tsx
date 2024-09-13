@@ -120,11 +120,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: '50%',
         left: '50%',
-        width: 150, // Diameter of the circle
-        height: 150, // Diameter of the circle
-        borderRadius: 75, // Radius for a circle
-        backgroundColor: 'white', // Color of the circle
-        transform: [{ translateX: -73 }, { translateY: -140 }], // Center the circle
+        width: 150, 
+        height: 150, 
+        borderRadius: 75, 
+        backgroundColor: 'white', 
+        transform: [{ translateX: -73 }, { translateY: -140 }], 
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 1,
