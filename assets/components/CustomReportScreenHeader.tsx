@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   headerText: {
-    fontSize: 26,  // Optional: You can style the text as needed
+    fontSize: 26,  
     color: '#4e342e',
     marginTop: 5,
     marginRight: 92,
