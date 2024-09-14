@@ -3,19 +3,22 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import { RadioButton } from 'react-native-paper'; 
 import styles from "../styles/feedbackScreenStyles";
 
-
 const FeedbackScreen = () => {
+  // State variables to store user input
   const [rating, setRating] = useState(null);
   const [feedbackType, setFeedbackType] = useState('');
   const [comment, setComment] = useState('');
   const [recommendation, setRecommendation] = useState(null);
 
+  // Handle the form submission
   const handleSubmit = () => {
+    // Validate that all required fields are filled
     if (rating === "" || feedbackType === "" || comment === "" || recommendation === "") {
       Alert.alert("Error", "Please fill all the fields");
       return;
     }
 
+    // Prepare the feedback data to send
     const feedbackData = {
       rating: rating,
       feedbackType: feedbackType,
@@ -23,27 +26,30 @@ const FeedbackScreen = () => {
       recommendation: recommendation,
     };
 
+    // Send feedback data to the server via POST request in JSON format
     fetch('http://10.0.2.2:5000/feedback', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(feedbackData),
+      body: JSON.stringify(feedbackData),  // Convert feedback data to JSON
     })
     .then(response => response.json())
     .then(data => {
       if (data.status === 'success') {
+        // If submission is successful, give alert to the user and clear the form
         Alert.alert("Success", "Feedback submitted successfully. We will contact you as soon as possible!");
-        // Clear the text fields
         setRating(null);
         setFeedbackType("");
         setComment("");
         setRecommendation(null);
       } else {
+        // Handle failure in feedback submission
         Alert.alert("Error", "Failed to submit feedback");
       }
     })
     .catch((error) => {
+      // Handle network or request errors
       console.error("Error:", error);
       Alert.alert("Error", "Network error");
     });
@@ -57,12 +63,13 @@ const FeedbackScreen = () => {
       <View style={styles.ratingRow}>
         {['😕', '😐', '😶', '🙂', '😄'].map((emoji, index) => (
           <TouchableOpacity key={index} onPress={() => setRating(index + 1)}>
+            {/* Highlight the selected emoji */}
             <Text style={rating === index + 1 ? styles.selectedEmoji : styles.emoji}>{emoji}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      {/* Feedback Type (Radio Button) */}
+      {/* Feedback Type */}
       <Text style={styles.question}>What is your feedback about?</Text>
       <RadioButton.Group onValueChange={value => setFeedbackType(value)} value={feedbackType}>
         <RadioButton.Item label="This app" value="app" />
@@ -85,6 +92,7 @@ const FeedbackScreen = () => {
       <View style={styles.recommendationRow}>
         {Array.from({ length: 11 }, (_, i) => (
           <TouchableOpacity key={i} onPress={() => setRecommendation(i)}>
+            {/* Highlight the selected recommendation */}
             <Text style={recommendation === i ? styles.selectedRecommendation : styles.recommendation}>
               {i}
             </Text>
@@ -102,7 +110,5 @@ const FeedbackScreen = () => {
     </View>
   );
 };
-
-
 
 export default FeedbackScreen;
