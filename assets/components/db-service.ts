@@ -46,7 +46,7 @@ export const createExpenditure = async (
     type: string,
     amount: string,
     description: string,
-    category: string, // Add this parameter
+    category: string, 
     date: number
 ) => {
     try {

@@ -59,8 +59,8 @@ const CustomDropdownCalendar = ({ modalVisible, setModalVisible, selectedDate, o
   markedDates[todayDate] = {
     ...markedDates[todayDate],
     selected: true,
-    selectedColor: '#ffb300', // Change color for the current date
-    selectedTextColor: 'white', // Change text color for the current date
+    selectedColor: '#ffb300', 
+    selectedTextColor: 'white', 
   };
 
   return (
@@ -72,11 +72,11 @@ const CustomDropdownCalendar = ({ modalVisible, setModalVisible, selectedDate, o
         style={styles.calendar}
         markedDates={markedDates}
         onDayPress={(day) => {
-          const dateString = `${day.dateString.split('-').reverse().join(' ')}`; // Convert date format
+          const dateString = `${day.dateString.split('-').reverse().join(' ')}`; 
           onDateSelect(dateString);
         }}
-        monthFormat={'yyyy-MM'} // Ensure the correct format
-        markingType={'dot'} // Specify the marking type
+        monthFormat={'yyyy-MM'} 
+        markingType={'dot'} 
         theme={{
           calendarBackground: 'white',
           textSectionTitleColor: '#ffb300',
@@ -84,7 +84,7 @@ const CustomDropdownCalendar = ({ modalVisible, setModalVisible, selectedDate, o
           selectedDayTextColor: 'white',
           todayTextColor: '#ffb300',
           dayTextColor: '#4e342e',
-          arrowColor: '#ffb300', // Change color of the navigation arrows
+          arrowColor: '#ffb300', 
         }}
       />
       

@@ -37,12 +37,12 @@ const CustomHomeScreenPieChart: React.FC<CustomHomeScreenPieChartProps> = ({ dat
     const pieData = isDataEmpty ? [
         {
             name: 'Expense',
-            amount: 1, // Set to 1 for visibility
+            amount: 1, 
             color: '#cccccc',
         },
         {
             name: 'Income',
-            amount: 1, // Set to 1 for visibility
+            amount: 1, 
             color: '#cccccc',
         }
     ] : [
@@ -63,8 +63,8 @@ const CustomHomeScreenPieChart: React.FC<CustomHomeScreenPieChartProps> = ({ dat
             <View style={styles.pieChartWrapper}>
                 <PieChart
                     data={pieData}
-                    width={570} // Adjusted width for the pie chart
-                    height={300} // Adjusted height for the pie chart
+                    width={570} 
+                    height={300} 
                     chartConfig={{
                         backgroundColor: 'transparent',
                         color: (opacity = 1) => `rgba(78, 52, 46, ${opacity})`,
@@ -105,11 +105,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: '50%',
         left: '50%',
-        width: 150, // Diameter of the circle
-        height: 150, // Diameter of the circle
-        borderRadius: 75, // Radius for a circle
-        backgroundColor: 'white', // Color of the circle
-        transform: [{ translateX: -67.5 }, { translateY: -25 }], // Center the circle
+        width: 150, 
+        height: 150, 
+        borderRadius: 75, 
+        backgroundColor: 'white', 
+        transform: [{ translateX: -67.5 }, { translateY: -25 }], 
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 1,
