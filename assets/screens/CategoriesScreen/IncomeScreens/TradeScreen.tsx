@@ -34,7 +34,6 @@ const TradeScreen = () => {
       const results = await db.executeSql(query, ['Trade', 'Income']);
       const tradeData = results[0].rows.raw();
 
-      // Group trade data by date
       const groupedData = tradeData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {

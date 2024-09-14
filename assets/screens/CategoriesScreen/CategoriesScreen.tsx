@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Animated, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { readDataFromFile } from '../../components/ExpenseIncomeData'; 
 
 
@@ -28,7 +27,7 @@ const CategoriesScreen = () => {
   const handleTabPress = (tabName: React.SetStateAction<string>) => {
     setActiveTab(tabName);
     Animated.spring(translateX, {
-      toValue: tabName === 'Expense' ? 0 : -width, // Move to the correct tab
+      toValue: tabName === 'Expense' ? 0 : -width, 
       useNativeDriver: true,
     }).start();
   };
@@ -146,10 +145,10 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexDirection: 'row',
-    width: width * 2, // Double the width for two tabs
+    width: width * 2, 
   },
   tabContent: {
-    width: width, // Each tab takes up the full screen width
+    width: width, 
     padding: 10,
   },
   gridContainer: {

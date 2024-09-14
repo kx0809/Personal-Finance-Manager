@@ -34,7 +34,6 @@ const IncomeScreen = () => {
       const results = await db.executeSql(query, ['Income', 'Income']);
       const incomeData = results[0].rows.raw();
 
-      // Group income data by date
       const groupedData = incomeData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {

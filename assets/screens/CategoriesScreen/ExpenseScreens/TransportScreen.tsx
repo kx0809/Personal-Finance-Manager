@@ -34,7 +34,6 @@ const TransportScreen = () => {
       const results = await db.executeSql(query, ['Transport', 'Expense']);
       const transportData = results[0].rows.raw();
 
-      // Group transport data by date
       const groupedData = transportData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {

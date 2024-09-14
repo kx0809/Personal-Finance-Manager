@@ -34,7 +34,6 @@ const SalaryScreen = () => {
       const results = await db.executeSql(query, ['Salary', 'Income']);
       const salaryData = results[0].rows.raw();
 
-      // Group salary data by date
       const groupedData = salaryData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {

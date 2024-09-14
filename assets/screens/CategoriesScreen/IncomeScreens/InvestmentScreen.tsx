@@ -34,7 +34,6 @@ const InvestmentScreen = () => {
       const results = await db.executeSql(query, ['Investment', 'Income']);
       const investmentData = results[0].rows.raw();
 
-      // Group investment data by date
       const groupedData = investmentData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {

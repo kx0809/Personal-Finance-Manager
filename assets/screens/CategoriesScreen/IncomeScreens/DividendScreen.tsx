@@ -34,7 +34,6 @@ const DividendScreen = () => {
       const results = await db.executeSql(query, ['Dividend', 'Income']);
       const dividendData = results[0].rows.raw();
 
-      // Group dividend data by date
       const groupedData = dividendData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {

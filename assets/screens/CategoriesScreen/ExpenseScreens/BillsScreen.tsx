@@ -38,7 +38,6 @@ const BillsScreen = () => {
       const results = await db.executeSql(query, ['Bills', 'Expense']);
       const billsData = results[0].rows.raw();
 
-      // Group bills data by date
       const groupedData = billsData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {

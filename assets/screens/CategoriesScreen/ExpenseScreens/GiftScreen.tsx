@@ -34,7 +34,6 @@ const GiftScreen = () => {
       const results = await db.executeSql(query, ['Gift', 'Expense']);
       const giftData = results[0].rows.raw();
 
-      // Group gift data by date
       const groupedData = giftData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {

@@ -34,7 +34,6 @@ const RebateScreen = () => {
       const results = await db.executeSql(query, ['Rebate', 'Income']);
       const rebateData = results[0].rows.raw();
 
-      // Group rebate data by date
       const groupedData = rebateData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {

@@ -34,7 +34,6 @@ const ShoppingScreen = () => {
       const results = await db.executeSql(query, ['Shopping', 'Expense']);
       const shoppingData = results[0].rows.raw();
 
-      // Group shopping data by date
       const groupedData = shoppingData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {

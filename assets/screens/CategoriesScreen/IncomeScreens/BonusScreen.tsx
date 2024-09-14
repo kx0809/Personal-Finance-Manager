@@ -34,7 +34,6 @@ const BonusScreen = () => {
       const results = await db.executeSql(query, ['Bonus', 'Income']);
       const bonusData = results[0].rows.raw();
 
-      // Group bonus data by date
       const groupedData = bonusData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {

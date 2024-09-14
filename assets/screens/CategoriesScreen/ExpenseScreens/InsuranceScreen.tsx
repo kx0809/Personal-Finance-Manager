@@ -34,7 +34,6 @@ const InsuranceScreen = () => {
       const results = await db.executeSql(query, ['Insurance', 'Expense']);
       const insuranceData = results[0].rows.raw();
 
-      // Group insurance data by date
       const groupedData = insuranceData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {

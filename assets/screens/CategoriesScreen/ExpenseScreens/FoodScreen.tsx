@@ -34,7 +34,6 @@ const FoodScreen = () => {
       const results = await db.executeSql(query, ['Food', 'Expense']);
       const foodData = results[0].rows.raw();
 
-      // Group food data by date
       const groupedData = foodData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {

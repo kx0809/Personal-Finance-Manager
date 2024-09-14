@@ -2,7 +2,6 @@ import { SQLiteDatabase, enablePromise, openDatabase } from 'react-native-sqlite
 
 const databaseName = 'myincomeexpense.sqlite';
 
-// Enable promise for SQLite
 enablePromise(true);
 
 export const getDBConnection = async () => {
@@ -46,7 +45,7 @@ export const createExpenditure = async (
     type: string,
     amount: string,
     description: string,
-    category: string, // Add this parameter
+    category: string, 
     date: number
 ) => {
     try {

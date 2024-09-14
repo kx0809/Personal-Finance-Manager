@@ -34,7 +34,6 @@ const OtherScreen = () => {
       const results = await db.executeSql(query, ['other', 'Income']);
       const otherData = results[0].rows.raw();
 
-      // Group other data by date
       const groupedData = otherData.reduce((groups: any, item: any) => {
         const dateKey = formatted(new Date(item.date), 'yyyy-MM-dd');
         if (!groups[dateKey]) {
