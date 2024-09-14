@@ -18,6 +18,7 @@ const CreateScreen = ({ route, navigation }) => {
   const [description, setDescription] = useState('');
   const [isPickerOpen, setPickerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Expense'); 
+  const [date, setDate] = useState(new Date(Date.now()));
   const [openPicker, setOpenPicker] = useState(false);
   const [expensesData, setExpensesData] = useState([]);
   const [incomeData, setIncomeData] = useState([]);
