@@ -125,15 +125,15 @@ const MainApp = () => {
       <Drawer.Navigator
         drawerContent={(props) => <CustomDrawerComponent {...props} />}
         screenOptions={{
-          drawerActiveTintColor: '#fff', // Color for the active item
-          drawerInactiveTintColor: '#4e342e', // Color for inactive items
-          drawerStyle: { backgroundColor: '#ffb300' }, // Set drawer background color
+          drawerActiveTintColor: '#fff', 
+          drawerInactiveTintColor: '#4e342e', 
+          drawerStyle: { backgroundColor: '#ffb300' }, 
           drawerLabelStyle: { fontSize: 15, textAlign: 'center' },
           headerTitleAlign: 'center',
           headerStyle: {
-            backgroundColor: '#ffb300', // Header background color
+            backgroundColor: '#ffb300', 
           },
-          headerTintColor: '#4e342e', // Header text color
+          headerTintColor: '#4e342e', 
           headerTitleStyle: {
             fontWeight: 'bold',
             fontSize: 25,
@@ -239,16 +239,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dateButton: {
-    backgroundColor: '#fefbe9', // Background color
-    paddingVertical: 8, // Vertical padding
-    paddingHorizontal: 12, // Horizontal padding
-    borderRadius: 5, // Border radius
+    backgroundColor: '#fefbe9', 
+    paddingVertical: 8, 
+    paddingHorizontal: 12, 
+    borderRadius: 5, 
     flexDirection: 'row',
-    alignItems: 'center', // Align items to center vertically
-    justifyContent: 'center', // Center content horizontally
+    alignItems: 'center', 
+    justifyContent: 'center', 
   },
   dateButtonText: {
-    color: '#4e342e', // Text color
+    color: '#4e342e', 
     fontSize: 16,
     fontWeight: 'regular',
   },
