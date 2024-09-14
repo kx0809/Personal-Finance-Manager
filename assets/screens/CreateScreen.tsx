@@ -40,15 +40,20 @@ const CreateScreen = ({ route, navigation }) => {
     // Validation
     if (!type.trim() || !amount.trim() || !description.trim()) {
       Alert.alert('Validation Error', 'Please fill in all fields.');
+      return; 
+    }
+  
+    // Check if amount is a valid number
+    if (isNaN(amount)) {
+      Alert.alert('Validation Error', 'Please enter valid number.');
       return;
     }
-
+  
     // Proceed with insertion if validation passes
     await createExpenditure(await getDBConnection(), type, amount, description, selectedCategory, date.getTime());
     route.params.refresh();
     navigation.goBack();
   };
-
   const openTypePicker = () => {
     setPickerOpen(true);
   };
