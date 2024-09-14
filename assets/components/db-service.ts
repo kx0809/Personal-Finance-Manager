@@ -114,7 +114,7 @@ export const getMonthlyIncome = async (db: SQLiteDatabase): Promise<any> => {
     try {
         const query = `SELECT type, strftime('%Y-%m', date / 1000, 'unixepoch') AS month, SUM(amount) AS total
                        FROM IncomeExpense
-                       WHERE category = 'Income'  -- Filter to include only income
+                       WHERE category = 'Income'  
                        GROUP BY type, month
                        ORDER BY month, type`;
         const results = await db.executeSql(query);

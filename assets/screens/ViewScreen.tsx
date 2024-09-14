@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, Alert } from 'react-native';
 import { FloatingAction } from 'react-native-floating-action';
 import { getDBConnection, getExpenditureById, deleteExpenditure } from '../components//db-service';
-import { formatted } from '../components/utility'; // Import your utility function
+import { formatted } from '../components/utility'; 
 
 const actions = [
   {
