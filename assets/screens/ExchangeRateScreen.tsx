@@ -6,26 +6,26 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import styles from '../styles/exchangeRateScreenStyles';
 
 const ExchangeRateScreen = () => {
-  // State variables to store the selected currencies, country codes, amount, and conversion data
   const [baseCurrency, setBaseCurrency] = useState('MYR');
   const [targetCurrency, setTargetCurrency] = useState('USD');
   const [baseCountryCode, setBaseCountryCode] = useState<CountryCode>('MY');
   const [targetCountryCode, setTargetCountryCode] = useState<CountryCode>('US');
-  const [amount, setAmount] = useState('');  // Amount entered by the user
-  const [convertedAmount, setConvertedAmount] = useState<number | null>(null);  // The result after conversion
-  const [exchangeRate, setExchangeRate] = useState<number | null>(null);  // Current exchange rate
+  const [amount, setAmount] = useState('');  
+  const [convertedAmount, setConvertedAmount] = useState<number | null>(null); 
+  const [exchangeRate, setExchangeRate] = useState<number | null>(null);  
 
   // Function to fetch exchange rate from the API
   const fetchExchangeRate = async () => {
     try {
       const response = await fetch(`https://v6.exchangerate-api.com/v6/4b90b4cf5098f6ffa8876881/latest/${baseCurrency}`);
       const data = await response.json();
+
+      // If exchange rate exists for the selected target currency, update the exchange rate and converted amount
       if (data.conversion_rates[targetCurrency]) {
-        // If exchange rate exists for the selected target currency, update the exchange rate and converted amount
         setExchangeRate(data.conversion_rates[targetCurrency]);
         setConvertedAmount(Number(amount) * data.conversion_rates[targetCurrency]);
       } else {
-        // Handle case where the target currency is not supported
+        // Set to null when the target currency is not supported from the api
         setExchangeRate(null);
         setConvertedAmount(null);
       }
@@ -61,7 +61,6 @@ const ExchangeRateScreen = () => {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      {/* Gradient background for styling */}
       <LinearGradient colors={['#ffb300', '#fefbe9']} style={styles.container}>
         <View style={styles.exchangeContainer}>
           {/* Base currency selection and amount input */}
