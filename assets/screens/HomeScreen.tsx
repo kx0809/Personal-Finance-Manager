@@ -144,7 +144,6 @@ const HomeScreen = ({ navigation }: any) => {
 
   const handleDateSelect = (date: string) => {
     setSelectedDate(date);
-    // Handle any additional logic when a date is selected
   };
 
   useFocusEffect(
@@ -207,7 +206,7 @@ const HomeScreen = ({ navigation }: any) => {
     setMonthYearModalVisible(false);
   };
 
-  // Determine border colors
+  //  border colors
   const expenseBorderColor = totalExpense === 0 ? '#cccccc' : '#ffe8e8';
   const incomeBorderColor = totalIncome === 0 ? '#cccccc' : '#e8f7ff';
   
@@ -313,7 +312,7 @@ const HomeScreen = ({ navigation }: any) => {
     <Modal
         animationType="slide"
         transparent={true}
-        visible={monthYearModalVisible} // Use monthYearModalVisible here
+        visible={monthYearModalVisible} 
         onRequestClose={() => {
           setMonthYearModalVisible(!monthYearModalVisible);
         }}
@@ -357,15 +356,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   sectionHeaderWrapper: {
-    marginHorizontal: 15, // Adds space on the sides
-    marginTop: 20, // Adds space above each section header
+    marginHorizontal: 15, 
+    marginTop: 20, 
   },
   sectionHeader: {
-    backgroundColor: 'white', // Beige background for the header
-    paddingVertical: 5,
+    backgroundColor: 'white', 
     paddingHorizontal: 15,
-    borderTopRightRadius: 10, // Rounded corners for the header
-    borderTopLeftRadius: 10, // Rounded corners for the header
+    borderTopRightRadius: 10, 
+    borderTopLeftRadius: 10, 
     borderWidth: 1,
     borderColor: '#ccc',
     flexDirection: 'row',
@@ -374,16 +372,16 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#4e342e', // Dark brown text color
+    color: '#4e342e', 
   },
   sectionNetTotal: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#ffb300', // Accent color for net total
+    color: '#ffb300', 
   },
   itemWrapper: {
     marginHorizontal: 15,
-    borderWidth: 1, // Border width for each item
+    borderWidth: 1, 
     borderColor: '#ccc',
   },
   item: {
@@ -430,14 +428,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#4e342e',
-    borderBottomWidth: 7, // Adjust the width as needed
-    paddingBottom: 0, // Adjust this value to move the border up
+    borderBottomWidth: 7, 
+    paddingBottom: 0, 
   },
   totalExpenseText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#4e342e',
-    borderBottomWidth: 7, // Adjust the width as needed
+    borderBottomWidth: 7, 
   },
   totalAmount: {
     fontSize: 18,
@@ -460,22 +458,21 @@ const styles = StyleSheet.create({
     marginTop: 80,
   },
   dateButton: {
-    backgroundColor: '#fefbe9', // Background color
-    paddingVertical: 8, // Vertical padding
-    paddingHorizontal: 12, // Horizontal padding
-    borderRadius: 5, // Border radius
+    backgroundColor: '#fefbe9', 
+    paddingVertical: 8, 
+    paddingHorizontal: 12, 
+    borderRadius: 5, 
     flexDirection: 'row',
-    alignItems: 'center', // Align items to center vertically
-    justifyContent: 'center', // Center content horizontally
+    alignItems: 'center', 
+    justifyContent: 'center', 
   },
   dateButtonText: {
-    color: '#4e342e', // Text color
-    fontSize: 16,
+    color: '#4e342e', 
     fontWeight: 'regular',
   },
   buttonContainer: {
     padding: 4,
-    alignItems: 'center', // Center the button horizontally
+    alignItems: 'center', 
     marginTop: -50,
     marginBottom: 10,
   },
@@ -504,18 +501,18 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   saveButton: {
-    backgroundColor: '#ffb300', // Background color
-    width: '65%', // Full width
-    borderRadius: 5, // Rounded corners
-    marginBottom: 10, // Space below the button
-    alignItems: 'center', // Center text horizontally
-    paddingHorizontal: 20, // Vertical padding
+    backgroundColor: '#ffb300', 
+    width: '65%', 
+    borderRadius: 5, 
+    marginBottom: 10, 
+    alignItems: 'center', 
+    paddingHorizontal: 20, 
   },
   saveButtonText: {
     color: '#4e342e', 
     fontSize: 16,
     fontWeight: 'bold',
-    paddingVertical: 10, // Padding
+    paddingVertical: 10, 
   },
   floatingActionContainer: {
     position: 'absolute',

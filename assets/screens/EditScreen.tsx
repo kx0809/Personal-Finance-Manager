@@ -36,7 +36,7 @@ const EditScreen = ({ route, navigation }) => {
     setType(result.type);
     setAmount(result.amount);
     setDescription(result.description);
-    setSelectedCategory(result.category); // Set category from result
+    setSelectedCategory(result.category); 
     setDate(new Date(result.date));
   };
 

@@ -17,8 +17,7 @@ const CreateScreen = ({ route, navigation }) => {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [isPickerOpen, setPickerOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('Expense'); // Default category
-  const [date, setDate] = useState(new Date(Date.now()));
+  const [selectedCategory, setSelectedCategory] = useState('Expense'); 
   const [openPicker, setOpenPicker] = useState(false);
   const [expensesData, setExpensesData] = useState([]);
   const [incomeData, setIncomeData] = useState([]);
@@ -97,7 +96,7 @@ const CreateScreen = ({ route, navigation }) => {
         value={amount}
         onChangeText={(amount) => setAmount(amount)}
         orientation={'vertical'}
-        keyboardType={'numeric'} // Use numeric keyboard
+        keyboardType={'numeric'} 
       />
 
       {/* Description Input */}
@@ -209,12 +208,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)', // To darken the background
+    backgroundColor: 'rgba(0,0,0,0.5)', 
   },
   modalContent: {
     backgroundColor: '#fff',
     width: 300,
-    height: 400, // Fixed height for the modal content
+    height: 400, 
     borderRadius: 10,
     padding: 20,
   },
