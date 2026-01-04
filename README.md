@@ -1,79 +1,120 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Personal Finance Manager Mobile Application
 
-# Getting Started
+A mobile expense tracking application developed using React Native to help users monitor, manage, and analyze their personal income and expenses.  
+This project demonstrates mobile application development, local data persistence, real-time communication, and integration with external services.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+---
 
-## Step 1: Start the Metro Server
+## 📌 Project Overview
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+**Personal Finance Manager** is a mobile application designed to assist users in tracking their daily income and expenses in an organized and intuitive manner.
 
-To start Metro, run the following command from the _root_ of your React Native project:
+The application allows users to record financial transactions, view categorized summaries, analyze monthly income and expenses through visual **pie chart reports**, and secure their financial data using a passcode lock.
 
-```bash
-# using npm
-npm start
+This project was developed as a **team-based academic project (4 members)** and is included in my portfolio to showcase my mobile application development skills using **React Native**.
 
-# OR using Yarn
-yarn start
-```
+---
 
-## Step 2: Start your Application
+## ✨ Key Features
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+### 👤 Users
+- Add, edit, and delete income and expense records
+- Categorize transactions (e.g., Food, Transport, Rent, Bills, Salary)
+- Monthly income and expense reports with **pie chart** visualization
+- Drawer-based navigation for smooth user experience
+- User profile customization (avatar and display name)
 
-### For Android
+### 🔢 Calculator & Currency Tools
+- Built-in calculator implemented using a **custom Python server**
+- Real-time calculator communication via **WebSocket**
+- Currency conversion using live exchange rates from an external web service
 
-```bash
-# using npm
-npm run android
+### 📝 Feedback
+- In-app feedback form allowing users to submit suggestions and comments
+- Submitted feedback is sent to the backend server and **logged in the server terminal**
+- No dedicated admin UI for feedback management in this version
 
-# OR using Yarn
-yarn android
-```
+### 🔐 Security
+- Optional **passcode lock** to prevent unauthorized access
+- Passcode validation and secure local storage
 
-### For iOS
+---
 
-```bash
-# using npm
-npm run ios
+## 🧰 Tech Stack
 
-# OR using Yarn
-yarn ios
-```
+| Layer | Technologies |
+|------|-------------|
+| Mobile Framework | React Native |
+| Language | TypeScript, JavaScript |
+| Navigation | React Navigation (Drawer & Stack) |
+| Local Storage | SQLite, AsyncStorage |
+| Charts | react-native-chart-kit |
+| Real-time Communication | WebSocket |
+| Backend Service | Python |
+| External Services | Exchange Rates API |
+| Version Control | Git, GitHub |
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+---
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+## 🏗️ Application Architecture
 
-## Step 3: Modifying your App
+- Component-based architecture using React Native
+- Drawer and stack navigation for screen management
+- Local data persistence using SQLite
+- User preferences and security data stored via AsyncStorage
+- Custom Python server for calculator logic
+- WebSocket-based real-time communication between mobile app and server
+- Feedback form submissions handled by backend server with terminal-based logging
+- Modular and reusable UI components
 
-Now that you have successfully run the app, let's modify it.
+---
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+## 🔐 Security Measures
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+- Passcode-based application lock
+- Passcode validation logic
+- Secure local storage of passcode using AsyncStorage
+- Restricted access to application content when passcode lock is enabled
 
-## Congratulations! :tada:
+---
 
-You've successfully run and modified your React Native App. :partying_face:
+## 👤 My Contributions
 
-### Now what?
+This was a **team-based project (4 members)**.  
+My individual contributions focused on **application security, navigation, data visualization, and real-time communication**, including:
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+- Implementation of **passcode lock** and validation logic
+- Drawer navigation and overall navigation structure
+- User profile management:
+  - Avatar selection
+  - Display name customization
+- Monthly income and expense report:
+  - Data aggregation logic
+  - **Pie chart** visualization
+- Calculator feature:
+  - WebSocket-based communication
+  - Integration with a custom Python server
+- Currency conversion feature using **Exchange Rates API**
+- Integration of AsyncStorage for secure and persistent user settings
 
-# Troubleshooting
+---
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## 📦 Project Status
 
-# Learn More
+- Fully functional mobile application
+- Tested locally using emulator and physical device
+- Not deployed to app stores
+- No cloud backend deployment
 
-To learn more about React Native, take a look at the following resources:
+---
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## 🚀 Future Improvements
+
+- Enhanced UI/UX design
+- Deployment to Google Play Store and Apple App Store
+
+---
+
+## 📝 Notes
+
+This project is part of my personal portfolio to demonstrate mobile application development using React Native, secure local data handling, real-time client–server communication, and team-based software development experience.
